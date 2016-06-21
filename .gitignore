@@ -1,3 +1,4 @@
+#sensitive configuration files
 Web.config
 Web.*.config
 
