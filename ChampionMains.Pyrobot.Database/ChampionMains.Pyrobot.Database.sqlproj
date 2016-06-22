@@ -67,8 +67,8 @@
     <Build Include="dbo\dbo.User.sql" />
     <Build Include="dbo\dbo.SummonerChampionMastery.sql" />
     <Build Include="dbo\dbo.SummonerInfo.sql" />
-    <Build Include="dbo\schema.Pyrobot.sql" />
     <Build Include="data.sql" />
+    <Build Include="schema.Pyrobot.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localdev.publish.xml" />

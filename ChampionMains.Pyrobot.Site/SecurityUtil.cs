@@ -2,7 +2,7 @@
 using System.Text;
 using System.Web.Security;
 
-namespace Hallam.RedditRankedFlairs
+namespace ChampionMains.Pyrobot
 {
     public static class SecurityUtil
     {

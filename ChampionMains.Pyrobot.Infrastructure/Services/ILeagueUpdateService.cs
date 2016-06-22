@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Hallam.RedditRankedFlairs.Data;
+using ChampionMains.Pyrobot.Data.Models;
 
-namespace Hallam.RedditRankedFlairs.Services
+namespace ChampionMains.Pyrobot.Services
 {
     public interface ILeagueUpdateService
     {

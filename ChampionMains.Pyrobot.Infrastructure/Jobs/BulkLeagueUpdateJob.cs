@@ -3,12 +3,12 @@ using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Hallam.RedditRankedFlairs.Data;
-using Hallam.RedditRankedFlairs.Riot;
-using Hallam.RedditRankedFlairs.Services;
-using Summoner = Hallam.RedditRankedFlairs.Data.Summoner;
+using ChampionMains.Pyrobot.Data.Enums;
+using ChampionMains.Pyrobot.Riot;
+using ChampionMains.Pyrobot.Services;
+using Summoner = ChampionMains.Pyrobot.Data.Models.Summoner;
 
-namespace Hallam.RedditRankedFlairs.Jobs
+namespace ChampionMains.Pyrobot.Jobs
 {
     public class BulkLeagueUpdateJob
     {
@@ -76,7 +76,7 @@ namespace Hallam.RedditRankedFlairs.Jobs
             if (summoner == null)
                 throw new ArgumentNullException("summoner");
 
-            if (summoner.LeagueInfo == null)
+            if (summoner.SummonerInfo == null)
                 throw new InvalidOperationException("summoner.LeagueInfo is null");
 
             var leagues = await _riot.GetLeaguesAsync(summoner.Region, summoner.SummonerId);
@@ -84,9 +84,9 @@ namespace Hallam.RedditRankedFlairs.Jobs
 
             if (solo == null)
             {
-                summoner.LeagueInfo.Division = 0;
-                summoner.LeagueInfo.Tier = TierName.Unranked;
-                summoner.LeagueInfo.UpdatedTime = DateTimeOffset.Now;
+                summoner.SummonerInfo.Division = 0;
+                summoner.SummonerInfo.Tier = (byte) Tiers.Unranked;
+                summoner.SummonerInfo.UpdatedTime = DateTimeOffset.Now;
             }
             else
             {
@@ -95,11 +95,11 @@ namespace Hallam.RedditRankedFlairs.Jobs
                 if (entry == null)
                     throw new InvalidOperationException("Entry not found in league.");
 
-                var division = (int)entry.Division;
-                var tier = (TierName)Enum.Parse(typeof(TierName), solo.Tier.ToString(), true);
-                summoner.LeagueInfo.Division = division;
-                summoner.LeagueInfo.Tier = tier;
-                summoner.LeagueInfo.UpdatedTime = DateTimeOffset.Now;
+                var division = (byte)entry.Division;
+                var tier = (Tiers)Enum.Parse(typeof(Tiers), solo.Tier.ToString(), true);
+                summoner.SummonerInfo.Division = division;
+                summoner.SummonerInfo.Tier = (byte) tier;
+                summoner.SummonerInfo.UpdatedTime = DateTimeOffset.Now;
             }
         }
     }

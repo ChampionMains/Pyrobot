@@ -3,7 +3,7 @@ using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 
-namespace Hallam.RedditRankedFlairs.WebAPI
+namespace ChampionMains.Pyrobot.WebAPI
 {
     /// <summary>
     ///     An action filter which rejects WebApi requests where the model is empty.

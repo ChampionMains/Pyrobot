@@ -2,12 +2,12 @@
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using Hallam.RedditRankedFlairs.Data;
-using Hallam.RedditRankedFlairs.Services;
+using ChampionMains.Pyrobot.Data.Models;
+using ChampionMains.Pyrobot.Services;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 
-namespace Hallam.RedditRankedFlairs.Controllers
+namespace ChampionMains.Pyrobot.Controllers
 {
     public class LoginController : Controller
     {

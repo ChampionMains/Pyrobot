@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
-using Hallam.RedditRankedFlairs.Services;
+using ChampionMains.Pyrobot.Services;
 
-namespace Hallam.RedditRankedFlairs
+namespace ChampionMains.Pyrobot
 {
     public class RoleService : IRoleService
     {

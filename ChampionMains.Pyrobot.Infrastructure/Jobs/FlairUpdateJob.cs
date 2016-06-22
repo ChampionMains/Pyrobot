@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Hallam.RedditRankedFlairs.Services;
+using ChampionMains.Pyrobot.Services;
 
-namespace Hallam.RedditRankedFlairs.Jobs
+namespace ChampionMains.Pyrobot.Jobs
 {
     public class FlairUpdateJob
     {

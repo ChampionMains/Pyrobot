@@ -2,9 +2,11 @@
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-using Hallam.RedditRankedFlairs.Data;
+using ChampionMains.Pyrobot.Data;
+using ChampionMains.Pyrobot.Data.Models;
+using ChampionMains.Pyrobot.Services;
 
-namespace Hallam.RedditRankedFlairs.Services
+namespace ChampionMains.Pyrobot.Services
 {
     public class SummonerService : ISummonerService
     {
@@ -19,7 +21,7 @@ namespace Hallam.RedditRankedFlairs.Services
         {
             user.Summoners.Add(new Summoner
             {
-                LeagueInfo = new LeagueInfo(),
+                SummonerInfo = new SummonerInfo(),
                 Name = name,
                 Region = region,
                 SummonerId = summonerId,
@@ -44,7 +46,8 @@ namespace Hallam.RedditRankedFlairs.Services
 
         public Task<Summoner> GetActiveSummonerAsync(User user)
         {
-            return Task.Run(() => user.Summoners.FirstOrDefault(x => x.IsActive));
+            //TODO
+            return Task.Run(() => user.Summoners.FirstOrDefault());
         } 
 
         public Task<bool> IsSummonerRegistered(string region, string summonerName)
@@ -58,6 +61,9 @@ namespace Hallam.RedditRankedFlairs.Services
         {
             var entity = await FindAsync(region, summonerName);
             if (entity == null) return false;
+
+            //TODO
+            /*
             if (entity.IsActive)
             {
                 // pass the active flag to another summoner if one exists.
@@ -66,27 +72,27 @@ namespace Hallam.RedditRankedFlairs.Services
                 {
                     summoner.IsActive = true;
                 }
-            }
-            UnitOfWork.Leagues.Remove(entity.LeagueInfo);
+            }*/
+            UnitOfWork.Leagues.Remove(entity.SummonerInfo);
             UnitOfWork.Summoners.Remove(entity);
             return await UnitOfWork.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> SetActiveSummonerAsync(Summoner summoner)
         {
-            foreach (var s in summoner.User.Summoners)
-            {
-                s.IsActive = false;
-            }
-            summoner.IsActive = true;
+            //foreach (var s in summoner.User.Summoners)
+            //{
+            //    s.IsActive = false;
+            //}
+            //summoner.IsActive = true;
             return await UnitOfWork.SaveChangesAsync() > 0;
         }
 
-        public async Task<bool> UpdateLeagueAsync(Summoner summoner, TierName tier, int division)
+        public async Task<bool> UpdateLeagueAsync(Summoner summoner, byte tier, byte division)
         {
-            summoner.LeagueInfo.Division = division;
-            summoner.LeagueInfo.Tier = tier;
-            summoner.LeagueInfo.UpdatedTime = DateTimeOffset.Now;
+            summoner.SummonerInfo.Division = division;
+            summoner.SummonerInfo.Tier = tier;
+            summoner.SummonerInfo.UpdatedTime = DateTimeOffset.Now;
             return await UnitOfWork.SaveChangesAsync() > 0;
         } 
     }

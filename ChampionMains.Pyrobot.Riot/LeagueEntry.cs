@@ -1,4 +1,4 @@
-namespace Hallam.RedditRankedFlairs.Riot
+namespace ChampionMains.Pyrobot.Riot
 {
     public class LeagueEntry
     {

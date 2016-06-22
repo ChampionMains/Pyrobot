@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Hallam.RedditRankedFlairs.Services;
+using ChampionMains.Pyrobot.Services;
 
-namespace Hallam.RedditRankedFlairs.Areas.AdminPanel.Controllers
+namespace ChampionMains.Pyrobot.Areas.AdminPanel.Controllers
 {
     [AdminAuthorize]
     public class SubRedditsController : ApiController

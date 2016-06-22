@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Hallam.RedditRankedFlairs.Services
+namespace ChampionMains.Pyrobot.Services
 {
     public class ValidationService
     {

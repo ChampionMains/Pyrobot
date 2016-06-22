@@ -1,7 +1,7 @@
 ﻿using System;
-using Hallam.RedditRankedFlairs.Data;
+using ChampionMains.Pyrobot.Data.Models;
 
-namespace Hallam.RedditRankedFlairs
+namespace ChampionMains.Pyrobot
 {
     public class DbUtil
     {

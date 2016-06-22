@@ -2,7 +2,7 @@
 using System.Net;
 using System.Runtime.Serialization;
 
-namespace Hallam.RedditRankedFlairs.Services.Riot
+namespace ChampionMains.Pyrobot.Services.Riot
 {
     [Serializable]
     public class RiotHttpException : Exception

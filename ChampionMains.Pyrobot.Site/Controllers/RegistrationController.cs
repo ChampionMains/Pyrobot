@@ -1,24 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
-using System.Net.Configuration;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Hallam.RedditRankedFlairs.Data;
-using Hallam.RedditRankedFlairs.Jobs;
-using Hallam.RedditRankedFlairs.Models;
-using Hallam.RedditRankedFlairs.Services;
-using Hallam.RedditRankedFlairs.Services.Riot;
-using Hangfire;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Summoner = Hallam.RedditRankedFlairs.Riot.Summoner;
+using ChampionMains.Pyrobot.Data.Models;
+using ChampionMains.Pyrobot.Models;
+using ChampionMains.Pyrobot.Services;
+using ChampionMains.Pyrobot.Services.Riot;
 
-namespace Hallam.RedditRankedFlairs.Controllers
+namespace ChampionMains.Pyrobot.Controllers
 {
     [Authorize]
     public class RegistrationController : ApiController
@@ -115,14 +106,15 @@ namespace Hallam.RedditRankedFlairs.Controllers
                     await Summoners.SetActiveSummonerAsync(currentSummoner);
 
                 // Send confirmation mail.
+                //TODO
                 Trace.WriteLine($"user.id={user.Id}, user.name={user.Name}, summoner.Id={currentSummoner.Id}");
-                BackgroundJob.Enqueue<ConfirmRegistrationMailJob>(job => job.Execute(user.Id, currentSummoner.Id));
+                //BackgroundJob.Enqueue<ConfirmRegistrationMailJob>(job => job.Execute(user.Id, currentSummoner.Id));
 
-                // Queue up the league update.
-                var jobId = BackgroundJob.Enqueue<LeagueUpdateJob>(job => job.Execute(currentSummoner.Id));
+                //// Queue up the league update.
+                //var jobId = BackgroundJob.Enqueue<LeagueUpdateJob>(job => job.Execute(currentSummoner.Id));
                 
-                // Queue up flair update.
-                jobId = BackgroundJob.ContinueWith<FlairUpdateJob>(jobId, job => job.Execute(user.Id));
+                //// Queue up flair update.
+                //jobId = BackgroundJob.ContinueWith<FlairUpdateJob>(jobId, job => job.Execute(user.Id));
 
                 // Queue up confirmation mail.
                 //jobId = BackgroundJob.ContinueWith<ConfirmFlairUpdatedMailJob>(jobId,

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-using Hallam.RedditRankedFlairs.Data;
+using ChampionMains.Pyrobot.Data;
+using ChampionMains.Pyrobot.Data.Models;
 
-namespace Hallam.RedditRankedFlairs.Services
+namespace ChampionMains.Pyrobot.Services
 {
     public class LeagueUpdateService : ILeagueUpdateService
     {
@@ -22,8 +23,8 @@ namespace Hallam.RedditRankedFlairs.Services
         {
             var cutoff = DateTimeOffset.Now - _config.LeagueDataStaleTime;
             var query = from summoner in _context.Summoners
-                        where summoner.LeagueInfo.UpdatedTime.HasValue
-                              && summoner.LeagueInfo.UpdatedTime < cutoff
+                        where summoner.SummonerInfo.UpdatedTime.HasValue
+                              && summoner.SummonerInfo.UpdatedTime < cutoff
                         select summoner;
             return await query.Take(max).ToListAsync();
         }
@@ -32,7 +33,7 @@ namespace Hallam.RedditRankedFlairs.Services
         {
             foreach (var s in summoners)
             {
-                s.LeagueInfo.UpdatedTime = DateTimeOffset.Now;
+                s.SummonerInfo.UpdatedTime = DateTimeOffset.Now;
             }
             return await _context.SaveChangesAsync() > 0;
         } 

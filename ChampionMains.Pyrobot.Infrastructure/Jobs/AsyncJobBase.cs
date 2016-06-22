@@ -2,7 +2,7 @@
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 
-namespace Hallam.RedditRankedFlairs.Jobs
+namespace ChampionMains.Pyrobot.Jobs
 {
     public abstract class AsyncJobBase
     {

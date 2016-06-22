@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-namespace Hallam.RedditRankedFlairs.Services.Reddit
+namespace ChampionMains.Pyrobot.Services.Reddit
 {
     public class RedditWebRequester
     {

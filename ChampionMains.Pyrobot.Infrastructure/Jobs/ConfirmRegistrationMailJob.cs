@@ -2,10 +2,10 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Hallam.RedditRankedFlairs.Data;
-using Hallam.RedditRankedFlairs.Services;
+using ChampionMains.Pyrobot.Data.Models;
+using ChampionMains.Pyrobot.Services;
 
-namespace Hallam.RedditRankedFlairs.Jobs
+namespace ChampionMains.Pyrobot.Jobs
 {
     public class ConfirmRegistrationMailJob : AsyncJobBase
     {

@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using Hallam.RedditRankedFlairs.Models;
-using Hallam.RedditRankedFlairs.Riot;
-using Hallam.RedditRankedFlairs.Services;
+using ChampionMains.Pyrobot.Models;
+using ChampionMains.Pyrobot.Services;
 
-namespace Hallam.RedditRankedFlairs.Controllers
+namespace ChampionMains.Pyrobot.Controllers
 {
     [Authorize]
     public class ProfileController : Controller

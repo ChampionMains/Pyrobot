@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Hallam.RedditRankedFlairs.Reddit;
-using Hallam.RedditRankedFlairs.Services.Reddit;
+using ChampionMains.Pyrobot.Reddit;
+using ChampionMains.Pyrobot.Services.Reddit;
 
-namespace Hallam.RedditRankedFlairs.Services
+namespace ChampionMains.Pyrobot.Services
 {
     public class RedditService : IRedditService, IRedditMessengerService
     {

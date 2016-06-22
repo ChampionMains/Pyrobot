@@ -3,10 +3,10 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Hallam.RedditRankedFlairs.Models;
-using Hallam.RedditRankedFlairs.Services;
+using ChampionMains.Pyrobot.Models;
+using ChampionMains.Pyrobot.Services;
 
-namespace Hallam.RedditRankedFlairs.Controllers
+namespace ChampionMains.Pyrobot.Controllers
 {
     [Authorize]
     public class ProfileApiController : ApiController
@@ -84,8 +84,8 @@ namespace Hallam.RedditRankedFlairs.Controllers
             {
                 region = summoner.Region.ToUpperInvariant(),
                 summonerName = summoner.Name,
-                league = LeagueUtil.Stringify(summoner.LeagueInfo),
-                active = summoner.IsActive
+                league = LeagueUtil.Stringify(summoner.SummonerInfo),
+                //active = summoner.IsActive
             });
         }
 

@@ -1,12 +1,11 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Hallam.RedditRankedFlairs.Data;
-using Hallam.RedditRankedFlairs.Riot;
-using Hallam.RedditRankedFlairs.Services;
+using ChampionMains.Pyrobot.Data.Enums;
+using ChampionMains.Pyrobot.Riot;
+using ChampionMains.Pyrobot.Services;
 
-namespace Hallam.RedditRankedFlairs.Jobs
+namespace ChampionMains.Pyrobot.Jobs
 {
     /// <summary>
     ///     Updates the league standing for a summoner.
@@ -40,14 +39,14 @@ namespace Hallam.RedditRankedFlairs.Jobs
 
             if (solo == null)
             {
-                await _summoners.UpdateLeagueAsync(summoner, TierName.Unranked, 0);
+                await _summoners.UpdateLeagueAsync(summoner, (byte) Tiers.Unranked, 0);
             }
             else
             {
                 var entry = solo.Entries.First(e => e.PlayerOrTeamId == summoner.SummonerId.ToString());
-                var division = (int) entry.Division;
-                var tier = (TierName) Enum.Parse(typeof (TierName), solo.Tier.ToString(), true);
-                await _summoners.UpdateLeagueAsync(summoner, tier, division);
+                var division = (byte) entry.Division;
+                var tier = (Tiers) Enum.Parse(typeof (Tiers), solo.Tier.ToString(), true);
+                await _summoners.UpdateLeagueAsync(summoner, (byte) tier, division);
             }
         }
     }

@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 
-namespace Hallam.RedditRankedFlairs.Areas.AdminPanel.Controllers
+namespace ChampionMains.Pyrobot.Areas.AdminPanel.Controllers
 {
     [AdminAuthorize]
     public class AdminDefaultController : Controller

@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace Hallam.RedditRankedFlairs.Models
+namespace ChampionMains.Pyrobot.Models
 {
     public class SummonerModel
     {

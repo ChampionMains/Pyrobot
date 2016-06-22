@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Data.Entity;
 using System.Threading.Tasks;
+using ChampionMains.Pyrobot.Data.Models;
 
-namespace Hallam.RedditRankedFlairs.Data
+namespace ChampionMains.Pyrobot.Data
 {
     public class UnitOfWork : DbContext, IUnitOfWork
     {
-        public IDbSet<LeagueInfo> Leagues { get; set; }
+        public IDbSet<SummonerInfo> Leagues { get; set; }
         public IDbSet<SubReddit> SubReddits { get; set; }
         public IDbSet<Summoner> Summoners { get; set; }
         public IDbSet<User> Users { get; set; }

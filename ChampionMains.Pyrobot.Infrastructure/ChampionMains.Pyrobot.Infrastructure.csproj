@@ -115,7 +115,7 @@
       <Project>{0684e3ec-de9d-409b-8ccd-c3566763a2a7}</Project>
       <Name>ChampionMains.Pyrobot.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Hallam.RedditRankedFlairs.Reddit\ChampionMains.Pyrobot.Reddit.csproj">
+    <ProjectReference Include="..\ChampionMains.Pyrobot.Reddit\ChampionMains.Pyrobot.Reddit.csproj">
       <Project>{23f0de13-732d-4cdc-9bf2-eafca93814e8}</Project>
       <Name>ChampionMains.Pyrobot.Reddit</Name>
     </ProjectReference>

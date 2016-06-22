@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using Hallam.RedditRankedFlairs.Data;
+﻿using ChampionMains.Pyrobot.Data.Models;
 
-namespace Hallam.RedditRankedFlairs.Models
+namespace ChampionMains.Pyrobot.Models
 {
     public class ProfileViewModel
     {

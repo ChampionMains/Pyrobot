@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Hallam.RedditRankedFlairs.Data;
-using Hallam.RedditRankedFlairs.Services;
+using ChampionMains.Pyrobot.Data.Models;
+using ChampionMains.Pyrobot.Services;
 
-namespace Hallam.RedditRankedFlairs.Jobs
+namespace ChampionMains.Pyrobot.Jobs
 {
     public class ConfirmFlairUpdatedMailJob
     {
@@ -57,7 +57,7 @@ namespace Hallam.RedditRankedFlairs.Jobs
 [Author](https://www.reddit.com/message/compose?to=kivinkujata&subject=Ranked+Flairs) |
 [GitHub](https://github.com/jessehallam/RedditRankedFlairs) | {version}";
 
-            return pattern.Replace("{flair}", LeagueUtil.Stringify(summoner.LeagueInfo))
+            return pattern.Replace("{flair}", LeagueUtil.Stringify(summoner.SummonerInfo))
                 .Replace("{version}", _config.FlairBotVersion);
         }
     }

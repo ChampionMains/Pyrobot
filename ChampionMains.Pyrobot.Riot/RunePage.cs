@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Hallam.RedditRankedFlairs.Riot
+namespace ChampionMains.Pyrobot.Riot
 {
     public class RunePage
     {

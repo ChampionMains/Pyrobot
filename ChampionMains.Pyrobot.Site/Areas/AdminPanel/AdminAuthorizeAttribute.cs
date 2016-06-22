@@ -4,7 +4,7 @@ using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
 
-namespace Hallam.RedditRankedFlairs.Areas.AdminPanel
+namespace ChampionMains.Pyrobot.Areas.AdminPanel
 {
     public class AdminAuthorizeAttribute : AuthorizeAttribute
     {

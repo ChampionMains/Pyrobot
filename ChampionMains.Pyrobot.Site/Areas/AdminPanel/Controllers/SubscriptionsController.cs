@@ -5,10 +5,10 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Hallam.RedditRankedFlairs.Services;
-using Hallam.RedditRankedFlairs.Services.Reddit;
+using ChampionMains.Pyrobot.Services;
+using ChampionMains.Pyrobot.Services.Reddit;
 
-namespace Hallam.RedditRankedFlairs.Areas.AdminPanel.Controllers
+namespace ChampionMains.Pyrobot.Areas.AdminPanel.Controllers
 {
     [AdminAuthorize]
     public class SubscriptionsController : ApiController

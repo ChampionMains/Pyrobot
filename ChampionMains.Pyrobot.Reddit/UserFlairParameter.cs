@@ -1,4 +1,4 @@
-﻿namespace Hallam.RedditRankedFlairs.Reddit
+﻿namespace ChampionMains.Pyrobot.Reddit
 {
     public class UserFlairParameter
     {

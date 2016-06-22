@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Newtonsoft.Json;
 
-namespace Hallam.RedditRankedFlairs.WebAPI
+namespace ChampionMains.Pyrobot.WebAPI
 {
     /// <summary>
     ///     A WebAPI message handler which transforms response messages in to a common format.

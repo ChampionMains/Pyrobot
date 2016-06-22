@@ -8,11 +8,9 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Autofac;
-using Hallam.RedditRankedFlairs.Jobs;
-using Hangfire;
 using GlobalConfiguration = System.Web.Http.GlobalConfiguration;
 
-namespace Hallam.RedditRankedFlairs
+namespace ChampionMains.Pyrobot
 {
     public class MvcApplication : System.Web.HttpApplication
     {

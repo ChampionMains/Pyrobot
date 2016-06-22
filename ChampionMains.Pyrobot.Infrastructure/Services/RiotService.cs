@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Hallam.RedditRankedFlairs.Riot;
-using Hallam.RedditRankedFlairs.Services.Riot;
-using Newtonsoft.Json.Linq;
+using ChampionMains.Pyrobot.Data.Models;
+using ChampionMains.Pyrobot.Riot;
+using ChampionMains.Pyrobot.Services.Riot;
+using Summoner = ChampionMains.Pyrobot.Data.Models.Summoner;
 
-namespace Hallam.RedditRankedFlairs.Services
+namespace ChampionMains.Pyrobot.Services
 {
     public class RiotService : IRiotService
     {
@@ -24,7 +24,7 @@ namespace Hallam.RedditRankedFlairs.Services
             return results?.Count > 0 ? results.First().Value : null;
         }
 
-        public async Task<ICollection<League>> GetLeaguesAsync(string region, int summonerId)
+        public async Task<ICollection<League>> GetLeaguesAsync(string region, long summonerId)
         {
             var uri = LeagueBaseUri + "by-summoner/" + summonerId + "/entry";
             var json = await WebRequester.SendRequestAsync(region, uri);
@@ -34,12 +34,27 @@ namespace Hallam.RedditRankedFlairs.Services
             return results.TryGetValue(summonerId.ToString(), out result) ? result : null;
         }
 
-        public async Task<ICollection<RunePage>> GetRunePagesAsync(string region, int summonerId)
+        public async Task<ICollection<RunePage>> GetRunePagesAsync(string region, long summonerId)
         {
             var uri = SummonerBaseUri + summonerId + "/runes";
             var json = await WebRequester.SendRequestAsync(region, uri);
             var result = json?[summonerId.ToString()];
             return result?["pages"].ToObject<ICollection<RunePage>>();
+        }
+
+        Task<Data.Models.Summoner> IRiotService.FindSummonerAsync(string region, string summonerName)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<ICollection<League>> IRiotService.GetLeaguesAsync(string region, long summonerId)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<ICollection<RunePage>> IRiotService.GetRunePagesAsync(string region, long summonerId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

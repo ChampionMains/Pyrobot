@@ -1,7 +1,7 @@
 ﻿using System.Web.Http;
-using Hallam.RedditRankedFlairs.WebAPI;
+using ChampionMains.Pyrobot.WebAPI;
 
-namespace Hallam.RedditRankedFlairs
+namespace ChampionMains.Pyrobot
 {
     public class WebApiConfig
     {

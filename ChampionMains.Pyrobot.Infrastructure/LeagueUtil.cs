@@ -1,6 +1,6 @@
-﻿using Hallam.RedditRankedFlairs.Data;
+﻿using ChampionMains.Pyrobot.Data.Models;
 
-namespace Hallam.RedditRankedFlairs
+namespace ChampionMains.Pyrobot
 {
     public class LeagueUtil
     {
@@ -9,12 +9,12 @@ namespace Hallam.RedditRankedFlairs
             "I", "II", "III", "IV", "V"
         };
 
-        public static string Stringify(LeagueInfo league)
+        public static string Stringify(SummonerInfo league)
         {
             if (league == null) return "";
             if (league.UpdatedTime.HasValue == false) return "";
-            if (league.Division == 0 || league.Tier == TierName.Unranked) return "Unranked";
-            return league.Tier.ToString() + " " + DivisionNames[league.Division - 1];
+            if (league.Division == 0 || league.Tier == 0) return "Unranked";
+            return league.Tier + " " + DivisionNames[league.Division - 1];
         }
     }
 }

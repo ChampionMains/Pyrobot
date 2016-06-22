@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Hallam.RedditRankedFlairs.Data;
+using ChampionMains.Pyrobot.Data.Models;
 
-namespace Hallam.RedditRankedFlairs.Services
+namespace ChampionMains.Pyrobot.Services
 {
     /// <summary>
     ///     Manages the summoners which are registered to users.
@@ -70,6 +70,6 @@ namespace Hallam.RedditRankedFlairs.Services
         /// <param name="tier">The league tier.</param>
         /// <param name="division">The league division.</param>
         /// <returns>True indicates success.</returns>
-        Task<bool> UpdateLeagueAsync(Summoner summoner, TierName tier, int division);
+        Task<bool> UpdateLeagueAsync(Summoner summoner, byte tier, byte division);
     }
 }

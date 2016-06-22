@@ -1,4 +1,4 @@
-﻿namespace Hallam.RedditRankedFlairs.Services.Reddit
+﻿namespace ChampionMains.Pyrobot.Services.Reddit
 {
     public enum SubRedditKind
     {

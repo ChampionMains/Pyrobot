@@ -1,10 +1,9 @@
-﻿using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Web;
-using Hallam.RedditRankedFlairs.Data;
-using Hallam.RedditRankedFlairs.Services;
+using ChampionMains.Pyrobot.Data.Models;
+using ChampionMains.Pyrobot.Services;
 
-namespace Hallam.RedditRankedFlairs
+namespace ChampionMains.Pyrobot
 {
     public static class UserServiceExtensions
     {

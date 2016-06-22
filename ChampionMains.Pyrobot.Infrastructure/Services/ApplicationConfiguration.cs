@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Hallam.RedditRankedFlairs.Services
+namespace ChampionMains.Pyrobot.Services
 {
     public class ApplicationConfiguration
     {

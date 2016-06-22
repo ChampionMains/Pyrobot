@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Hallam.RedditRankedFlairs.Data;
-using Hallam.RedditRankedFlairs.Reddit;
-using Hallam.RedditRankedFlairs.Services;
+using ChampionMains.Pyrobot.Data.Models;
+using ChampionMains.Pyrobot.Reddit;
+using ChampionMains.Pyrobot.Services;
 
-namespace Hallam.RedditRankedFlairs.Jobs
+namespace ChampionMains.Pyrobot.Jobs
 {
     public class BulkFlairUpdateJob
     {
@@ -90,7 +90,7 @@ namespace Hallam.RedditRankedFlairs.Jobs
         private async Task<string> GetFlairTextAsync(User user)
         {
             var summoner = await _summoners.GetActiveSummonerAsync(user);
-            return summoner == null ? "" : LeagueUtil.Stringify(summoner.LeagueInfo);
+            return summoner == null ? "" : LeagueUtil.Stringify(summoner.SummonerInfo);
         }
     }
 }

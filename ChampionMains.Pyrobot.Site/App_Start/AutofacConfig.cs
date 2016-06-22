@@ -4,15 +4,14 @@ using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Mvc;
 using Autofac.Integration.WebApi;
-using Hallam.RedditRankedFlairs.Data;
-using Hallam.RedditRankedFlairs.Jobs;
-using Hallam.RedditRankedFlairs.Services;
-using Hallam.RedditRankedFlairs.Services.Reddit;
-using Hallam.RedditRankedFlairs.Services.Riot;
-using Hangfire;
+using ChampionMains.Pyrobot.Data;
+using ChampionMains.Pyrobot.Jobs;
+using ChampionMains.Pyrobot.Services;
+using ChampionMains.Pyrobot.Services.Reddit;
+using ChampionMains.Pyrobot.Services.Riot;
 using GlobalConfiguration = System.Web.Http.GlobalConfiguration;
 
-namespace Hallam.RedditRankedFlairs
+namespace ChampionMains.Pyrobot
 {
     public class AutofacConfig
     {
@@ -100,13 +99,13 @@ namespace Hallam.RedditRankedFlairs
             // Replace the WebAPI dependency resolver
             GlobalConfiguration.Configuration.DependencyResolver = new AutofacWebApiDependencyResolver(container);
 
-            // Replace the Hangfire activator
-            ConfigureHangfire(Hangfire.GlobalConfiguration.Configuration, container);
+            // Replace the Hang-fire activator
+            //ConfigureHang-fire(Hang-fire.GlobalConfiguration.Configuration, container);
         }
 
-        private static void ConfigureHangfire(IGlobalConfiguration config, IContainer container)
-        {
-            config.UseAutofacActivator(container);
-        }
+        //private static void ConfigureHang-fire(IGlobalConfiguration config, IContainer container)
+        //{
+        //    config.UseAutofacActivator(container);
+        //}
     }
 }

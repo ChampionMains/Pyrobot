@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Hallam.RedditRankedFlairs.Services
+namespace ChampionMains.Pyrobot.Services
 {
     public interface IRedditMessengerService
     {

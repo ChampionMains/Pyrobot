@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Hallam.RedditRankedFlairs.Reddit;
-using Hallam.RedditRankedFlairs.Services.Reddit;
+using ChampionMains.Pyrobot.Reddit;
+using ChampionMains.Pyrobot.Services.Reddit;
 
-namespace Hallam.RedditRankedFlairs.Services
+namespace ChampionMains.Pyrobot.Services
 {
     /// <summary>
     ///     Manages requests to the Reddit API.

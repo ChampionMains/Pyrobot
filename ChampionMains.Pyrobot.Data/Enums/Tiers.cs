@@ -1,6 +1,6 @@
-﻿namespace Hallam.RedditRankedFlairs.Data
+﻿namespace ChampionMains.Pyrobot.Data.Enums
 {
-    public enum TierName
+    public enum Tiers : byte
     {
         Unranked,
         Bronze,

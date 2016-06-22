@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Hallam.RedditRankedFlairs.Data
+namespace ChampionMains.Pyrobot.Data.Models
 {
     /// <summary>
     ///     Represents a user of the product.

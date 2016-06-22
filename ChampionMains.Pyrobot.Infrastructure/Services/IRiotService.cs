@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Hallam.RedditRankedFlairs.Riot;
+using ChampionMains.Pyrobot.Riot;
+using Summoner = ChampionMains.Pyrobot.Data.Models.Summoner;
 
-namespace Hallam.RedditRankedFlairs.Services
+namespace ChampionMains.Pyrobot.Services
 {
     /// <summary>
     ///     Conducts requests to the Riot League of Legends Web API.
@@ -23,7 +24,7 @@ namespace Hallam.RedditRankedFlairs.Services
         /// <param name="region">The summoner region.</param>
         /// <param name="summonerId">The summoner id.</param>
         /// <returns>A collection of league objects.</returns>
-        Task<ICollection<League>> GetLeaguesAsync(string region, int summonerId);
+        Task<ICollection<League>> GetLeaguesAsync(string region, long summonerId);
 
         /// <summary>
         ///     Retrieves a collection of a summoner's rune pages asynchronously.
@@ -31,6 +32,6 @@ namespace Hallam.RedditRankedFlairs.Services
         /// <param name="region">The summoner region.</param>
         /// <param name="summonerId">The summoner id.</param>
         /// <returns>A collection of rune page objects.</returns>
-        Task<ICollection<RunePage>> GetRunePagesAsync(string region, int summonerId);
+        Task<ICollection<RunePage>> GetRunePagesAsync(string region, long summonerId);
     }
 }
