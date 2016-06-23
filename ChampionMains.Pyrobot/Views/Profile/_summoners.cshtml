@@ -119,10 +119,11 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <div class="alert alert-dismissible alert-danger" ng-show="alert">
-                    <button type="button" class="close" data-dismiss="alert">&times;</button>
-                    <span>{{alert.text}}</span>
+                <div class="form-group">
+                    <div class="alert alert-dismissible alert-danger" ng-show="alert"></div>
                 </div>
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <span>{{alert.text}}</span>
                 <button type="button" class="btn btn-default" data-dismiss="modal" ng-disabled="busy">Cancel</button>
                 <button type="button" class="btn btn-primary" ng-click="confirm()" ng-disabled="busy || !(summonerName && region)">
                     <i class="fa fa-spin fa-spinner" ng-show="busy"></i> Confirm
