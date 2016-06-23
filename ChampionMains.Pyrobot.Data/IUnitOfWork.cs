@@ -11,6 +11,7 @@ namespace ChampionMains.Pyrobot.Data
         IDbSet<SubReddit> SubReddits { get; }
         IDbSet<Summoner> Summoners { get; }
         IDbSet<User> Users { get; }
+        IDbSet<Champion> Champions { get; }
 
         Task<int> SaveChangesAsync();
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);

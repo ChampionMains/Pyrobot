@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ChampionMains.Pyrobot.Data.Models
 {
-    [Table("dbo.SummonerChampionMastery")]
+    //[Table("dbo.SummonerChampionMastery")]
     public class SummonerChampionMastery
     {
         [Key]
@@ -18,12 +18,12 @@ namespace ChampionMains.Pyrobot.Data.Models
         [Required]
         public byte MasteryLevel { get; set; }
 
-        [ForeignKey("dbo.Champion")]
+        [ForeignKey("Champion")]
         [Required]
         public short ChampionId { get; set; }
 
 
-        [ForeignKey("dbo.Summoner")]
+        [ForeignKey("SummonerInfo")]
         [Required]
         public int SummonerInfoId { get; set; }
 

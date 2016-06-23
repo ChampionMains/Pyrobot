@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ChampionMains.Pyrobot.Data.Models
 {
-    [Table("dbo.SubReddit")]
+    //[Table("dbo.SubReddit")]
     public class SubReddit
     {
         [Key]
@@ -14,6 +14,7 @@ namespace ChampionMains.Pyrobot.Data.Models
         [MaxLength(21)]
         public string Name { get; set; }
         
+        [ForeignKey("Champion")]
         public short? ChampionId { get; set; }
 
         public virtual Champion Champion { get; set; }

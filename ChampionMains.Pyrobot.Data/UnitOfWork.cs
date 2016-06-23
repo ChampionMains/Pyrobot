@@ -11,6 +11,7 @@ namespace ChampionMains.Pyrobot.Data
         public IDbSet<SubReddit> SubReddits { get; set; }
         public IDbSet<Summoner> Summoners { get; set; }
         public IDbSet<User> Users { get; set; }
+        public IDbSet<Champion> Champions { get; set; }
 
         public UnitOfWork() { }
         public UnitOfWork(string nameOrConnectionString) : base(nameOrConnectionString) { }

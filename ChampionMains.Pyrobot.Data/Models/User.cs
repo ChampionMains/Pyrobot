@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 
 namespace ChampionMains.Pyrobot.Data.Models
 {
-    /// <summary>
-    ///     Represents a user of the product.
-    /// </summary>
     public class User
     {
         public DateTimeOffset? FlairUpdateRequiredTime { get; set; }
@@ -19,7 +17,7 @@ namespace ChampionMains.Pyrobot.Data.Models
         public bool IsBanned { get; set; }
 
         public bool IsAdmin { get; set; }
-
+        
         [Index(IsUnique = true), Required, StringLength(21)]
         public string Name { get; set; }
         

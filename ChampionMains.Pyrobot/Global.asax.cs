@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.IO;
 using System.Net.Mail;
@@ -8,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Autofac;
+using ChampionMains.Pyrobot.Data;
 using GlobalConfiguration = System.Web.Http.GlobalConfiguration;
 
 namespace ChampionMains.Pyrobot
@@ -55,6 +57,8 @@ namespace ChampionMains.Pyrobot
 
         protected void Application_Start()
         {
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<UnitOfWork, ChampionMains.Pyrobot.Data.Migrations.Configuration>());
+
             GlobalConfiguration.Configure(WebApiConfig.Register);
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);

@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Hallam.RedditRankedFlairs")]
+[assembly: AssemblyTitle("ChampionMains.Pyrobot")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Hallam.RedditRankedFlairs")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyProduct("ChampionMains.Pyrobot")]
+[assembly: AssemblyCopyright("GPLv2")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
