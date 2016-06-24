@@ -41,20 +41,5 @@ namespace ChampionMains.Pyrobot.Services
             var result = json?[summonerId.ToString()];
             return result?["pages"].ToObject<ICollection<RunePage>>();
         }
-
-        Task<Data.Models.Summoner> IRiotService.FindSummonerAsync(string region, string summonerName)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<ICollection<League>> IRiotService.GetLeaguesAsync(string region, long summonerId)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<ICollection<RunePage>> IRiotService.GetRunePagesAsync(string region, long summonerId)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

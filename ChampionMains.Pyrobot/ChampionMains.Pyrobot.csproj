@@ -271,6 +271,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\AdminPanel\Models\" />
     <Folder Include="Areas\AdminPanel\Views\Shared\" />
+    <Folder Include="Areas\AdminPanel\Views\Static\" />
     <Folder Include="Content\js\admin\" />
     <Folder Include="Views\ProfileSummoner\" />
   </ItemGroup>
