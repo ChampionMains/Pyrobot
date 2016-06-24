@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using ChampionMains.Pyrobot.Data.Models;
 using ChampionMains.Pyrobot.Services;
 using Microsoft.AspNet.Identity;
@@ -32,7 +33,7 @@ namespace ChampionMains.Pyrobot.Controllers
             return View();
         }
 
-        public ActionResult Login()
+        public ActionResult LogIn()
         {
             var returnUrl = Url.Action("login-callback", "login");
             return new OAuthRedirectResult(returnUrl);
@@ -53,6 +54,14 @@ namespace ChampionMains.Pyrobot.Controllers
 
             await SignInAsync(loginInfo.ExternalIdentity, user);
             return RedirectToAction("index");
+        }
+
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public ActionResult LogOut()
+        { 
+            HttpContext.GetOwinContext().Authentication.SignOut();
+            return RedirectToAction("index", "profile");
         }
 
         private async Task SignInAsync(ClaimsIdentity externalIdentity, User user)

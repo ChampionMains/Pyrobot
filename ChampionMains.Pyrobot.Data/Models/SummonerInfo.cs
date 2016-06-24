@@ -5,10 +5,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ChampionMains.Pyrobot.Data.Models
 {
-    //[Table("dbo.SummonerInfo")]
+    [Table("SummonerInfo")]
     public class SummonerInfo
     {
-        [Key]
         [ForeignKey("Summoner")]
         [Required]
         public int Id { get; set; }
@@ -18,8 +17,7 @@ namespace ChampionMains.Pyrobot.Data.Models
 
         [Required]
         public byte Tier { get; set; }
-
-        [Required]
+        
         public DateTimeOffset? UpdatedTime { get; set; }
         
         public virtual Summoner Summoner { get; set; }

@@ -52,11 +52,18 @@
                                 @if (User.Identity.IsAuthenticated)
                                 {
                                     <li>
-                                        <a href="/profile">Profile</a>
+                                        <a href="@Url.Action("index", "profile")">Profile</a>
+                                    </li>
+                                    <li>
+                                        @using (Html.BeginForm("logout", "Login"))
+                                        {
+                                            //@Html.AntiForgeryToken();
+                                            <button type="submit">Log Out</button>
+                                        }
                                     </li>
                                 }
                                 <li>
-                                    <a href="/about">About</a>
+                                    <a href="@Url.Action("about", "login")">About</a>
                                 </li>
                                 @if (User.IsInRole("admin") || User.IsInRole("moderator"))
                                 {

@@ -47,7 +47,7 @@ namespace ChampionMains.Pyrobot.Services
 
             identity.AddClaims(externalIdentity.Claims);
             identity.AddClaim(new Claim(ClaimTypes.Name, user.Name, ClaimValueTypes.String));
-            identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString(), ClaimValueTypes.String));
+            //identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString(), ClaimValueTypes.String));
 
             if (user.IsAdmin)
             {

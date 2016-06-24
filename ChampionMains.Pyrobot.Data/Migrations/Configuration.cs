@@ -2,19 +2,16 @@ using ChampionMains.Pyrobot.Data.Models;
 
 namespace ChampionMains.Pyrobot.Data.Migrations
 {
-    using System;
-    using System.Data.Entity;
     using System.Data.Entity.Migrations;
-    using System.Linq;
 
-    public sealed class Configuration : DbMigrationsConfiguration<ChampionMains.Pyrobot.Data.UnitOfWork>
+    public sealed class Configuration : DbMigrationsConfiguration<UnitOfWork>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(ChampionMains.Pyrobot.Data.UnitOfWork context)
+        protected override void Seed(UnitOfWork context)
         {
             //  This method will be called after migrating to the latest version.
 

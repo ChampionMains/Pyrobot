@@ -79,9 +79,9 @@
   <ItemGroup>
     <Compile Include="Consts.cs" />
     <Compile Include="IUnitOfWork.cs" />
-    <Compile Include="Migrations\201606230450053_AddUrl.cs" />
-    <Compile Include="Migrations\201606230450053_AddUrl.Designer.cs">
-      <DependentUpon>201606230450053_AddUrl.cs</DependentUpon>
+    <Compile Include="Migrations\201606240635260_reset.cs" />
+    <Compile Include="Migrations\201606240635260_reset.Designer.cs">
+      <DependentUpon>201606240635260_reset.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Champion.cs" />
@@ -99,8 +99,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201606230450053_AddUrl.resx">
-      <DependentUpon>201606230450053_AddUrl.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201606240635260_reset.resx">
+      <DependentUpon>201606240635260_reset.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

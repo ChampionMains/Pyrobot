@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ChampionMains.Pyrobot.Data.Models
 {
-    //[Table("dbo.SummonerChampionMastery")]
+    [Table("SummonerChampionMastery")]
     public class SummonerChampionMastery
     {
         [Key]

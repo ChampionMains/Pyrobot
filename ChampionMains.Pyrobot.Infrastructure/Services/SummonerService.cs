@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data;
@@ -19,16 +20,17 @@ namespace ChampionMains.Pyrobot.Services
 
         public async Task<Summoner> AddSummonerAsync(User user, int summonerId, string region, string name)
         {
-            user.Summoners.Add(new Summoner
+            var summoner = new Summoner
             {
                 SummonerInfo = new SummonerInfo(),
                 Name = name,
                 Region = region,
                 SummonerId = summonerId,
                 User = user
-            });
+            };
+            user.Summoners.Add(summoner);
             await UnitOfWork.SaveChangesAsync();
-            return user.Summoners.First(summoner => summoner.SummonerId == summonerId);
+            return summoner;
         }
 
         public Task<Summoner> FindAsync(int id)

@@ -16,19 +16,12 @@ namespace ChampionMains.Pyrobot
 {
     public class MvcApplication : System.Web.HttpApplication
     {
-        private static Dictionary<Type, Action<Exception, StringWriter>> ExceptionFormatterDictionary = new Dictionary<Type, Action<Exception, StringWriter>>();
-        private static List<Func<Exception, bool>> ExceptionFilters = new List<Func<Exception, bool>>(); 
+        private static readonly Dictionary<Type, Action<Exception, StringWriter>> ExceptionFormatterDictionary = new Dictionary<Type, Action<Exception, StringWriter>>();
+        private static readonly List<Func<Exception, bool>> ExceptionFilters = new List<Func<Exception, bool>>(); 
 
         static MvcApplication()
         {
-            ExceptionFilters.Add(exception =>
-            {
-                if (exception is HttpException)
-                {
-                    return (exception as HttpException).GetHttpCode() == 404;
-                }
-                return false;
-            });
+            ExceptionFilters.Add(exception => (exception as HttpException)?.GetHttpCode() == 404);
 
             ExceptionFormatterDictionary[typeof (HttpException)] = (exception, writer) =>
             {
@@ -57,7 +50,7 @@ namespace ChampionMains.Pyrobot
 
         protected void Application_Start()
         {
-            Database.SetInitializer(new MigrateDatabaseToLatestVersion<UnitOfWork, ChampionMains.Pyrobot.Data.Migrations.Configuration>());
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<UnitOfWork, Data.Migrations.Configuration>());
 
             GlobalConfiguration.Configure(WebApiConfig.Register);
             AreaRegistration.RegisterAllAreas();

@@ -7,13 +7,13 @@ namespace ChampionMains.Pyrobot.Data.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class AddUrl : IMigrationMetadata
+    public sealed partial class reset : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AddUrl));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(reset));
         
         string IMigrationMetadata.Id
         {
-            get { return "201606230450053_AddUrl"; }
+            get { return "201606240635260_reset"; }
         }
         
         string IMigrationMetadata.Source

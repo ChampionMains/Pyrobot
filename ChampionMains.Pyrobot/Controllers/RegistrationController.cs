@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Security;
 using ChampionMains.Pyrobot.Data.Models;
 using ChampionMains.Pyrobot.Models;
 using ChampionMains.Pyrobot.Services;
@@ -77,6 +78,10 @@ namespace ChampionMains.Pyrobot.Controllers
                 // Summoner MUST exist.
                 var riotSummoner = await Riot.FindSummonerAsync(model.Region, model.SummonerName);
                 var user = await Users.GetUserAsync();
+                if (user == null)
+                {
+                    return StatusCode(HttpStatusCode.Unauthorized);
+                }
 
                 if (riotSummoner == null)
                 {

@@ -3,25 +3,34 @@ namespace ChampionMains.Pyrobot.Data.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class AddUrl : DbMigration
+    public partial class reset : DbMigration
     {
         public override void Up()
         {
             CreateTable(
-                "dbo.SummonerInfoes",
+                "dbo.Champion",
+                c => new
+                    {
+                        Id = c.Short(nullable: false, identity: true),
+                        Name = c.String(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id);
+            
+            CreateTable(
+                "dbo.SummonerInfo",
                 c => new
                     {
                         Id = c.Int(nullable: false),
                         Division = c.Byte(nullable: false),
                         Tier = c.Byte(nullable: false),
-                        UpdatedTime = c.DateTimeOffset(nullable: false, precision: 7),
+                        UpdatedTime = c.DateTimeOffset(precision: 7),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Summoners", t => t.Id)
+                .ForeignKey("dbo.Summoner", t => t.Id)
                 .Index(t => t.Id);
             
             CreateTable(
-                "dbo.Summoners",
+                "dbo.Summoner",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
@@ -49,7 +58,7 @@ namespace ChampionMains.Pyrobot.Data.Migrations
                 .Index(t => t.Name, unique: true);
             
             CreateTable(
-                "dbo.SummonerChampionMasteries",
+                "dbo.SummonerChampionMastery",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
@@ -59,22 +68,13 @@ namespace ChampionMains.Pyrobot.Data.Migrations
                         SummonerInfoId = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Champions", t => t.ChampionId, cascadeDelete: true)
-                .ForeignKey("dbo.SummonerInfoes", t => t.SummonerInfoId, cascadeDelete: true)
+                .ForeignKey("dbo.Champion", t => t.ChampionId, cascadeDelete: true)
+                .ForeignKey("dbo.SummonerInfo", t => t.SummonerInfoId, cascadeDelete: true)
                 .Index(t => t.ChampionId)
                 .Index(t => t.SummonerInfoId);
             
             CreateTable(
-                "dbo.Champions",
-                c => new
-                    {
-                        Id = c.Short(nullable: false, identity: true),
-                        Name = c.String(nullable: false),
-                    })
-                .PrimaryKey(t => t.Id);
-            
-            CreateTable(
-                "dbo.SubReddits",
+                "dbo.SubReddit",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
@@ -82,30 +82,30 @@ namespace ChampionMains.Pyrobot.Data.Migrations
                         ChampionId = c.Short(),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Champions", t => t.ChampionId)
+                .ForeignKey("dbo.Champion", t => t.ChampionId)
                 .Index(t => t.ChampionId);
             
         }
         
         public override void Down()
         {
-            DropForeignKey("dbo.SubReddits", "ChampionId", "dbo.Champions");
-            DropForeignKey("dbo.SummonerChampionMasteries", "SummonerInfoId", "dbo.SummonerInfoes");
-            DropForeignKey("dbo.SummonerChampionMasteries", "ChampionId", "dbo.Champions");
-            DropForeignKey("dbo.SummonerInfoes", "Id", "dbo.Summoners");
-            DropForeignKey("dbo.Summoners", "UserId", "dbo.Users");
-            DropIndex("dbo.SubReddits", new[] { "ChampionId" });
-            DropIndex("dbo.SummonerChampionMasteries", new[] { "SummonerInfoId" });
-            DropIndex("dbo.SummonerChampionMasteries", new[] { "ChampionId" });
+            DropForeignKey("dbo.SubReddit", "ChampionId", "dbo.Champion");
+            DropForeignKey("dbo.SummonerChampionMastery", "SummonerInfoId", "dbo.SummonerInfo");
+            DropForeignKey("dbo.SummonerChampionMastery", "ChampionId", "dbo.Champion");
+            DropForeignKey("dbo.SummonerInfo", "Id", "dbo.Summoner");
+            DropForeignKey("dbo.Summoner", "UserId", "dbo.Users");
+            DropIndex("dbo.SubReddit", new[] { "ChampionId" });
+            DropIndex("dbo.SummonerChampionMastery", new[] { "SummonerInfoId" });
+            DropIndex("dbo.SummonerChampionMastery", new[] { "ChampionId" });
             DropIndex("dbo.Users", new[] { "Name" });
-            DropIndex("dbo.Summoners", new[] { "UserId" });
-            DropIndex("dbo.SummonerInfoes", new[] { "Id" });
-            DropTable("dbo.SubReddits");
-            DropTable("dbo.Champions");
-            DropTable("dbo.SummonerChampionMasteries");
+            DropIndex("dbo.Summoner", new[] { "UserId" });
+            DropIndex("dbo.SummonerInfo", new[] { "Id" });
+            DropTable("dbo.SubReddit");
+            DropTable("dbo.SummonerChampionMastery");
             DropTable("dbo.Users");
-            DropTable("dbo.Summoners");
-            DropTable("dbo.SummonerInfoes");
+            DropTable("dbo.Summoner");
+            DropTable("dbo.SummonerInfo");
+            DropTable("dbo.Champion");
         }
     }
 }

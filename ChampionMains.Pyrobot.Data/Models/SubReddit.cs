@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ChampionMains.Pyrobot.Data.Models
 {
-    //[Table("dbo.SubReddit")]
+    [Table("SubReddit")]
     public class SubReddit
     {
         [Key]
