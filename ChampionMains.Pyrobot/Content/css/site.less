@@ -101,15 +101,26 @@ header {
         margin-left: 15px;
     }
 
-    nav li a {
-        display: block;
-        font-size: 18px;
-        font-weight: 200;
-        height: @header-height;
-        line-height: @header-height;
-        text-shadow: 1px 1px 0 #000;
-        text-transform: uppercase;
+    nav li {
+        a, button {
+            display: block;
+            font-size: 18px;
+            font-weight: 200;
+            height: @header-height;
+            line-height: @header-height;
+            text-shadow: 1px 1px 0 #000;
+            text-transform: uppercase;
+        }
+        button {
+            background: none;
+            border: none;
+        }
+
+        button:hover {
+            color: #527497;
+        }
     }
+
 }
 
 h2 {

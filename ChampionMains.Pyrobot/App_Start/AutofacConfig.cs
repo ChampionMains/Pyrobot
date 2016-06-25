@@ -53,9 +53,7 @@ namespace ChampionMains.Pyrobot
             builder.RegisterType(typeof (RedditService)).As(typeof (IRedditService), typeof (IRedditMessengerService)).InstancePerLifetimeScope();
             builder.RegisterType(typeof (FlairService)).As(typeof (IFlairService)).InstancePerLifetimeScope();
             builder.RegisterType(typeof (ValidationService)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof (LeagueUpdateService))
-                .As(typeof (ILeagueUpdateService))
-                .InstancePerLifetimeScope();
+            builder.RegisterType(typeof (LeagueUpdateService)).As(typeof (ILeagueUpdateService)).InstancePerLifetimeScope();
             builder.Register(context => new RiotService
             {
                 WebRequester = new RiotWebRequester

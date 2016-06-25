@@ -74,7 +74,7 @@ namespace ChampionMains.Pyrobot.Jobs
         private async Task UpdateSummonerAsync(Summoner summoner)
         {
             if (summoner == null)
-                throw new ArgumentNullException("summoner");
+                throw new ArgumentNullException(nameof(summoner));
 
             if (summoner.SummonerInfo == null)
                 throw new InvalidOperationException("summoner.LeagueInfo is null");

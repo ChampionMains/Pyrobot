@@ -8,7 +8,5 @@
 
 <div class="row">
     <p>Please sign in using your Reddit account to continue.</p>
-    <form action="/login" method="get">
-        <button type="submit" class="btn btn-primary"><i class="fa fa-sign-in"></i> Sign In</button>
-    </form>
+    <a href="@Url.Action("login", "login")" class="btn btn-primary"><span class="fa fa-sign-in"></span> Sign In</a>
 </div>

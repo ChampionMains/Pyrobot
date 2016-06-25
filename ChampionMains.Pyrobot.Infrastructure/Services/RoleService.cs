@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
-using ChampionMains.Pyrobot.Services;
 
-namespace ChampionMains.Pyrobot
+namespace ChampionMains.Pyrobot.Services
 {
     public class RoleService : IRoleService
     {

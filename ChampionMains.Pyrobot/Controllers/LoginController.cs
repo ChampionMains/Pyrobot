@@ -33,7 +33,7 @@ namespace ChampionMains.Pyrobot.Controllers
             return View();
         }
 
-        public ActionResult LogIn()
+        public ActionResult Login()
         {
             var returnUrl = Url.Action("login-callback", "login");
             return new OAuthRedirectResult(returnUrl);
@@ -58,7 +58,7 @@ namespace ChampionMains.Pyrobot.Controllers
 
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public ActionResult LogOut()
+        public ActionResult Logout()
         { 
             HttpContext.GetOwinContext().Authentication.SignOut();
             return RedirectToAction("index", "profile");

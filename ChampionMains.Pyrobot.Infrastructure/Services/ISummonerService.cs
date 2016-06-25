@@ -16,7 +16,7 @@ namespace ChampionMains.Pyrobot.Services
         /// <param name="region">The region.</param>
         /// <param name="name">The summoner name.</param>
         /// <returns>A new summoner object.</returns>
-        Task<Summoner> AddSummonerAsync(User user, int summonerId, string region, string name);
+        Task<Summoner> AddSummonerAsync(User user, long summonerId, string region, string name);
 
         /// <summary>
         ///     Finds a summoner asynchronously.

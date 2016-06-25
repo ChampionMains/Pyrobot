@@ -18,7 +18,7 @@ namespace ChampionMains.Pyrobot.Services
             UnitOfWork = unitOfWork;
         }
 
-        public async Task<Summoner> AddSummonerAsync(User user, int summonerId, string region, string name)
+        public async Task<Summoner> AddSummonerAsync(User user, long summonerId, string region, string name)
         {
             var summoner = new Summoner
             {

@@ -11,14 +11,15 @@ namespace ChampionMains.Pyrobot.Data.Models
         public DateTimeOffset? FlairUpdateRequiredTime { get; set; }
         public DateTimeOffset? FlairUpdatedTime { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         public bool IsBanned { get; set; }
 
         public bool IsAdmin { get; set; }
         
-        [Index(IsUnique = true), Required, StringLength(21)]
+        [Index(IsUnique = true)]
+        [Required]
+        [StringLength(21)]
         public string Name { get; set; }
         
         public virtual ICollection<Summoner> Summoners { get; set; } 

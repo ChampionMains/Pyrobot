@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Security;
 using ChampionMains.Pyrobot.Data.Models;
+using ChampionMains.Pyrobot.Jobs;
 using ChampionMains.Pyrobot.Models;
 using ChampionMains.Pyrobot.Services;
 using ChampionMains.Pyrobot.Services.Riot;

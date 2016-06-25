@@ -10,6 +10,7 @@ namespace ChampionMains.Pyrobot.Data.Models
         [Required]
         public short Id { get; set; }
 
+        [Index(IsUnique = true)]
         [Required]
         public string Name { get; set; }
     }
