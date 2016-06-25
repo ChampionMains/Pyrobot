@@ -3,7 +3,7 @@ namespace ChampionMains.Pyrobot.Data.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class reset : DbMigration
+    public partial class initial : DbMigration
     {
         public override void Up()
         {
@@ -11,10 +11,11 @@ namespace ChampionMains.Pyrobot.Data.Migrations
                 "dbo.Champion",
                 c => new
                     {
-                        Id = c.Short(nullable: false, identity: true),
-                        Name = c.String(nullable: false),
+                        Id = c.Short(nullable: false),
+                        Name = c.String(nullable: false, maxLength: 21),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.Id)
+                .Index(t => t.Name, unique: true);
             
             CreateTable(
                 "dbo.SummonerInfo",
@@ -100,6 +101,7 @@ namespace ChampionMains.Pyrobot.Data.Migrations
             DropIndex("dbo.Users", new[] { "Name" });
             DropIndex("dbo.Summoner", new[] { "UserId" });
             DropIndex("dbo.SummonerInfo", new[] { "Id" });
+            DropIndex("dbo.Champion", new[] { "Name" });
             DropTable("dbo.SubReddit");
             DropTable("dbo.SummonerChampionMastery");
             DropTable("dbo.Users");

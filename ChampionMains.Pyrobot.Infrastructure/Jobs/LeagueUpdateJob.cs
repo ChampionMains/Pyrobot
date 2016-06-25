@@ -12,11 +12,11 @@ namespace ChampionMains.Pyrobot.Jobs
     /// </summary>
     public class LeagueUpdateJob
     {
-        private readonly IRiotService _riot;
-        private readonly ISummonerService _summoners;
-        private readonly IUserService _users;
+        private readonly RiotService _riot;
+        private readonly SummonerService _summoners;
+        private readonly UserService _users;
 
-        public LeagueUpdateJob(IUserService users, IRiotService riot, ISummonerService summoners)
+        public LeagueUpdateJob(UserService users, RiotService riot, SummonerService summoners)
         {
             _users = users;
             _riot = riot;

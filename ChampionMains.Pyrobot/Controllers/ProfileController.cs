@@ -9,12 +9,12 @@ namespace ChampionMains.Pyrobot.Controllers
     [Authorize]
     public class ProfileController : Controller
     {
-        public IRiotService Riot { get; set; }
-        public ISummonerService Summoners { get; set; }
-        public IUserService Users { get; set; }
+        public RiotService Riot { get; set; }
+        public SummonerService Summoners { get; set; }
+        public UserService Users { get; set; }
         public ProfileViewModel ViewModel { get; set; }
 
-        public ProfileController(IUserService userService, IRiotService riotService, ISummonerService summonerService)
+        public ProfileController(UserService userService, RiotService riotService, SummonerService summonerService)
         {
             Users = userService;
             Riot = riotService;

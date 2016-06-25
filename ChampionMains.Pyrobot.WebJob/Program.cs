@@ -54,16 +54,14 @@ namespace ChampionMains.Pyrobot.WebJob
             }).SingleInstance();
 
             // Services
-            builder.RegisterType(typeof(RoleService)).As(typeof(IRoleService)).SingleInstance();
-            builder.RegisterType(typeof(UserService)).As(typeof(IUserService)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof(SummonerService)).As(typeof(ISummonerService)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof(SubRedditService)).As(typeof(ISubRedditService)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof(RedditService)).As(typeof(IRedditService), typeof(IRedditMessengerService)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof(FlairService)).As(typeof(IFlairService)).InstancePerLifetimeScope();
+            builder.RegisterType(typeof(RoleService)).As(typeof(RoleService)).SingleInstance();
+            builder.RegisterType(typeof(UserService)).As(typeof(UserService)).InstancePerLifetimeScope();
+            builder.RegisterType(typeof(SummonerService)).As(typeof(SummonerService)).InstancePerLifetimeScope();
+            builder.RegisterType(typeof(SubRedditService)).As(typeof(SubRedditService)).InstancePerLifetimeScope();
+            builder.RegisterType(typeof(RedditService)).As(typeof(RedditService)).InstancePerLifetimeScope();
+            builder.RegisterType(typeof(FlairService)).As(typeof(FlairService)).InstancePerLifetimeScope();
             builder.RegisterType(typeof(ValidationService)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof(LeagueUpdateService))
-                .As(typeof(ILeagueUpdateService))
-                .InstancePerLifetimeScope();
+            builder.RegisterType(typeof(LeagueUpdateService)).As(typeof(LeagueUpdateService)).InstancePerLifetimeScope();
             builder.Register(context => new RiotService
             {
                 WebRequester = new RiotWebRequester
@@ -73,7 +71,7 @@ namespace ChampionMains.Pyrobot.WebJob
                     MaxRequestsPer10Seconds = int.Parse(ConfigurationManager.AppSettings["riot.maxRequestsPer10Seconds"]),
                     RetryInterval = TimeSpan.Parse(ConfigurationManager.AppSettings["riot.retryInterval"])
                 }
-            }).As(typeof(IRiotService)).SingleInstance();
+            }).As(typeof(RiotService)).SingleInstance();
 
             // Reddit WebRequester
             builder.Register(context =>
@@ -94,7 +92,7 @@ namespace ChampionMains.Pyrobot.WebJob
             builder.RegisterType(typeof(ConfirmFlairUpdatedMailJob)).InstancePerLifetimeScope();
 
             // Data persistance
-            builder.RegisterType(typeof(UnitOfWork)).As(typeof(IUnitOfWork)).InstancePerLifetimeScope();
+            builder.RegisterType(typeof(UnitOfWork)).As(typeof(UnitOfWork)).InstancePerLifetimeScope();
 
             
             // finally

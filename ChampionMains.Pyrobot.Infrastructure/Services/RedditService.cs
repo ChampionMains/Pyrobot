@@ -8,7 +8,7 @@ using ChampionMains.Pyrobot.Services.Reddit;
 
 namespace ChampionMains.Pyrobot.Services
 {
-    public class RedditService : IRedditService, IRedditMessengerService
+    public class RedditService
     {
         private const string BaseUri = "https://oauth.reddit.com";
         private readonly RedditWebRequester _requester;

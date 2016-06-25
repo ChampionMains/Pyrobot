@@ -12,9 +12,9 @@ namespace ChampionMains.Pyrobot.Controllers
 {
     public class LoginController : Controller
     {
-        private readonly IUserService _users;
+        private readonly UserService _users;
 
-        public LoginController(IUserService users)
+        public LoginController(UserService users)
         {
             _users = users;
         }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ChampionMains.Pyrobot.Services
 {
-    public class RoleService : IRoleService
+    public class RoleService
     {
         private readonly ICollection<string> _admins; 
 

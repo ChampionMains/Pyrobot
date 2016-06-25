@@ -15,13 +15,13 @@ namespace ChampionMains.Pyrobot.Jobs
         private static readonly TimeSpan NoUsersWaitInterval = TimeSpan.FromSeconds(30);
         private static readonly Mutex Lock = new Mutex();
 
-        private readonly IFlairService _flairs;
-        private readonly IUserService _users;
-        private readonly IRedditService _reddit;
-        private readonly ISubRedditService _subReddits;
-        private readonly ISummonerService _summoners;
+        private readonly FlairService _flairs;
+        private readonly UserService _users;
+        private readonly RedditService _reddit;
+        private readonly SubRedditService _subReddits;
+        private readonly SummonerService _summoners;
 
-        public BulkFlairUpdateJob(IUserService users, IFlairService flairs, IRedditService reddit, ISubRedditService subReddits, ISummonerService summoners)
+        public BulkFlairUpdateJob(UserService users, FlairService flairs, RedditService reddit, SubRedditService subReddits, SummonerService summoners)
         {
             _flairs = flairs;
             _users = users;

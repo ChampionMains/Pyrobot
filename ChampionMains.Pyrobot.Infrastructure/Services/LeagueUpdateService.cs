@@ -8,12 +8,12 @@ using ChampionMains.Pyrobot.Data.Models;
 
 namespace ChampionMains.Pyrobot.Services
 {
-    public class LeagueUpdateService : ILeagueUpdateService
+    public class LeagueUpdateService
     {
-        private readonly IUnitOfWork _context;
+        private readonly UnitOfWork _context;
         private readonly ApplicationConfiguration _config;
 
-        public LeagueUpdateService(IUnitOfWork context, ApplicationConfiguration config)
+        public LeagueUpdateService(UnitOfWork context, ApplicationConfiguration config)
         {
             _context = context;
             _config = config;

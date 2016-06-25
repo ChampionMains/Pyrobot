@@ -7,11 +7,11 @@ using ChampionMains.Pyrobot.Data.Models;
 
 namespace ChampionMains.Pyrobot.Services
 {
-    public class SubRedditService : ISubRedditService
+    public class SubRedditService
     {
-        private readonly IUnitOfWork _context;
+        private readonly UnitOfWork _context;
 
-        public SubRedditService(IUnitOfWork context)
+        public SubRedditService(UnitOfWork context)
         {
             _context = context;
         }

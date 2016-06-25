@@ -19,13 +19,13 @@ namespace ChampionMains.Pyrobot.Controllers
         private static readonly Random Random = new Random();
         private const string ReasonString = "Registration";
 
-        protected IRiotService Riot { get; set; }
-        protected ISummonerService Summoners { get; set; }
-        protected IUserService Users { get; set; }
+        protected RiotService Riot { get; set; }
+        protected SummonerService Summoners { get; set; }
+        protected UserService Users { get; set; }
         protected ValidationService Validation { get; set; }
 
-        public RegistrationController(IRiotService riotService, ISummonerService summonerService,
-            IUserService userService, ValidationService validationService)
+        public RegistrationController(RiotService riotService, SummonerService summonerService,
+                UserService userService, ValidationService validationService)
         {
             Riot = riotService;
             Summoners = summonerService;

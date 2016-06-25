@@ -5,7 +5,7 @@ using ChampionMains.Pyrobot.Data.Models;
 
 namespace ChampionMains.Pyrobot.Data
 {
-    public class UnitOfWork : DbContext, IUnitOfWork
+    public class UnitOfWork : DbContext
     {
         public IDbSet<SummonerInfo> Leagues { get; set; }
         public IDbSet<SubReddit> SubReddits { get; set; }

@@ -5,10 +5,10 @@ namespace ChampionMains.Pyrobot.Jobs
 {
     public class FlairUpdateJob
     {
-        private readonly IFlairService _flairs;
-        private readonly IUserService _users;
+        private readonly FlairService _flairs;
+        private readonly UserService _users;
 
-        public FlairUpdateJob(IFlairService flairs, IUserService users)
+        public FlairUpdateJob(FlairService flairs, UserService users)
         {
             _flairs = flairs;
             _users = users;

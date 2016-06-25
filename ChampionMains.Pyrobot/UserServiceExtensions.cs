@@ -7,7 +7,7 @@ namespace ChampionMains.Pyrobot
 {
     public static class UserServiceExtensions
     {
-        public static Task<User> GetUserAsync(this IUserService service)
+        public static Task<User> GetUserAsync(this UserService service)
         {
             var identity = HttpContext.Current.User?.Identity;
             return identity == null || !identity.IsAuthenticated ? null : service.FindAsync(identity.Name);

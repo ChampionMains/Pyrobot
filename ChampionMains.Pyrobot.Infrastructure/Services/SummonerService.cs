@@ -9,11 +9,11 @@ using ChampionMains.Pyrobot.Services;
 
 namespace ChampionMains.Pyrobot.Services
 {
-    public class SummonerService : ISummonerService
+    public class SummonerService
     {
-        protected IUnitOfWork UnitOfWork;
+        protected UnitOfWork UnitOfWork;
 
-        public SummonerService(IUnitOfWork unitOfWork)
+        public SummonerService(UnitOfWork unitOfWork)
         {
             UnitOfWork = unitOfWork;
         }

@@ -8,11 +8,11 @@ using ChampionMains.Pyrobot.Data.Models;
 
 namespace ChampionMains.Pyrobot.Services
 {
-    public class FlairService : IFlairService
+    public class FlairService
     {
-        private readonly IUnitOfWork _context;
+        private readonly UnitOfWork _context;
 
-        public FlairService(IUnitOfWork context)
+        public FlairService(UnitOfWork context)
         {
             _context = context;
         }

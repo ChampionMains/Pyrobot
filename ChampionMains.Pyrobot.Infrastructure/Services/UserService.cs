@@ -7,12 +7,12 @@ using ChampionMains.Pyrobot.Data.Models;
 
 namespace ChampionMains.Pyrobot.Services
 {
-    public class UserService : IUserService
+    public class UserService
     {
-        protected readonly IUnitOfWork UnitOfWork;
-        protected readonly IRoleService Roles;
+        protected readonly UnitOfWork UnitOfWork;
+        protected readonly RoleService Roles;
 
-        public UserService(IUnitOfWork unitOfWork, IRoleService roleService)
+        public UserService(UnitOfWork unitOfWork, RoleService roleService)
         {
             UnitOfWork = unitOfWork;
             Roles = roleService;

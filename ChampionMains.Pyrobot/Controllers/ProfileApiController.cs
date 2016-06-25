@@ -11,11 +11,11 @@ namespace ChampionMains.Pyrobot.Controllers
     [Authorize]
     public class ProfileApiController : ApiController
     {
-        private readonly IFlairService _flair;
-        private readonly ISummonerService _summoners;
-        private readonly IUserService _users;
+        private readonly FlairService _flair;
+        private readonly SummonerService _summoners;
+        private readonly UserService _users;
 
-        public ProfileApiController(IUserService users, ISummonerService summoners, IFlairService flair)
+        public ProfileApiController(UserService users, SummonerService summoners, FlairService flair)
         {
             _users = users;
             _summoners = summoners;

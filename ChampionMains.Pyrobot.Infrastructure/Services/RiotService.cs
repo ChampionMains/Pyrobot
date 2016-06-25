@@ -9,7 +9,7 @@ using Summoner = ChampionMains.Pyrobot.Data.Models.Summoner;
 
 namespace ChampionMains.Pyrobot.Services
 {
-    public class RiotService : IRiotService
+    public class RiotService
     {
         private const string LeagueBaseUri = "v2.5/league/";
         private const string SummonerBaseUri = "v1.4/summoner/";

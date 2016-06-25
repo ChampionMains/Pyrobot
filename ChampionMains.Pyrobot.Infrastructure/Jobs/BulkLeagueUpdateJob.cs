@@ -16,13 +16,13 @@ namespace ChampionMains.Pyrobot.Jobs
         private static readonly TimeSpan NoUpdateWaitInterval = TimeSpan.FromMinutes(5);
         private static readonly Mutex Lock = new Mutex();
 
-        private readonly IRiotService _riot;
-        private readonly IUserService _users;
-        private readonly ILeagueUpdateService _leagues;
-        private readonly ISummonerService _summoners;
-        private readonly IFlairService _flair;
+        private readonly RiotService _riot;
+        private readonly UserService _users;
+        private readonly LeagueUpdateService _leagues;
+        private readonly SummonerService _summoners;
+        private readonly FlairService _flair;
 
-        public BulkLeagueUpdateJob(IRiotService riot, IUserService users, ILeagueUpdateService leagues, ISummonerService summoners, IFlairService flair)
+        public BulkLeagueUpdateJob(RiotService riot, UserService users, LeagueUpdateService leagues, SummonerService summoners, FlairService flair)
         {
             _riot = riot;
             _users = users;

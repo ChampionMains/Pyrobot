@@ -14,11 +14,11 @@ namespace ChampionMains.Pyrobot.WebJob
 {
     public class Functions
     {
-        private readonly IRiotService _riot;
-        private readonly ISummonerService _summoners;
-        private readonly IUserService _users;
+        private readonly RiotService _riot;
+        private readonly SummonerService _summoners;
+        private readonly UserService _users;
 
-        public Functions(IUserService users, IRiotService riot, ISummonerService summoners)
+        public Functions(UserService users, RiotService riot, SummonerService summoners)
         {
             _users = users;
             _riot = riot;

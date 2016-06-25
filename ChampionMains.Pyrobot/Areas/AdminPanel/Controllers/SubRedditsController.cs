@@ -8,9 +8,9 @@ namespace ChampionMains.Pyrobot.Areas.AdminPanel.Controllers
     [AdminAuthorize]
     public class SubRedditsController : ApiController
     {
-        private readonly ISubRedditService _subReddits;
+        private readonly SubRedditService _subReddits;
 
-        public SubRedditsController(ISubRedditService subReddits)
+        public SubRedditsController(SubRedditService subReddits)
         {
             _subReddits = subReddits;
         }

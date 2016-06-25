@@ -13,10 +13,10 @@ namespace ChampionMains.Pyrobot.Areas.AdminPanel.Controllers
     [AdminAuthorize]
     public class SubscriptionsController : ApiController
     {
-        private readonly IRedditService _reddit;
-        private readonly ISubRedditService _subReddits;
+        private readonly RedditService _reddit;
+        private readonly SubRedditService _subReddits;
 
-        public SubscriptionsController(ISubRedditService subReddits, IRedditService reddit)
+        public SubscriptionsController(SubRedditService subReddits, RedditService reddit)
         {
             _subReddits = subReddits;
             _reddit = reddit;

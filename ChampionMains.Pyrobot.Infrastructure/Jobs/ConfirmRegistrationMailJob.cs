@@ -12,11 +12,10 @@ namespace ChampionMains.Pyrobot.Jobs
         private const string Subject = "Summoner registration successful";
 
         private readonly ApplicationConfiguration _config;
-        private readonly IRedditMessengerService _mailService;
-        private readonly IUserService _userService;
+        private readonly RedditService _mailService;
+        private readonly UserService _userService;
 
-        public ConfirmRegistrationMailJob(ApplicationConfiguration config, IRedditMessengerService mailService,
-            IUserService userService)
+        public ConfirmRegistrationMailJob(ApplicationConfiguration config, RedditService mailService, UserService userService)
         {
             _config = config;
             _mailService = mailService;
