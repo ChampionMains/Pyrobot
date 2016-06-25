@@ -157,3 +157,32 @@ h2 {
 .modal.pop-in.in {
     .transform(scale(1));
 }
+
+.spinning {
+    animation: spin 1s infinite linear;
+    -moz-animation: spin2 1s infinite linear;
+    -webkit-animation: spin3 1s infinite linear;
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg); }
+    to { transform: scale(1) rotate(360deg); }
+}
+@-moz-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+@-webkit-keyframes spin3 {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+
+.fade {
+    opacity: 1;
+    transition: opacity 300ms ease-in-out;
+    -moz-transition: opacity 300ms ease-in-out;
+    -webkit-transition: opacity 300ms ease-in-out;
+}
+.fade-out {
+    opacity: 0; 
+}

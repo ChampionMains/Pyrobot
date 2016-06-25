@@ -17,6 +17,8 @@ namespace ChampionMains.Pyrobot
     {
         public static void Register(ContainerBuilder builder)
         {
+            var s = ConfigurationManager.AppSettings;
+
             // MVC controllers
             builder.RegisterControllers(typeof (MvcApplication).Assembly);
 
@@ -41,50 +43,45 @@ namespace ChampionMains.Pyrobot
 
             builder.Register(context => new ApplicationConfiguration
             {
-                FlairBotVersion = ConfigurationManager.AppSettings["bot.version"],
-                LeagueDataStaleTime = TimeSpan.Parse(ConfigurationManager.AppSettings["website.leagueUpdateStaleTime"])
+                FlairBotVersion = s["bot.version"],
+                LeagueDataStaleTime = TimeSpan.Parse(s["website.leagueUpdateStaleTime"])
             }).SingleInstance();
 
             // Services
-            builder.RegisterType(typeof (RoleService)).As(typeof (RoleService)).SingleInstance();
-            builder.RegisterType(typeof (UserService)).As(typeof (UserService)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof (SummonerService)).As(typeof (SummonerService)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof (SubRedditService)).As(typeof (SubRedditService)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof (RedditService)).As(typeof (RedditService)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof (FlairService)).As(typeof (FlairService)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof (ValidationService)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof (LeagueUpdateService)).As(typeof (LeagueUpdateService)).InstancePerLifetimeScope();
+            builder.RegisterType(typeof(RoleService)).SingleInstance();
+            builder.RegisterType(typeof(UserService)).InstancePerLifetimeScope();
+            builder.RegisterType(typeof(SummonerService)).InstancePerLifetimeScope();
+            builder.RegisterType(typeof(SubRedditService)).InstancePerLifetimeScope();
+            builder.RegisterType(typeof(RedditService)).InstancePerLifetimeScope();
+            builder.RegisterType(typeof(FlairService)).InstancePerLifetimeScope();
+            builder.RegisterType(typeof(ValidationService)).InstancePerLifetimeScope();
+            builder.RegisterType(typeof(LeagueUpdateService)).InstancePerLifetimeScope();
             builder.Register(context => new RiotService
             {
                 WebRequester = new RiotWebRequester
                 {
-                    ApiKey = ConfigurationManager.AppSettings["riot.apiKey"],
-                    MaxAttempts = int.Parse(ConfigurationManager.AppSettings["riot.maxAttempts"]),
-                    MaxRequestsPer10Seconds = int.Parse(ConfigurationManager.AppSettings["riot.maxRequestsPer10Seconds"]),
-                    RetryInterval = TimeSpan.Parse(ConfigurationManager.AppSettings["riot.retryInterval"])
+                    ApiKey = s["riot.apiKey"],
+                    MaxAttempts = int.Parse(s["riot.maxAttempts"]),
+                    MaxRequestsPer10Seconds = int.Parse(s["riot.maxRequestsPer10Seconds"]),
+                    RetryInterval = TimeSpan.Parse(s["riot.retryInterval"])
                 }
-            }).As(typeof (RiotService)).SingleInstance();
-
-            // Reddit WebRequester
-            builder.Register(context =>
-            {
-                var s = ConfigurationManager.AppSettings;
-                return new RedditWebRequester(s["reddit.script.clientId"], 
+            }).SingleInstance();
+            builder.Register(context => new WebJobService(s["AzureWebJobsStorage"]));
+            builder.Register(context => new RedditWebRequester(s["reddit.script.clientId"], 
                     s["reddit.script.clientSecret"],
                     s["reddit.modUserName"], 
-                    s["reddit.modPassword"]);
-            }).SingleInstance();
+                    s["reddit.modPassword"])).SingleInstance();
 
-            // Jobs
-            builder.RegisterType(typeof (LeagueUpdateJob)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof (BulkFlairUpdateJob)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof (FlairUpdateJob)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof (BulkLeagueUpdateJob)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof (ConfirmRegistrationMailJob)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof (ConfirmFlairUpdatedMailJob)).InstancePerLifetimeScope();
+            //// Jobs
+            //builder.RegisterType(typeof (LeagueUpdateJob)).InstancePerLifetimeScope();
+            //builder.RegisterType(typeof (BulkFlairUpdateJob)).InstancePerLifetimeScope();
+            //builder.RegisterType(typeof (FlairUpdateJob)).InstancePerLifetimeScope();
+            //builder.RegisterType(typeof (BulkLeagueUpdateJob)).InstancePerLifetimeScope();
+            //builder.RegisterType(typeof (ConfirmRegistrationMailJob)).InstancePerLifetimeScope();
+            //builder.RegisterType(typeof (ConfirmFlairUpdatedMailJob)).InstancePerLifetimeScope();
 
             // Data persistance
-            builder.RegisterType(typeof (UnitOfWork)).As(typeof (UnitOfWork)).InstancePerLifetimeScope();
+            builder.RegisterType(typeof(UnitOfWork)).InstancePerLifetimeScope();
 
             Configure(builder.Build());
         }

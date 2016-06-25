@@ -9,7 +9,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th style="width: 50px">&nbsp;</th>
+                <th style="width: 50px"><span ng-class="{ 'fade-out': !summoners.loading }" class="fa fa-refresh spinning fade"></span></th>
                 <th style="width: 100px">Region</th>
                 <th style="width: 192px">Summoner Name</th>
                 <th style="width: 121px">League</th>
@@ -42,11 +42,8 @@
             </tr>
         </tbody>
         <tfoot>
-            <tr ng-show="summoners.items.length == 0">
+            <tr ng-show="!summoners.loading && summoners.items.length == 0">
                 <td colspan="5">No summoners linked.</td>
-            </tr>
-            <tr ng-show="summoners.loading">
-                <td colspan="5">Loading summoners...</td>
             </tr>
         </tfoot>
     </table>

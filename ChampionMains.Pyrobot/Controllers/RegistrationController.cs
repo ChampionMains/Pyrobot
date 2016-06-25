@@ -5,11 +5,14 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Security;
+using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Data.Models;
 using ChampionMains.Pyrobot.Jobs;
 using ChampionMains.Pyrobot.Models;
 using ChampionMains.Pyrobot.Services;
 using ChampionMains.Pyrobot.Services.Riot;
+using Microsoft.WindowsAzure.Storage.Queue;
+using Newtonsoft.Json;
 
 namespace ChampionMains.Pyrobot.Controllers
 {
@@ -23,14 +26,16 @@ namespace ChampionMains.Pyrobot.Controllers
         protected SummonerService Summoners { get; set; }
         protected UserService Users { get; set; }
         protected ValidationService Validation { get; set; }
+        protected WebJobService WebJob { get; set; }
 
         public RegistrationController(RiotService riotService, SummonerService summonerService,
-                UserService userService, ValidationService validationService)
+                UserService userService, ValidationService validationService, WebJobService webJobService)
         {
             Riot = riotService;
             Summoners = summonerService;
             Users = userService;
             Validation = validationService;
+            WebJob = webJobService;
         }
 
         [HttpPost, Route("profile/api/register")]
@@ -118,7 +123,10 @@ namespace ChampionMains.Pyrobot.Controllers
 
                 //// Queue up the league update.
                 //var jobId = BackgroundJob.Enqueue<LeagueUpdateJob>(job => job.Execute(currentSummoner.Id));
-                
+                var queueMessage = new CloudQueueMessage(currentSummoner.Id.ToString());
+                var queue = await WebJob.GetCreateQueueClient(WebJobQueue.SummonerUpdate);
+                await queue.AddMessageAsync(queueMessage);
+
                 //// Queue up flair update.
                 //jobId = BackgroundJob.ContinueWith<FlairUpdateJob>(jobId, job => job.Execute(user.Id));
 

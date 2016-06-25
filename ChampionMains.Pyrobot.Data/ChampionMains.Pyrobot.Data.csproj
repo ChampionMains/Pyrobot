@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Consts.cs" />
+    <Compile Include="Enums\WebJobQueue.cs" />
     <Compile Include="Migrations\201606250720507_initial.cs" />
     <Compile Include="Migrations\201606250720507_initial.Designer.cs">
       <DependentUpon>201606250720507_initial.cs</DependentUpon>
@@ -92,7 +93,6 @@
     <Compile Include="Enums\Tiers.cs" />
     <Compile Include="UnitOfWork.cs" />
     <Compile Include="Models\User.cs" />
-    <Compile Include="WebJobModels\SummonerUpdate.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -102,6 +102,9 @@
     <EmbeddedResource Include="Migrations\201606250720507_initial.resx">
       <DependentUpon>201606250720507_initial.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="WebJobModels\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

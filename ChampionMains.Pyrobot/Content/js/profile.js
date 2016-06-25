@@ -1,5 +1,5 @@
 ﻿(function(app) {
-    app.factory('summoners', function(ajax) {
+    app.factory('summoners', function ($q, $timeout, ajax) {
         return {
             items: [],
 
@@ -21,11 +21,13 @@
                 }
             },
 
-            update: function() {
+            updatePromise: null,
+
+            poll: function () {
                 var $this = this;
+                $timeout.cancel($this.updatePromise);
                 $this.loading = true;
-                $this.items = [];
-                ajax.get('/profile/api/summoners', function(ok, data) {
+                ajax.get('/profile/api/summoners', function (ok, data) {
                     $this.loading = false;
                     if (!ok) {
                         $this.status = { error: 'Error loading summoners' };
@@ -33,13 +35,16 @@
                     }
                     $this.items = data.result;
                 });
+                $this.udatePromise = $timeout(function() {
+                        $this.poll();
+                    }, 6000);
             }
         };
     });
 
-    app.controller('MainController', function($scope, ajax, modal, summoners) {
+    app.controller('MainController', function($scope, $timeout, ajax, modal, summoners) {
         $scope.summoners = summoners;
-        summoners.update();
+        $scope.summoners.poll();
 
         var modalDelete = modal('#modal-confirm-delete');
         var modalRegister = modal('#modal-register');
@@ -50,7 +55,7 @@
                 summonerName: summoner.summonerName
             };
             ajax.post('/profile/api/activate', data, function(success, data) {
-                summoners.update();
+                $scope.summoner.poll();
             });
         };
 
@@ -120,7 +125,7 @@
                 }
 
                 dialog.hide();
-                $scope.summoners.update();
+                $scope.summoners.poll();
             });
         }
 
