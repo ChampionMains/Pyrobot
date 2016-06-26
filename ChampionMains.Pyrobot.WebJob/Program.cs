@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,26 +25,11 @@ namespace ChampionMains.Pyrobot.WebJob
         // AzureWebJobsDashboard and AzureWebJobsStorage
         static void Main()
         {
+            // do database migrations
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<UnitOfWork, Data.Migrations.Configuration>());
+
+            // dependency injection
             var builder = new ContainerBuilder();
-            //// MVC controllers
-            //builder.RegisterControllers(typeof(MvcApplication).Assembly);
-
-            //// Web API
-            //builder.RegisterApiControllers(typeof(MvcApplication).Assembly);
-            //builder.RegisterWebApiFilterProvider(GlobalConfiguration.Configuration);
-
-            //// DI model binders
-            //builder.RegisterModelBinders(typeof(MvcApplication).Assembly);
-            //builder.RegisterModelBinderProvider();
-
-            //// Web abstractions
-            //builder.RegisterModule<AutofacWebTypesModule>();
-
-            //// Property injection in view pages
-            //builder.RegisterSource(new ViewRegistrationSource());
-
-            //// Property injection in action filters
-            //builder.RegisterFilterProvider();
 
             // Config
             var s = ConfigurationManager.AppSettings;

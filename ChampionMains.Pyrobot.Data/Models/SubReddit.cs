@@ -13,6 +13,15 @@ namespace ChampionMains.Pyrobot.Data.Models
         [Required]
         [MaxLength(21)]
         public string Name { get; set; }
+
+        [Required]
+        public bool AdminOnly { get; set; }
+
+        [Required]
+        public bool RankEnabled { get; set; }
+
+        [Required]
+        public bool ChampionMasteryEnabled { get; set; }
         
         [ForeignKey("Champion")]
         public short? ChampionId { get; set; }

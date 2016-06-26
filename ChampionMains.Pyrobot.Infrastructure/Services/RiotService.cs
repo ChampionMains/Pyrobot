@@ -25,11 +25,11 @@ namespace ChampionMains.Pyrobot.Services
             return results?.Count > 0 ? results.First().Value : null;
         }
 
-        public async Task<Tuple<Tiers, byte>> GetLeaguesAsync(string region, long summonerId)
+        public async Task<Tuple<Tier, byte>> GetLeaguesAsync(string region, long summonerId)
         {
             var uri = LeagueBaseUri + "by-summoner/" + summonerId + "/entry";
             var json = await WebRequester.SendRequestAsync(region, uri);
-            if (json == null) return Tuple.Create(Tiers.Unranked, (byte)0);
+            if (json == null) return Tuple.Create(Tier.Unranked, (byte)0);
 
             var results = JsonConvert.DeserializeObject<IDictionary<string, ICollection<League>>>(json);
             ICollection<League> result;
@@ -37,11 +37,11 @@ namespace ChampionMains.Pyrobot.Services
 
             var solo = leagues?.FirstOrDefault(league => league.Queue == QueueType.RANKED_SOLO_5x5);
 
-            if (solo == null) return Tuple.Create(Tiers.Unranked, (byte) 0);
+            if (solo == null) return Tuple.Create(Tier.Unranked, (byte) 0);
 
             var entry = solo.Entries.First(e => e.PlayerOrTeamId == summonerId.ToString());
             var division = (byte) entry.Division;
-            var tier = (Tiers) Enum.Parse(typeof(Tiers), solo.Tier.ToString(), true);
+            var tier = (Tier) Enum.Parse(typeof(Tier), solo.Tier.ToString(), true);
             return Tuple.Create(tier, division);
         }
 

@@ -16,9 +16,9 @@ namespace ChampionMains.Pyrobot
         {
             if (rank == null) return "";
             if (rank.UpdatedTime.HasValue == false) return "";
-            if (!Enum.IsDefined(typeof(Tiers), rank.Tier)) return "";
-            var tier = (Tiers) rank.Tier;
-            if (tier == Tiers.Unranked) return tier.ToString();
+            if (!Enum.IsDefined(typeof(Tier), rank.Tier)) return "";
+            var tier = (Tier) rank.Tier;
+            if (tier == Tier.Unranked) return tier.ToString();
             var division = DivisionNames.ElementAtOrDefault(rank.Division - 1);
             if (division == null) return "";
             return tier + " " + division;

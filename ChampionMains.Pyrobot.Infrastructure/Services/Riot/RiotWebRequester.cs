@@ -5,14 +5,15 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using ChampionMains.Pyrobot.Data.Enums;
 
 namespace ChampionMains.Pyrobot.Services.Riot
 {
     public class RiotWebRequester
     {
-        private static readonly string[] Regions = { "BR", "EUNE", "EUW", "JP", "KR", "LAN", "LAS", "NA", "OCE", "RU", "TR" };
+        private static readonly IEnumerable<string> Regions = RegionUtils.GetRegionStrings();
         private static readonly Dictionary<string, string> RegionPlatforms = Regions.Zip(
-            new string[] { "BR1", "EUN1", "EUW1", "JP1", "KR", "LA1", "LA2", "NA1", "OC1", "RU", "TR1" }, 
+            new[] { "BR1", "EUN1", "EUW1", "JP1", "KR", "LA1", "LA2", "NA1", "OC1", "RU", "TR1" }, 
             (k, v) => new { k, v }).ToDictionary(x => x.k, x => x.v, StringComparer.OrdinalIgnoreCase);
 
         private static readonly TimeSpan RatePeriodDuration = TimeSpan.FromSeconds(10);

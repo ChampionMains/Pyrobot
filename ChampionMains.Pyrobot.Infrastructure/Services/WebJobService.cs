@@ -34,5 +34,12 @@ namespace ChampionMains.Pyrobot.Services
             var queue = await GetCreateQueueClient(WebJobQueue.SummonerUpdate);
             await queue.AddMessageAsync(queueMessage);
         }
+
+        public async Task QueueFlairUpdate(int userId)
+        {
+            var queueMessage = new CloudQueueMessage(userId.ToString());
+            var queue = await GetCreateQueueClient(WebJobQueue.FlairUpdate);
+            await queue.AddMessageAsync(queueMessage);
+        }
     }
 }

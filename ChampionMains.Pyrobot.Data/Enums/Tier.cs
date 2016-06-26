@@ -1,6 +1,6 @@
 ﻿namespace ChampionMains.Pyrobot.Data.Enums
 {
-    public enum Tiers : byte
+    public enum Tier : byte
     {
         Unranked,
         Bronze,

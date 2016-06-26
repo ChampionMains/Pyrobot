@@ -1,16 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using ChampionMains.Pyrobot.Data.Enums;
 
 namespace ChampionMains.Pyrobot.Models
 {
     public class SummonerModel
     {
-        public static readonly string[] AllRegions =
-        {
-            "BR", "EUNE", "EUW", "JP", "KR", "LAN", "LAS", "NA", "OCE",
-            "RU", "TR", 
-        };
+        public static readonly IEnumerable<string> AllRegions = RegionUtils.GetRegionStrings();
 
         public class RegionValidationAttribute : ValidationAttribute
         {

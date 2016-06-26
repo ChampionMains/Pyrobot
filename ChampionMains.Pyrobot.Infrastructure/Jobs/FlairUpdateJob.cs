@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
+using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Services;
+using Microsoft.Azure.WebJobs;
 
 namespace ChampionMains.Pyrobot.Jobs
 {
@@ -14,12 +16,7 @@ namespace ChampionMains.Pyrobot.Jobs
             _users = users;
         }
 
-        public void Execute(int userId)
-        {
-            ExecuteInternal(userId).Wait();
-        }
-
-        private async Task ExecuteInternal(int userId)
+        public async Task Execute([QueueTrigger(WebJobQueue.FlairUpdate)] int userId)
         {
             var user = await _users.FindAsync(userId);
             await _flairs.SetUpdateFlagAsync(new[] {user});

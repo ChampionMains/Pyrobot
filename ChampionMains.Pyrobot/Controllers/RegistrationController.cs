@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web.Http;
 using ChampionMains.Pyrobot.Data.Models;
+using ChampionMains.Pyrobot.Jobs;
 using ChampionMains.Pyrobot.Models;
 using ChampionMains.Pyrobot.Services;
 using ChampionMains.Pyrobot.Services.Riot;
@@ -108,7 +109,8 @@ namespace ChampionMains.Pyrobot.Controllers
                 // Queue up the league update.
                 await WebJob.QueueSummonerUpdate(currentSummoner.Id);
 
-                //// Queue up flair update.
+                // Queue up flair update.
+                await WebJob.QueueFlairUpdate(user.Id);
                 //jobId = BackgroundJob.ContinueWith<FlairUpdateJob>(jobId, job => job.Execute(user.Id));
 
                 // Queue up confirmation mail.

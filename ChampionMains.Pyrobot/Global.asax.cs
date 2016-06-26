@@ -50,6 +50,7 @@ namespace ChampionMains.Pyrobot
 
         protected void Application_Start()
         {
+            // do database migrations
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<UnitOfWork, Data.Migrations.Configuration>());
 
             GlobalConfiguration.Configure(WebApiConfig.Register);

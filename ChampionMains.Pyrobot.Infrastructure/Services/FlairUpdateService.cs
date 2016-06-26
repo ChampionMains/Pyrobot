@@ -19,7 +19,6 @@ namespace ChampionMains.Pyrobot.Services
 
         public async Task<ICollection<User>> GetUsersForUpdateAsync(int max)
         {
-            var results = new List<User>();
             var query = from user in _context.Users
                         where user.FlairUpdateRequiredTime.HasValue
                               || !user.FlairUpdatedTime.HasValue
