@@ -23,5 +23,7 @@ namespace ChampionMains.Pyrobot.Data.Models
         public string Name { get; set; }
         
         public virtual ICollection<Summoner> Summoners { get; set; } 
+
+        public virtual ICollection<SubRedditUser> SubRedditUsers { get; set; }
     }
 }

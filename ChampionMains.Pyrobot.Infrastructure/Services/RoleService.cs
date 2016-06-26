@@ -10,10 +10,9 @@ namespace ChampionMains.Pyrobot.Services
     {
         private readonly ICollection<string> _admins; 
 
-        public RoleService()
+        public RoleService(ICollection<string> admins)
         {
-            _admins = ConfigurationManager
-                .AppSettings["security.admins"].Split(',').Select(x => x.Trim()).ToList();
+            _admins = admins;
         }
 
         public Task<bool> IsAdminAsync(string name)

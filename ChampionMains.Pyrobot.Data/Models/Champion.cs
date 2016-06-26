@@ -15,5 +15,10 @@ namespace ChampionMains.Pyrobot.Data.Models
         [StringLength(21)]
         [Required]
         public string Name { get; set; }
+
+        [Index(IsUnique = true)]
+        [StringLength(21)]
+        [Required]
+        public string Identifier { get; set; }
     }
 }

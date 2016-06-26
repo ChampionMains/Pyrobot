@@ -9,7 +9,7 @@ using ChampionMains.Pyrobot.Services;
 
 namespace ChampionMains.Pyrobot.Controllers
 {
-    [Authorize]
+    [WebApiAuthorize]
     public class ProfileApiController : ApiController
     {
         private readonly FlairService _flair;
@@ -27,7 +27,7 @@ namespace ChampionMains.Pyrobot.Controllers
 
         [HttpPost]
         [ValidateModel]
-        [Route("profile/api/delete")]
+        [Route("profile/api/summoner/delete")]
         public async Task<IHttpActionResult> DeleteSummoner(SummonerModel model)
         {
             var user = await _users.GetUserAsync();
@@ -52,7 +52,7 @@ namespace ChampionMains.Pyrobot.Controllers
 
         [HttpPost]
         [ValidateModel]
-        [Route("profile/api/refresh")]
+        [Route("profile/api/summoner/refresh")]
         public async Task<IHttpActionResult> RefreshSummoner(SummonerModel model)
         {
             var user = await _users.GetUserAsync();
@@ -74,13 +74,16 @@ namespace ChampionMains.Pyrobot.Controllers
             var user = await _users.GetUserAsync();
             return user.Summoners.Select(summoner => new
             {
+                id = summoner.Id,
                 region = summoner.Region.ToUpperInvariant(),
                 summonerName = summoner.Name,
                 rank = RankUtil.Stringify(summoner.Rank),
-                totalPoints = summoner.ChampionMasteries.Select(champ => champ.Points).Aggregate(0, (a, b) => a + b),
-                champions = summoner.ChampionMasteries.Select(champ => new
+                totalPoints = summoner.ChampionMasteries.Select(cm => cm.Points).Sum(),
+                champions = summoner.ChampionMasteries.ToDictionary(cm => cm.ChampionId, champ => new
                 {
+                    name = champ.Champion.Name,
                     id = champ.ChampionId,
+                    identifier = champ.Champion.Identifier,
                     points = champ.Points,
                     level = champ.Level
                 })

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Configuration;
+using System.Linq;
 using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Mvc;
 using Autofac.Integration.WebApi;
 using ChampionMains.Pyrobot.Data;
-using ChampionMains.Pyrobot.Jobs;
 using ChampionMains.Pyrobot.Services;
 using ChampionMains.Pyrobot.Services.Reddit;
 using ChampionMains.Pyrobot.Services.Riot;
@@ -48,14 +48,16 @@ namespace ChampionMains.Pyrobot
             }).SingleInstance();
 
             // Services
-            builder.RegisterType(typeof(RoleService)).SingleInstance();
             builder.RegisterType(typeof(UserService)).InstancePerLifetimeScope();
             builder.RegisterType(typeof(SummonerService)).InstancePerLifetimeScope();
             builder.RegisterType(typeof(SubRedditService)).InstancePerLifetimeScope();
             builder.RegisterType(typeof(RedditService)).InstancePerLifetimeScope();
             builder.RegisterType(typeof(FlairService)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof(ValidationService)).InstancePerLifetimeScope();
+            builder.RegisterType(typeof(ValidationService)).SingleInstance();
             builder.RegisterType(typeof(LeagueUpdateService)).InstancePerLifetimeScope();
+            builder.Register(context => new RoleService(
+                    ConfigurationManager.AppSettings["security.admins"].Split(',').Select(x => x.Trim()).ToList())
+            ).SingleInstance();
             builder.Register(context => new RiotService
             {
                 WebRequester = new RiotWebRequester

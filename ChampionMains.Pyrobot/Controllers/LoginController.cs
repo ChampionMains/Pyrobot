@@ -1,8 +1,8 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Security;
 using ChampionMains.Pyrobot.Data.Models;
 using ChampionMains.Pyrobot.Services;
 using Microsoft.AspNet.Identity;
@@ -24,8 +24,11 @@ namespace ChampionMains.Pyrobot.Controllers
             return View();
         }
 
-        public ActionResult Index()
+        public ActionResult Index(string subreddit)
         {
+            if (subreddit != null)
+                Response.SetCookie(new HttpCookie("subreddit", subreddit));
+
             if (User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("index", "profile");

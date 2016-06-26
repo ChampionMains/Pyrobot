@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Data.Models;
 using ChampionMains.Pyrobot.Reddit;
 using ChampionMains.Pyrobot.Services;
@@ -90,7 +91,7 @@ namespace ChampionMains.Pyrobot.Jobs
         private async Task<string> GetFlairTextAsync(User user)
         {
             var summoner = await _summoners.GetActiveSummonerAsync(user);
-            return summoner == null ? "" : RankUtil.Stringify(summoner.Rank);
+            return summoner == null ? "" : "rank-" + ((Tier) summoner.Rank.Tier);
         }
     }
 }

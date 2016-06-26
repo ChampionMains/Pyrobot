@@ -21,7 +21,7 @@ namespace ChampionMains.Pyrobot.Services
         {
             var uri = SummonerBaseUri + "by-name/" + Uri.EscapeDataString(summonerName);
             var json = await WebRequester.SendRequestAsync(region, uri);
-            var results = JsonConvert.DeserializeObject<IDictionary<string, Summoner>>(json);
+            var results = json?.ToObject<IDictionary<string, Summoner>>();
             return results?.Count > 0 ? results.First().Value : null;
         }
 
@@ -30,10 +30,8 @@ namespace ChampionMains.Pyrobot.Services
             var uri = LeagueBaseUri + "by-summoner/" + summonerId + "/entry";
             var json = await WebRequester.SendRequestAsync(region, uri);
             if (json == null) return Tuple.Create(Tier.Unranked, (byte)0);
-
-            var results = JsonConvert.DeserializeObject<IDictionary<string, ICollection<League>>>(json);
-            ICollection<League> result;
-            var leagues = results.TryGetValue(summonerId.ToString(), out result) ? result : null;
+            
+            var leagues = json[summonerId.ToString()]?.ToObject<ICollection<League>>();
 
             var solo = leagues?.FirstOrDefault(league => league.Queue == QueueType.RANKED_SOLO_5x5);
 
@@ -50,7 +48,7 @@ namespace ChampionMains.Pyrobot.Services
             var uri = "player/" + summonerId + "/champions";
             var json = await WebRequester.SendRequestAsync(region, uri, innerUri: "championmastery/location", usePlatform: true);
 
-            return JsonConvert.DeserializeObject<ICollection<ChampionMastery>>(json);
+            return json.ToObject<ICollection<ChampionMastery>>();
         }
 
         public async Task<ICollection<RunePage>> GetRunePagesAsync(string region, long summonerId)
@@ -58,8 +56,7 @@ namespace ChampionMains.Pyrobot.Services
             var uri = SummonerBaseUri + summonerId + "/runes";
             var json = await WebRequester.SendRequestAsync(region, uri);
 
-            var result = JsonConvert.DeserializeObject<IDictionary<string, RunePageResponse>>(json);
-            return result[summonerId.ToString()].Pages;
+            return json[summonerId.ToString()]?["pages"]?.ToObject<ICollection<RunePage>>();
         }
     }
 }

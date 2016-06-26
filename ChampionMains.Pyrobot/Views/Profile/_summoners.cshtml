@@ -6,38 +6,70 @@
 
 <table class="table">
     <thead>
+    <tr>
+        <th><span ng-class="{ 'fade-out': !summoners.loading }" class="fa fa-refresh spinning fade"></span></th>
+        <th>Region</th>
+        <th>Summoner</th>
+        <th>Rank</th>
+        <th>Points</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="summoner in summoners.items | filter: { hidden: '!' } | orderBy:'totalPoints':true track by summoner.id">
+        <td>
+            <div class="btn-group" style="display: block">
+                <a class="btn btn-danger btn-xs" href="#" ng-click="deleteSummoner(summoner)"><span class="fa fa-times"></span></a>
+                <a class="btn btn-primary btn-xs" href="#" ng-click="refreshSummoner(summoner)"><span class="fa fa-refresh"></span></a>
+            </div>
+        </td>
+        <td ng-bind="summoner.region"></td>
+        <td ng-bind="summoner.summonerName"></td>
+        <td>
+            <span ng-bind="summoner.rank"></span>
+            <span class="hint" ng-hide="summoner.rank" ng-tooltip="right,This summoner will update shortly.">Updating...</span>
+        </td>
+        <td>
+            <span ng-show="summoner.rank" ng-bind="summoner.totalPoints | number"></span>
+            <span class="hint" ng-hide="summoner.rank" ng-tooltip="right,This summoner will update shortly.">Updating...</span>
+        </td>
+    </tr>
+    </tbody>
+    <tfoot>
+    <tr ng-show="summoners.items.length == 0">
+        <td colspan="5">No summoners linked.</td>
+    </tr>
+    </tfoot>
+</table>
+
+<table class="table">
+    <thead>
         <tr>
-            <th><span ng-class="{ 'fade-out': !summoners.loading }" class="fa fa-refresh spinning fade"></span></th>
-            <th>Region</th>
-            <th>Summoner</th>
-            <th>Rank</th>
+            <th><span ng-class="{ 'fade-out': !subreddits.loading }" class="fa fa-refresh spinning fade"></span></th>
+            <th>Champion</th>
+            <th>Subreddit</th>
             <th>Points</th>
         </tr>
     </thead>
     <tbody>
-        <tr ng-repeat="summoner in summoners.items">
+        <tr ng-repeat="subreddit in subreddits.items | orderBy:subredditSorter:true track by subreddit.id">
             <td>
-                <div class="btn-group">
+                @*<div class="btn-group">
                     <a class="btn btn-danger btn-xs" href="#" ng-click="deleteSummoner(summoner)"><span class="fa fa-times"></span></a>
                     <a class="btn btn-primary btn-xs" href="#" ng-click="refreshSummoner(summoner)"><span class="fa fa-refresh"></span></a>
-                </div>
-            </td>
-            <td ng-bind="summoner.region"></td>
-            <td ng-bind="summoner.summonerName"></td>
-            <td>
-                <span ng-bind="summoner.rank"></span>
-                <span class="hint" ng-hide="summoner.rank" ng-tooltip="right,This summoner will update shortly.">Updating...</span>
+                </div>*@
             </td>
             <td>
-                <span ng-show="summoner.rank" ng-bind="summoner.totalPoints | number"></span>
-                <span class="hint" ng-hide="summoner.rank" ng-tooltip="right,This summoner will update shortly.">Updating...</span>
+                <img class="champion" champ-img="subreddit.champion.identifier"
+                     alt="{{ subreddit.champion.name }}" title="{{ subreddit.champion.name }}"/>
+                <span ng-bind="subreddit.champion.name"></span>
             </td>
+            <td><a href="#" ng-href="http://www.reddit.com/r/{{ subreddit.name }}" target="_blank">/r/<span ng-bind="subreddit.name"></span></a></td>
+            <td ng-bind="summoners.getChampionMastery(subreddit.champion.id).points | number"></td>
         </tr>
     </tbody>
     <tfoot>
-        @*TODO*@
-        <tr ng-show="summoners.items.length == 0">
-            <td colspan="5">No summoners linked.</td>
+        <tr ng-show="subreddits.items.length == 0">
+            <td colspan="5">No subreddits linked.</td>
         </tr>
     </tfoot>
 </table>

@@ -84,8 +84,29 @@
     <Compile Include="Migrations\201606260449096_subreddit-settings.Designer.cs">
       <DependentUpon>201606260449096_subreddit-settings.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201606260820016_subredditusers.cs" />
+    <Compile Include="Migrations\201606260820016_subredditusers.Designer.cs">
+      <DependentUpon>201606260820016_subredditusers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201606260949359_champion-identifier.cs" />
+    <Compile Include="Migrations\201606260949359_champion-identifier.Designer.cs">
+      <DependentUpon>201606260949359_champion-identifier.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201606261019417_champion-identifier-reset.cs" />
+    <Compile Include="Migrations\201606261019417_champion-identifier-reset.Designer.cs">
+      <DependentUpon>201606261019417_champion-identifier-reset.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201606261021231_champion-identifier-index.cs" />
+    <Compile Include="Migrations\201606261021231_champion-identifier-index.Designer.cs">
+      <DependentUpon>201606261021231_champion-identifier-index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201606262055591_subreddit-champion-required.cs" />
+    <Compile Include="Migrations\201606262055591_subreddit-champion-required.Designer.cs">
+      <DependentUpon>201606262055591_subreddit-champion-required.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Champion.cs" />
+    <Compile Include="Models\SubRedditUser.cs" />
     <Compile Include="Models\SummonerChampionMastery.cs" />
     <Compile Include="Models\SummonerRank.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -96,7 +117,9 @@
     <Compile Include="Models\User.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -105,6 +128,21 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201606260449096_subreddit-settings.resx">
       <DependentUpon>201606260449096_subreddit-settings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606260820016_subredditusers.resx">
+      <DependentUpon>201606260820016_subredditusers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606260949359_champion-identifier.resx">
+      <DependentUpon>201606260949359_champion-identifier.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606261019417_champion-identifier-reset.resx">
+      <DependentUpon>201606261019417_champion-identifier-reset.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606261021231_champion-identifier-index.resx">
+      <DependentUpon>201606261021231_champion-identifier-index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606262055591_subreddit-champion-required.resx">
+      <DependentUpon>201606262055591_subreddit-champion-required.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

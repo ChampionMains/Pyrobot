@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data.Enums;
+using Newtonsoft.Json.Linq;
 
 namespace ChampionMains.Pyrobot.Services.Riot
 {
@@ -39,7 +40,7 @@ namespace ChampionMains.Pyrobot.Services.Riot
                 region => new ThrottleState(), StringComparer.OrdinalIgnoreCase);
         }
 
-        public async Task<string> SendRequestAsync(string region, string relativeUri,
+        public async Task<JToken> SendRequestAsync(string region, string relativeUri,
             IEnumerable<KeyValuePair<string, string>> parameters = null, string innerUri="api/lol", bool usePlatform = false)
         {
             var response = await SendRequestInternalAsync(region, innerUri, relativeUri, parameters, usePlatform);
@@ -50,7 +51,7 @@ namespace ChampionMains.Pyrobot.Services.Riot
                 return null;
             }
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadAsStringAsync();
+            return JToken.Parse(await response.Content.ReadAsStringAsync());
         }
 
         private static string GetRequestQueryString(IEnumerable<KeyValuePair<string, string>> pairs)

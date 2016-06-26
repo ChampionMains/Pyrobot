@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ChampionMains.Pyrobot.Data.Models
@@ -23,9 +24,12 @@ namespace ChampionMains.Pyrobot.Data.Models
         [Required]
         public bool ChampionMasteryEnabled { get; set; }
         
+        [Required]
         [ForeignKey("Champion")]
-        public short? ChampionId { get; set; }
+        public short ChampionId { get; set; }
 
         public virtual Champion Champion { get; set; }
+
+        public virtual ICollection<SubRedditUser> SubRedditUsers { get; set; }
     }
 }

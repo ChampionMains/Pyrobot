@@ -3,12 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Http;
 using Autofac;
-using Autofac.Integration.Mvc;
-using Autofac.Integration.WebApi;
 using ChampionMains.Pyrobot.Data;
 using ChampionMains.Pyrobot.Jobs;
 using ChampionMains.Pyrobot.Services;
@@ -41,14 +36,16 @@ namespace ChampionMains.Pyrobot.WebJob
             }).SingleInstance();
 
             // Services
-            builder.RegisterType(typeof(RoleService)).SingleInstance();
-            builder.RegisterType(typeof(UserService)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof(SummonerService)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof(SubRedditService)).InstancePerLifetimeScope();
+            builder.RegisterType(typeof(UserService)).InstancePerDependency();
+            builder.RegisterType(typeof(SummonerService)).InstancePerDependency();
+            builder.RegisterType(typeof(SubRedditService)).InstancePerDependency();
             builder.RegisterType(typeof(RedditService)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof(FlairService)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof(ValidationService)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof(LeagueUpdateService)).InstancePerLifetimeScope();
+            builder.RegisterType(typeof(FlairService)).InstancePerDependency();
+            builder.RegisterType(typeof(ValidationService)).SingleInstance();
+            builder.RegisterType(typeof(LeagueUpdateService)).InstancePerDependency();
+            builder.Register(context => new RoleService(
+                    ConfigurationManager.AppSettings["security.admins"].Split(',').Select(x => x.Trim()).ToList())
+            ).SingleInstance();
             builder.Register(context => new RiotService
             {
                 WebRequester = new RiotWebRequester
@@ -78,7 +75,8 @@ namespace ChampionMains.Pyrobot.WebJob
             builder.RegisterType(typeof(UnitOfWork)).InstancePerDependency();
 
             // Jobs
-            builder.RegisterType(typeof(SummonerUpdateJob)).InstancePerLifetimeScope();
+            builder.RegisterType(typeof(SummonerUpdateJob)).InstancePerDependency();
+            builder.RegisterType(typeof(FlairUpdateJob)).InstancePerDependency();
 
             // Configure JobHost
             var config = new JobHostConfiguration
