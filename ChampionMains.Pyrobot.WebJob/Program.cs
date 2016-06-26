@@ -81,7 +81,7 @@ namespace ChampionMains.Pyrobot.WebJob
                     s["reddit.modPassword"])).SingleInstance();
 
             //// Jobs
-            //builder.RegisterType(typeof(LeagueUpdateJob)).InstancePerLifetimeScope();
+            //builder.RegisterType(typeof(SummonerUpdateJob)).InstancePerLifetimeScope();
             //builder.RegisterType(typeof(BulkFlairUpdateJob)).InstancePerLifetimeScope();
             //builder.RegisterType(typeof(FlairUpdateJob)).InstancePerLifetimeScope();
             //builder.RegisterType(typeof(BulkLeagueUpdateJob)).InstancePerLifetimeScope();
@@ -91,13 +91,18 @@ namespace ChampionMains.Pyrobot.WebJob
             // Data persistance
             builder.RegisterType(typeof(UnitOfWork)).InstancePerDependency();
 
+            // Jobs
+            builder.RegisterType(typeof(SummonerUpdateJob)).InstancePerLifetimeScope();
 
-            builder.RegisterType(typeof(Functions)).InstancePerLifetimeScope();
-
-            // finally
+            // Configure JobHost
             var config = new JobHostConfiguration
             {
-                JobActivator = new JobActivator(builder.Build())
+                JobActivator = new JobActivator(builder.Build()),
+                Queues =
+                {
+                    MaxDequeueCount = int.Parse(s["webjob.maxAttempts"]),
+                    MaxPollingInterval = TimeSpan.Parse(s["webjob.pollingInterval"])
+                }
             };
             var host = new JobHost(config);
             // The following code ensures that the WebJob will be running continuously

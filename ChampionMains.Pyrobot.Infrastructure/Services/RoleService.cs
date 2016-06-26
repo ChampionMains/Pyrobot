@@ -13,7 +13,7 @@ namespace ChampionMains.Pyrobot.Services
         public RoleService()
         {
             _admins = ConfigurationManager
-                .AppSettings["security.admins"].Split(',').ToList();
+                .AppSettings["security.admins"].Split(',').Select(x => x.Trim()).ToList();
         }
 
         public Task<bool> IsAdminAsync(string name)

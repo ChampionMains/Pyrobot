@@ -90,7 +90,7 @@ namespace ChampionMains.Pyrobot.Jobs
         private async Task<string> GetFlairTextAsync(User user)
         {
             var summoner = await _summoners.GetActiveSummonerAsync(user);
-            return summoner == null ? "" : LeagueUtil.Stringify(summoner.SummonerInfo);
+            return summoner == null ? "" : RankUtil.Stringify(summoner.Rank);
         }
     }
 }

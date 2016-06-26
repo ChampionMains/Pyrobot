@@ -10,7 +10,7 @@ using Summoner = ChampionMains.Pyrobot.Data.Models.Summoner;
 
 namespace ChampionMains.Pyrobot.Jobs
 {
-    public class BulkLeagueUpdateJob
+    public class BulkSummonerUpdateJob
     {
         private const int MaxEntriesPerLoop = 25;
         private static readonly TimeSpan NoUpdateWaitInterval = TimeSpan.FromMinutes(5);
@@ -22,7 +22,7 @@ namespace ChampionMains.Pyrobot.Jobs
         private readonly SummonerService _summoners;
         private readonly FlairService _flair;
 
-        public BulkLeagueUpdateJob(RiotService riot, UserService users, LeagueUpdateService leagues, SummonerService summoners, FlairService flair)
+        public BulkSummonerUpdateJob(RiotService riot, UserService users, LeagueUpdateService leagues, SummonerService summoners, FlairService flair)
         {
             _riot = riot;
             _users = users;
@@ -76,31 +76,14 @@ namespace ChampionMains.Pyrobot.Jobs
             if (summoner == null)
                 throw new ArgumentNullException(nameof(summoner));
 
-            if (summoner.SummonerInfo == null)
+            if (summoner.Rank == null)
                 throw new InvalidOperationException("summoner.LeagueInfo is null");
 
-            var leagues = await _riot.GetLeaguesAsync(summoner.Region, summoner.SummonerId);
-            var solo = leagues?.FirstOrDefault(league => league.Queue == QueueType.RANKED_SOLO_5x5);
+            var rank = await _riot.GetLeaguesAsync(summoner.Region, summoner.SummonerId);
 
-            if (solo == null)
-            {
-                summoner.SummonerInfo.Division = 0;
-                summoner.SummonerInfo.Tier = (byte) Tiers.Unranked;
-                summoner.SummonerInfo.UpdatedTime = DateTimeOffset.Now;
-            }
-            else
-            {
-                var entry = solo.Entries.First(e => e.PlayerOrTeamId == summoner.SummonerId.ToString());
-
-                if (entry == null)
-                    throw new InvalidOperationException("Entry not found in league.");
-
-                var division = (byte)entry.Division;
-                var tier = (Tiers)Enum.Parse(typeof(Tiers), solo.Tier.ToString(), true);
-                summoner.SummonerInfo.Division = division;
-                summoner.SummonerInfo.Tier = (byte) tier;
-                summoner.SummonerInfo.UpdatedTime = DateTimeOffset.Now;
-            }
+            summoner.Rank.Tier = (byte) rank.Item1;
+            summoner.Rank.Division = rank.Item2;
+            summoner.Rank.UpdatedTime = DateTimeOffset.Now;
         }
     }
 }

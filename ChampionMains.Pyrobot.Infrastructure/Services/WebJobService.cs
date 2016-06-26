@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using ChampionMains.Pyrobot.Data.Enums;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.RetryPolicies;
@@ -21,11 +22,17 @@ namespace ChampionMains.Pyrobot.Services
 
         public async Task<CloudQueue> GetCreateQueueClient(string containerName)
         {
-
             // Get a reference to the queue.
             var queue = _queueClient.GetQueueReference(containerName);
             await queue.CreateIfNotExistsAsync();
             return queue;
+        }
+        
+        public async Task QueueSummonerUpdate(int id)
+        {
+            var queueMessage = new CloudQueueMessage(id.ToString());
+            var queue = await GetCreateQueueClient(WebJobQueue.SummonerUpdate);
+            await queue.AddMessageAsync(queueMessage);
         }
     }
 }

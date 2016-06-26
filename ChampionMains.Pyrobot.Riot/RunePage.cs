@@ -2,6 +2,12 @@
 
 namespace ChampionMains.Pyrobot.Riot
 {
+    public class RunePageResponse
+    {
+        public long SummonerId { get; set; }
+        public ICollection<RunePage> Pages { get; set; }
+    }
+
     public class RunePage
     {
         public bool Current { get; set; }

@@ -23,8 +23,8 @@ namespace ChampionMains.Pyrobot.Services
         {
             var cutoff = DateTimeOffset.Now - _config.LeagueDataStaleTime;
             var query = from summoner in _context.Summoners
-                        where summoner.SummonerInfo.UpdatedTime.HasValue
-                              && summoner.SummonerInfo.UpdatedTime < cutoff
+                        where summoner.Rank.UpdatedTime.HasValue
+                              && summoner.Rank.UpdatedTime < cutoff
                         select summoner;
             return await query.Take(max).ToListAsync();
         }
@@ -33,7 +33,7 @@ namespace ChampionMains.Pyrobot.Services
         {
             foreach (var s in summoners)
             {
-                s.SummonerInfo.UpdatedTime = DateTimeOffset.Now;
+                s.Rank.UpdatedTime = DateTimeOffset.Now;
             }
             return await _context.SaveChangesAsync() > 0;
         } 

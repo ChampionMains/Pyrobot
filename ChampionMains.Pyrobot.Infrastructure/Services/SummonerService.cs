@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data;
 using ChampionMains.Pyrobot.Data.Models;
+using ChampionMains.Pyrobot.Riot;
 using ChampionMains.Pyrobot.Services;
+using Summoner = ChampionMains.Pyrobot.Data.Models.Summoner;
 
 namespace ChampionMains.Pyrobot.Services
 {
@@ -22,7 +25,7 @@ namespace ChampionMains.Pyrobot.Services
         {
             var summoner = new Summoner
             {
-                SummonerInfo = new SummonerInfo(),
+                Rank = new SummonerRank(),
                 Name = name,
                 Region = region,
                 SummonerId = summonerId,
@@ -75,27 +78,48 @@ namespace ChampionMains.Pyrobot.Services
                     summoner.IsActive = true;
                 }
             }*/
-            UnitOfWork.Leagues.Remove(entity.SummonerInfo);
+            UnitOfWork.Leagues.Remove(entity.Rank);
             UnitOfWork.Summoners.Remove(entity);
             return await UnitOfWork.SaveChangesAsync() > 0;
         }
 
-        public async Task<bool> SetActiveSummonerAsync(Summoner summoner)
+        public void UpdateLeagueAsync(Summoner summoner, byte tier, byte division)
         {
-            //foreach (var s in summoner.User.Summoners)
-            //{
-            //    s.IsActive = false;
-            //}
-            //summoner.IsActive = true;
-            return await UnitOfWork.SaveChangesAsync() > 0;
+            summoner.Rank.Division = division;
+            summoner.Rank.Tier = tier;
+            summoner.Rank.UpdatedTime = DateTimeOffset.Now;
         }
 
-        public async Task<bool> UpdateLeagueAsync(Summoner summoner, byte tier, byte division)
+        public void UpdateChampionMasteriesAsync(ICollection<ChampionMastery> championMasteries, Summoner summoner)
         {
-            summoner.SummonerInfo.Division = division;
-            summoner.SummonerInfo.Tier = tier;
-            summoner.SummonerInfo.UpdatedTime = DateTimeOffset.Now;
-            return await UnitOfWork.SaveChangesAsync() > 0;
-        } 
+            foreach (var updated in championMasteries)
+            {
+                var champMastery = summoner.ChampionMasteries.FirstOrDefault(x => x.ChampionId == updated.ChampionId);
+
+                if (champMastery == null)
+                {
+                    //started playing a new champion
+                    var champion = UnitOfWork.Champions.Find((short)updated.ChampionId);
+                    if (champion == null)
+                        continue; // possibly a new champion has been added, and the database needs updating
+                    
+                    champMastery = new SummonerChampionMastery()
+                    {
+                        Champion = champion
+                    };
+
+                    summoner.ChampionMasteries.Add(champMastery);
+                }
+
+                champMastery.Level = (byte) updated.ChampionLevel;
+                champMastery.Points = updated.ChampionPoints;
+                champMastery.UpdatedTime = DateTimeOffset.Now;
+            }
+        }
+
+        public async Task SaveChanges()
+        {
+            await UnitOfWork.SaveChangesAsync();
+        }
     }
 }

@@ -68,6 +68,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChampionMastery.cs" />
     <Compile Include="DivisionType.cs" />
     <Compile Include="League.cs" />
     <Compile Include="LeagueEntry.cs" />

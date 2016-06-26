@@ -7,7 +7,7 @@ namespace ChampionMains.Pyrobot.Data
 {
     public class UnitOfWork : DbContext
     {
-        public IDbSet<SummonerInfo> Leagues { get; set; }
+        public IDbSet<SummonerRank> Leagues { get; set; }
         public IDbSet<SubReddit> SubReddits { get; set; }
         public IDbSet<Summoner> Summoners { get; set; }
         public IDbSet<User> Users { get; set; }

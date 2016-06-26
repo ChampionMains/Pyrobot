@@ -5,18 +5,21 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
 
 namespace ChampionMains.Pyrobot.Services.Riot
 {
     public class RiotWebRequester
     {
-        private static readonly string[] Regions = {"BR", "EUNE", "EUW", "KR", "LAN", "LAS", "NA", "OCE", "TR", "RU"};
+        private static readonly string[] Regions = { "BR", "EUNE", "EUW", "JP", "KR", "LAN", "LAS", "NA", "OCE", "RU", "TR" };
+        private static readonly Dictionary<string, string> RegionPlatforms = Regions.Zip(
+            new string[] { "BR1", "EUN1", "EUW1", "JP1", "KR", "LA1", "LA2", "NA1", "OC1", "RU", "TR1" }, 
+            (k, v) => new { k, v }).ToDictionary(x => x.k, x => x.v, StringComparer.OrdinalIgnoreCase);
+
         private static readonly TimeSpan RatePeriodDuration = TimeSpan.FromSeconds(10);
 
         private class ThrottleState
         {
-            public SemaphoreSlim Lock = new SemaphoreSlim(1, 1);
+            public readonly SemaphoreSlim Lock = new SemaphoreSlim(1, 1);
             public int NumRequests;
             public DateTime RatePeriodStart = DateTime.MinValue;
         }
@@ -35,10 +38,10 @@ namespace ChampionMains.Pyrobot.Services.Riot
                 region => new ThrottleState(), StringComparer.OrdinalIgnoreCase);
         }
 
-        public async Task<JObject> SendRequestAsync(string region, string relativeUri,
-            IEnumerable<KeyValuePair<string, string>> parameters = null)
+        public async Task<string> SendRequestAsync(string region, string relativeUri,
+            IEnumerable<KeyValuePair<string, string>> parameters = null, string innerUri="api/lol", bool usePlatform = false)
         {
-            var response = await SendRequestInternalAsync(region, relativeUri, parameters);
+            var response = await SendRequestInternalAsync(region, innerUri, relativeUri, parameters, usePlatform);
             // not found is a successful status code, indicating that the request was successful
             // but the entity did not exist (invalid summoner id, etc).
             if (response.StatusCode == HttpStatusCode.NotFound)
@@ -46,18 +49,25 @@ namespace ChampionMains.Pyrobot.Services.Riot
                 return null;
             }
             response.EnsureSuccessStatusCode();
-            return JObject.Parse(await response.Content.ReadAsStringAsync());
+            return await response.Content.ReadAsStringAsync();
         }
 
-        private string GetRequestQueryString(IEnumerable<KeyValuePair<string, string>> pairs)
+        private static string GetRequestQueryString(IEnumerable<KeyValuePair<string, string>> pairs)
         {
             if (pairs == null) return "";
             var query = pairs.Select(pair => $"{Uri.EscapeDataString(pair.Key)}={Uri.EscapeDataString(pair.Value)}");
             return string.Join("&", query);
         }
 
-        private string GetRequestUri(string region, string relativeUri,
-            IEnumerable<KeyValuePair<string, string>> parameters)
+
+        private static string GetRegionPlatform(string region)
+        {
+            string platform;
+            return RegionPlatforms.TryGetValue(region, out platform) ? platform : null;
+        }
+
+        private string GetRequestUri(string region, string innerUri, string relativeUri,
+            IEnumerable<KeyValuePair<string, string>> parameters, bool usePlatform)
         {
             var queryString = GetRequestQueryString(parameters);
 
@@ -67,16 +77,19 @@ namespace ChampionMains.Pyrobot.Services.Riot
             }
 
             queryString += $"api_key={ApiKey}";
-            return string.Format("https://{0}.api.pvp.net/api/lol/{0}/{1}?{2}", region.ToLowerInvariant(),
-                relativeUri, queryString);
+
+            region = region.ToLowerInvariant();
+
+            return
+                $"https://{region}.api.pvp.net/{innerUri}/{(usePlatform ? GetRegionPlatform(region) : region)}/{relativeUri}?{queryString}";
         } 
 
         
 
-        private async Task<HttpResponseMessage> SendRequestInternalAsync(string region, string relativeUri,
-            IEnumerable<KeyValuePair<string, string>> parameters)
+        private async Task<HttpResponseMessage> SendRequestInternalAsync(string region, string innerUri, string relativeUri,
+            IEnumerable<KeyValuePair<string, string>> parameters, bool usePlatform)
         {
-            var requestUri = GetRequestUri(region, relativeUri, parameters);
+            var requestUri = GetRequestUri(region, innerUri, relativeUri, parameters, usePlatform);
             var attempts = MaxAttempts;
             while (attempts-- > 0)
             {
@@ -102,8 +115,7 @@ namespace ChampionMains.Pyrobot.Services.Riot
                         }
                         break;
                 }
-
-                throw new RiotHttpException(response.StatusCode);
+                throw new RiotHttpException(response.StatusCode, requestUri);
             }
             throw new InvalidOperationException();
         }

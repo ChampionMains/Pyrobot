@@ -56,7 +56,7 @@ namespace ChampionMains.Pyrobot.Jobs
 [Author](https://www.reddit.com/message/compose?to=kivinkujata&subject=Ranked+Flairs) |
 [GitHub](https://github.com/jessehallam/RedditRankedFlairs) | {version}";
 
-            return pattern.Replace("{flair}", LeagueUtil.Stringify(summoner.SummonerInfo))
+            return pattern.Replace("{flair}", RankUtil.Stringify(summoner.Rank))
                 .Replace("{version}", _config.FlairBotVersion);
         }
     }

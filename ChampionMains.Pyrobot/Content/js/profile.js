@@ -1,4 +1,4 @@
-﻿(function(app) {
+﻿(function (app) {
     app.factory('summoners', function ($q, $timeout, ajax) {
         return {
             items: [],
@@ -49,15 +49,15 @@
         var modalDelete = modal('#modal-confirm-delete');
         var modalRegister = modal('#modal-register');
 
-        $scope.activateSummoner = function(summoner) {
+        $scope.refreshSummoner = function (summoner) {
             var data = {
                 region: summoner.region,
                 summonerName: summoner.summonerName
             };
-            ajax.post('/profile/api/activate', data, function(success, data) {
-                $scope.summoner.poll();
-            });
-        };
+            ajax.post('/profile/api/refresh', data, function(success, data) {
+                    $scope.summoners.poll();
+                });
+        }
 
         $scope.deleteSummoner = function(summoner) {
             modalDelete.data = {
@@ -82,7 +82,7 @@
                 $scope.busy = false;
                 dialog.hide();
                 if (success) {
-                    $scope.summoners.remove(dialog.data.region, dialog.data.summonerName);
+                    $scope.summoners.remove(data.region, data.summonerName);
                 }
             });
         };

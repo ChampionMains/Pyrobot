@@ -13,22 +13,23 @@ namespace ChampionMains.Pyrobot.Data.Models
         public int Id { get; set; }
 
         [Required]
-        public int MasteryPoints { get; set; }
+        public int Points { get; set; }
 
         [Required]
-        public byte MasteryLevel { get; set; }
+        public byte Level { get; set; }
 
         [ForeignKey("Champion")]
         [Required]
         public short ChampionId { get; set; }
 
-
-        [ForeignKey("SummonerInfo")]
+        [ForeignKey("Summoner")]
         [Required]
-        public int SummonerInfoId { get; set; }
+        public int SummonerId { get; set; }
+
+        public DateTimeOffset? UpdatedTime { get; set; }
 
         public virtual Champion Champion { get; set; }
 
-        public virtual SummonerInfo SummonerInfo{ get; set; }
+        public virtual Summoner Summoner { get; set; }
     }
 }

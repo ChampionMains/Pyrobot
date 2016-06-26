@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ChampionMains.Pyrobot.Data.Models
@@ -27,6 +28,8 @@ namespace ChampionMains.Pyrobot.Data.Models
         [Required]
         public virtual User User { get; set; }
 
-        public virtual SummonerInfo SummonerInfo { get; set; }
+        public virtual SummonerRank Rank { get; set; }
+
+        public virtual ICollection<SummonerChampionMastery> ChampionMasteries { get; set; }
     }
 }

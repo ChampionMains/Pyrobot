@@ -1,54 +1,46 @@
 ﻿@using ChampionMains.Pyrobot.Models
-<div class="row">
-    <button type="button" class="btn btn-primary" ng-click="registerSummoner()">
-        <i class="fa fa-bars"></i> Link Summoner
-    </button>
-</div>
 
-<div class="row">
-    <table class="table">
-        <thead>
-            <tr>
-                <th style="width: 50px"><span ng-class="{ 'fade-out': !summoners.loading }" class="fa fa-refresh spinning fade"></span></th>
-                <th style="width: 100px">Region</th>
-                <th style="width: 192px">Summoner Name</th>
-                <th style="width: 121px">League</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="summoner in summoners.items">
-                <td>
-                    <div class="btn-group">
-                        <a href="#" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                            &hellip; <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#" ng-show="!summoner.active" ng-click="activateSummoner(summoner)">Activate</a></li>
-                            <li><a href="#" ng-click="deleteSummoner(summoner)">Delete</a></li>
-                        </ul>
-                    </div>
-                </td>
-                <td ng-bind="summoner.region"></td>
-                <td ng-bind="summoner.summonerName"></td>
-                <td>
-                    <span ng-bind="summoner.league"></span>
-                    <span class="hint" ng-show="!summoner.league" ng-tooltip="right,This summoner will update shortly.">Updating...</span>
-                </td>
-                <td>
-                    <span class="label label-primary" ng-show="summoner.active" ng-tooltip="top,Flair is updating for this summoner.">Active</span>
-                    <span class="label label-success" ng-tooltip="top,This summoner is verified and flair is being updated.">Verified</span>
-                </td>
-            </tr>
-        </tbody>
-        <tfoot>
+<button type="button" class="btn btn-primary" ng-click="registerSummoner()">
+    <i class="fa fa-bars"></i> Link Summoner
+</button>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th><span ng-class="{ 'fade-out': !summoners.loading }" class="fa fa-refresh spinning fade"></span></th>
+            <th>Region</th>
+            <th>Summoner</th>
+            <th>Rank</th>
+            <th>Points</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="summoner in summoners.items">
+            <td>
+                <div class="btn-group">
+                    <a class="btn btn-danger btn-xs" href="#" ng-click="deleteSummoner(summoner)"><span class="fa fa-times"></span></a>
+                    <a class="btn btn-primary btn-xs" href="#" ng-click="refreshSummoner(summoner)"><span class="fa fa-refresh"></span></a>
+                </div>
+            </td>
+            <td ng-bind="summoner.region"></td>
+            <td ng-bind="summoner.summonerName"></td>
+            <td>
+                <span ng-bind="summoner.rank"></span>
+                <span class="hint" ng-hide="summoner.rank" ng-tooltip="right,This summoner will update shortly.">Updating...</span>
+            </td>
+            <td>
+                <span ng-show="summoner.rank" ng-bind="summoner.totalPoints | number"></span>
+                <span class="hint" ng-hide="summoner.rank" ng-tooltip="right,This summoner will update shortly.">Updating...</span>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
         @*TODO*@
         <tr ng-show="summoners.items.length == 0">
             <td colspan="5">No summoners linked.</td>
         </tr>
-        </tfoot>
-    </table>
-</div>
+    </tfoot>
+</table>
 
 <div class="modal pop-in" id="modal-confirm-delete" ng-controller="DeleteController">
     <div class="modal-dialog">

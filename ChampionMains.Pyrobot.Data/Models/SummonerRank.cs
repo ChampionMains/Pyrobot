@@ -5,8 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ChampionMains.Pyrobot.Data.Models
 {
-    [Table("SummonerInfo")]
-    public class SummonerInfo
+    [Table("SummonerRank")]
+    public class SummonerRank
     {
         [ForeignKey("Summoner")]
         [Required]
@@ -21,7 +21,5 @@ namespace ChampionMains.Pyrobot.Data.Models
         public DateTimeOffset? UpdatedTime { get; set; }
         
         public virtual Summoner Summoner { get; set; }
-
-        public virtual ICollection<SummonerChampionMastery> SummonerChampionMasteries { get; set; }
     }
 }

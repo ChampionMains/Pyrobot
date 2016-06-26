@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
+using ChampionMains.Pyrobot.Attributes;
 using ChampionMains.Pyrobot.Models;
 using ChampionMains.Pyrobot.Services;
 
@@ -14,48 +15,21 @@ namespace ChampionMains.Pyrobot.Controllers
         private readonly FlairService _flair;
         private readonly SummonerService _summoners;
         private readonly UserService _users;
+        private readonly WebJobService _webJob;
 
-        public ProfileApiController(UserService users, SummonerService summoners, FlairService flair)
+        public ProfileApiController(UserService users, SummonerService summoners, FlairService flair, WebJobService webJob)
         {
             _users = users;
             _summoners = summoners;
             _flair = flair;
+            _webJob = webJob;
         }
 
-        [HttpPost, Route("profile/api/activate")]
-        public async Task<IHttpActionResult> ActivateSummoner(SummonerModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var user = await _users.GetUserAsync();
-            var summoner = user.Summoners.FirstOrDefault(DbUtil.CreateComparer(model.Region, model.SummonerName));
-
-            if (summoner == null)
-            {
-                return Conflict("Summoner not found.");
-            }
-
-            if (!await _summoners.SetActiveSummonerAsync(summoner))
-            {
-                return Conflict("Unable to activate summoner.");
-            }
-
-            if (!await _flair.SetUpdateFlagAsync(new[] {user}))
-            {
-                return Conflict("Unable to activate summoner.");
-            }
-            return Ok();
-        }
-
-        [HttpPost, Route("profile/api/delete")]
+        [HttpPost]
+        [ValidateModel]
+        [Route("profile/api/delete")]
         public async Task<IHttpActionResult> DeleteSummoner(SummonerModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             var user = await _users.GetUserAsync();
             var summoner = user.Summoners.FirstOrDefault(DbUtil.CreateComparer(model.Region, model.SummonerName));
 
@@ -76,7 +50,25 @@ namespace ChampionMains.Pyrobot.Controllers
             return Conflict("Unable to remove summoner.");
         }
 
-        [HttpGet, Route("profile/api/summoners")]
+        [HttpPost]
+        [ValidateModel]
+        [Route("profile/api/refresh")]
+        public async Task<IHttpActionResult> RefreshSummoner(SummonerModel model)
+        {
+            var user = await _users.GetUserAsync();
+            var summoner = user.Summoners.FirstOrDefault(DbUtil.CreateComparer(model.Region, model.SummonerName));
+
+            if (summoner == null)
+            {
+                return Conflict("Summoner not found.");
+            }
+
+            await _webJob.QueueSummonerUpdate(summoner.Id);
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("profile/api/summoners")]
         public async Task<IEnumerable<object>> GetSummoners()
         {
             var user = await _users.GetUserAsync();
@@ -84,8 +76,14 @@ namespace ChampionMains.Pyrobot.Controllers
             {
                 region = summoner.Region.ToUpperInvariant(),
                 summonerName = summoner.Name,
-                league = LeagueUtil.Stringify(summoner.SummonerInfo),
-                //active = summoner.IsActive
+                rank = RankUtil.Stringify(summoner.Rank),
+                totalPoints = summoner.ChampionMasteries.Select(champ => champ.Points).Aggregate(0, (a, b) => a + b),
+                champions = summoner.ChampionMasteries.Select(champ => new
+                {
+                    id = champ.ChampionId,
+                    points = champ.Points,
+                    level = champ.Level
+                })
             });
         }
 

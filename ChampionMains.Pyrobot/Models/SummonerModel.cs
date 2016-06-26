@@ -8,8 +8,8 @@ namespace ChampionMains.Pyrobot.Models
     {
         public static readonly string[] AllRegions =
         {
-            "BR", "EUNE", "EUW", "KR", "LAN", "LAS", "NA", "OCE",
-            "TR", "RU"
+            "BR", "EUNE", "EUW", "JP", "KR", "LAN", "LAS", "NA", "OCE",
+            "RU", "TR", 
         };
 
         public class RegionValidationAttribute : ValidationAttribute

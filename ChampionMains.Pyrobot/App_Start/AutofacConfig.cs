@@ -73,7 +73,7 @@ namespace ChampionMains.Pyrobot
                     s["reddit.modPassword"])).SingleInstance();
 
             //// Jobs
-            //builder.RegisterType(typeof (LeagueUpdateJob)).InstancePerLifetimeScope();
+            //builder.RegisterType(typeof (SummonerUpdateJob)).InstancePerLifetimeScope();
             //builder.RegisterType(typeof (BulkFlairUpdateJob)).InstancePerLifetimeScope();
             //builder.RegisterType(typeof (FlairUpdateJob)).InstancePerLifetimeScope();
             //builder.RegisterType(typeof (BulkLeagueUpdateJob)).InstancePerLifetimeScope();

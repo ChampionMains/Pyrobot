@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Net;
 using System.Runtime.Serialization;
+using System.Web;
 
 namespace ChampionMains.Pyrobot.Services.Riot
 {
     [Serializable]
-    public class RiotHttpException : Exception
+    public class RiotHttpException : HttpException
     {
         public HttpStatusCode StatusCode { get; set; }
 
-        public RiotHttpException(HttpStatusCode statusCode)
+        public RiotHttpException(HttpStatusCode statusCode, string message = null) : base((int) statusCode, message)
         {
         }
 

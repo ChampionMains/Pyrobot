@@ -112,20 +112,13 @@ namespace ChampionMains.Pyrobot.Controllers
                 var currentSummoner =
                     await Summoners.AddSummonerAsync(user, riotSummoner.Id, model.Region, riotSummoner.Name);
 
-                // If the user doesn't have an active summoner, assign the new summoner as active.
-                if (await Summoners.GetActiveSummonerAsync(user) == null)
-                    await Summoners.SetActiveSummonerAsync(currentSummoner);
-
                 // Send confirmation mail.
                 //TODO
                 Trace.WriteLine($"user.id={user.Id}, user.name={user.Name}, summoner.Id={currentSummoner.Id}");
                 //BackgroundJob.Enqueue<ConfirmRegistrationMailJob>(job => job.Execute(user.Id, currentSummoner.Id));
 
-                //// Queue up the league update.
-                //var jobId = BackgroundJob.Enqueue<LeagueUpdateJob>(job => job.Execute(currentSummoner.Id));
-                var queueMessage = new CloudQueueMessage(currentSummoner.Id.ToString());
-                var queue = await WebJob.GetCreateQueueClient(WebJobQueue.SummonerUpdate);
-                await queue.AddMessageAsync(queueMessage);
+                // Queue up the league update.
+                await WebJob.QueueSummonerUpdate(currentSummoner.Id);
 
                 //// Queue up flair update.
                 //jobId = BackgroundJob.ContinueWith<FlairUpdateJob>(jobId, job => job.Execute(user.Id));
