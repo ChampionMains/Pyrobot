@@ -2,26 +2,19 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.Security;
-using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Data.Models;
-using ChampionMains.Pyrobot.Jobs;
 using ChampionMains.Pyrobot.Models;
 using ChampionMains.Pyrobot.Services;
 using ChampionMains.Pyrobot.Services.Riot;
-using Microsoft.WindowsAzure.Storage.Queue;
-using Newtonsoft.Json;
 
 namespace ChampionMains.Pyrobot.Controllers
 {
     [Authorize]
     public class RegistrationController : ApiController
     {
-        private static readonly Random Random = new Random();
-        private const string ReasonString = "Registration";
-
         protected RiotService Riot { get; set; }
         protected SummonerService Summoners { get; set; }
         protected UserService Users { get; set; }
@@ -46,19 +39,22 @@ namespace ChampionMains.Pyrobot.Controllers
 
             try
             {
+                var user = await Users.GetUserAsync();
+                if (user == null)
+                    return StatusCode(HttpStatusCode.Unauthorized);
+
                 // Summoner MUST exist.
                 var summoner = await FindSummonerAsync(model.Region, model.SummonerName);
-
                 if (summoner == null)
                     return Conflict("Summoner not found.");
 
                 // Summoner MUST NOT be registered.
                 if (await Summoners.IsSummonerRegistered(model.Region, model.SummonerName))
                     return Conflict("Summoner is already registered.");
-                
+
                 return Ok(new
                 {
-                    code = await Validation.GenerateAsync(User.Identity.Name, summoner.Id, model.Region)
+                    code = await Validation.GenerateAsync(User.Identity.Name, summoner.Id, model.Region, user.Name)
                 });
             }
             catch (RiotHttpException e)
@@ -81,32 +77,24 @@ namespace ChampionMains.Pyrobot.Controllers
 
             try
             {
-                // Summoner MUST exist.
-                var riotSummoner = await Riot.FindSummonerAsync(model.Region, model.SummonerName);
                 var user = await Users.GetUserAsync();
                 if (user == null)
-                {
                     return StatusCode(HttpStatusCode.Unauthorized);
-                }
 
+                // Summoner MUST exist.
+                var riotSummoner = await Riot.FindSummonerAsync(model.Region, model.SummonerName);
                 if (riotSummoner == null)
-                {
                     return Conflict("Summoner not found.");
-                }
 
                 // Summoner MUST NOT be registered.
                 if (await Summoners.IsSummonerRegistered(model.Region, model.SummonerName))
-                {
                     return Conflict("Summoner is already registered.");
-                }
 
                 var runePages = await Riot.GetRunePagesAsync(model.Region, riotSummoner.Id);
-                var code = await Validation.GenerateAsync(User.Identity.Name, riotSummoner.Id, model.Region);
+                var code = await Validation.GenerateAsync(User.Identity.Name, riotSummoner.Id, model.Region, user.Name);
                 
                 if (!runePages.Any(page => string.Equals(page.Name, code, StringComparison.InvariantCultureIgnoreCase)))
-                {
                     return StatusCode(HttpStatusCode.ExpectationFailed);
-                }
 
                 // Create the data entity and associate it with the current user
                 var currentSummoner =

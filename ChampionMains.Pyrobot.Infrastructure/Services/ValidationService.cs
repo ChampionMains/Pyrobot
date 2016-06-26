@@ -6,15 +6,15 @@ namespace ChampionMains.Pyrobot.Services
 {
     public class ValidationService
     {
-        public Task<string> GenerateAsync(string principal, int summonerId, string region)
+        public Task<string> GenerateAsync(string principal, int summonerId, string region, string userName)
         {
-            var nonce = string.Concat(principal, ":", summonerId, ":", region).ToLowerInvariant();
+            var nonce = string.Join(":", principal, summonerId, region, userName).ToLowerInvariant();
             return Task.FromResult(ToHexString(Hash(nonce)));
         }
 
-        public async Task<bool> ValidateAsync(string principal, int summonerId, string region, string code)
+        public async Task<bool> ValidateAsync(string principal, int summonerId, string region, string userName, string code)
         {
-            return string.Equals(code, await GenerateAsync(principal, summonerId, region),
+            return string.Equals(code, await GenerateAsync(principal, summonerId, region, userName),
                 StringComparison.InvariantCultureIgnoreCase);
         }
 
