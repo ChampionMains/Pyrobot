@@ -57,11 +57,10 @@ namespace ChampionMains.Pyrobot.Controllers
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
         public ActionResult Logout()
-        { 
+        {
             HttpContext.GetOwinContext().Authentication.SignOut();
-            return RedirectToAction("index", "profile");
+            return RedirectToAction("index");
         }
 
         private async Task SignInAsync(ClaimsIdentity externalIdentity, User user)

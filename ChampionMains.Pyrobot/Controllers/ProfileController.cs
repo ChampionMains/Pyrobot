@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 using ChampionMains.Pyrobot.Models;
 using ChampionMains.Pyrobot.Services;
@@ -24,6 +25,11 @@ namespace ChampionMains.Pyrobot.Controllers
         public async Task<ActionResult> Index()
         {
             ViewModel = await CreateViewModelAsync();
+            if (ViewModel.User == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut();
+                return RedirectToAction("index", "login");
+            }
             return View(ViewModel);
         }
 
