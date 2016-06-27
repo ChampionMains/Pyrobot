@@ -1,4 +1,5 @@
-﻿h2 {
+﻿
+h2 {
     margin-bottom: 20px;
     margin-top: -20px;
     text-shadow: 2px 2px 0 #000;
@@ -40,4 +41,24 @@
     margin: -5px 0;
     width: 35px;
     height: auto;
+}
+
+/* Spritesheets */
+
+.rank {
+    background-image: url("~/Content/img/~/Content/img/ranks.png");
+    width: 70px;
+    height: 70px;
+
+    $ranks: unranked bronze silver gold platinum diamond master challenger;
+    @each $rank in $ranks {
+        $i: index($ranks, $rank);
+        &.#{$rank} { background-position: 0 (-25px * ($i - 1)); }
+    }
+}
+
+.rank.thumb {
+    width: 35px;
+    height: 35px;
+    background-size: 50%;
 }

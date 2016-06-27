@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using ChampionMains.Pyrobot.Attributes;
+using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Models;
 using ChampionMains.Pyrobot.Services;
 
@@ -78,6 +79,8 @@ namespace ChampionMains.Pyrobot.Controllers
                 region = summoner.Region.ToUpperInvariant(),
                 summonerName = summoner.Name,
                 rank = RankUtil.Stringify(summoner.Rank),
+                tier = ((Tier) summoner.Rank.Tier).ToString().ToLower(),
+                division = summoner.Rank.Division,
                 totalPoints = summoner.ChampionMasteries.Select(cm => cm.Points).Sum(),
                 champions = summoner.ChampionMasteries.ToDictionary(cm => cm.ChampionId, champ => new
                 {

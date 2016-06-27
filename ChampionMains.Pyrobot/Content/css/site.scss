@@ -1,4 +1,4 @@
-﻿.clearfix() {
+﻿%clearfix {
     content: ' ';
     visibility: hidden;
     display: block;
@@ -71,19 +71,19 @@ table.table {
     }
 }
 
-@header-height: 80px;
+$header-height: 80px;
 
 header {
-    height: @header-height;
-    line-height: @header-height;
+    height: $header-height;
+    line-height: $header-height;
     margin-bottom: 40px;
     padding: 20px 0;
 
     h1 {
         font-size: 24px;
         font-weight: 200;
-        height: @header-height;
-        line-height: @header-height;
+        height: $header-height;
+        line-height: $header-height;
         text-shadow: 2px 2px 0 #000;
     }
 
@@ -91,7 +91,7 @@ header {
         float: right;
     }
 
-    nav ul:after {.clearfix;}
+    nav ul:after { @extend %clearfix; }
 
     nav li {
         float: left;
@@ -106,8 +106,8 @@ header {
             display: block;
             font-size: 18px;
             font-weight: 200;
-            height: @header-height;
-            line-height: @header-height;
+            height: $header-height;
+            line-height: $header-height;
             text-shadow: 1px 1px 0 #000;
             text-transform: uppercase;
         }
@@ -129,33 +129,33 @@ h2 {
     margin-bottom: 40px;
 }
 
-.transform(@first) {
-    -webkit-transform: @first;
-    -moz-transform: @first;
-    -ms-transform: @first;
-    transform: @first;
+@mixin transform($first) {
+    -webkit-transform: $first;
+    -moz-transform: $first;
+    -ms-transform: $first;
+    transform: $first;
 }
 
-.transform(@first, @second) {
-    -webkit-transform: @first @second;
-    -moz-transform: @first @second;
-    -ms-transform: @first;
-    transform: @first @second;
-}
+/*@mixin transform($first, $second) {
+    -webkit-transform: $first $second;
+    -moz-transform: $first $second;
+    -ms-transform: $first $second;
+    transform: $first $second;
+}*/
 
-.transition(@rule) {
-    -webkit-transition: @rule;
-    -moz-transform: @rule;
-    transform: @rule;
+@mixin transition($rule) {
+    -webkit-transition: $rule;
+    -moz-transform: $rule;
+    transform: $rule;
 }
 
 .modal.pop-in {
-    .transform(scale(0.7));
-    .transition(all .3s);
+    @include transform(scale(0.7));
+    @include transition(all .3s);
 }
 
 .modal.pop-in.in {
-    .transform(scale(1));
+    @include transform(scale(1));
 }
 
 .spinning {
