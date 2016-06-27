@@ -28,14 +28,11 @@
         <title>@(Page.Title ?? "Reddit Ranked Flairs")</title>
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-        <link rel="stylesheet" href="~/Content/css/bootstrap.css">
+        <link rel="stylesheet" href="~/Content/css/bootswatch.css">
         <link rel="stylesheet" href="~/Content/css/site.scss">
-
+        
         <script src="~/Content/js/jquery.min.js"></script>
-        @if (Page.Angular != null)
-        {
-            <script src="~/Content/js/angular.min.js"></script>
-        }
+        @if (Page.Angular != null) { <script src="~/Content/js/angular.min.js"></script> }
 
         @RenderSection("head", false)
     </head>
@@ -67,9 +64,9 @@
                                 </li>
                                 @if (User.IsInRole("admin") || User.IsInRole("moderator"))
                                 {
-                                    @*<li>
-                                        <a href="/adminPanel">Admin</a>
-                                    </li>*@
+                                        @*<li>
+                                            <a href="/adminPanel">Admin</a>
+                                        </li>*@
                                 }
                             </ul>
                         </nav>

@@ -37,28 +37,86 @@ h2 {
     font-weight: bold;
 }
 
+
+
+table.table thead th {
+    font-weight: bold;
+}
+
+table.table {
+    margin-bottom: 100px;
+
+    thead:first-child > tr:first-child > th {
+        border-top: 0;
+    }
+    thead > tr > th {
+        border-bottom: 2px solid #777;
+        color: #375a7f;
+        line-height: 1.4285;
+        padding: 8px;
+        text-align: left;
+        vertical-align: middle;
+    }
+    tbody > tr > td,
+    tfoot > tr > td {
+        border-top: 1px solid #777;
+        font-size: 14px;
+        padding: 8px;
+        line-height: 1.4285;
+        vertical-align: middle;
+    }
+}
+
 .champion {
     margin: -5px 0;
     width: 35px;
     height: auto;
 }
 
-/* Spritesheets */
-
-.rank {
-    background-image: url("~/Content/img/~/Content/img/ranks.png");
-    width: 70px;
-    height: 70px;
-
-    $ranks: unranked bronze silver gold platinum diamond master challenger;
-    @each $rank in $ranks {
-        $i: index($ranks, $rank);
-        &.#{$rank} { background-position: 0 (-25px * ($i - 1)); }
+.btn-group[data-toggle="buttons"] {
+    $opacity: 0.7;
+    >.btn {
+        color: rgba(#fff, $opacity);
+        span {
+            opacity: $opacity;
+        }
+    }
+    >.btn.active {
+        color: #fff;
+        span {
+            opacity: 1;
+        }
     }
 }
 
-.rank.thumb {
+/* Spritesheets */
+
+$ranks: unranked bronze silver gold platinum diamond master challenger;
+@each $rank in $ranks {
+    $i: index($ranks, $rank);
+    .rank.rank-#{$rank}, .mastery.mastery-#{$i} { background-position: 0 (-100% * ($i - 1)); }
+}
+.rank {
+    background: url("~/Content/img/ranks.png") 999px 0 / 100% repeat-y;
+    width: 70px;
+    height: 70px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.rank.sm {
     width: 35px;
     height: 35px;
-    background-size: 50%;
+    margin: -5px 0;
+}
+.rank.xs, .mastery {
+    width: 25px;
+    height: 25px;
+    margin: -3px 0;
+    vertical-align: top;
+}
+
+.mastery {
+    background: url("~/Content/img/masteries.png") 999px 0 / 100% repeat-y;
+    display: inline-block;
 }

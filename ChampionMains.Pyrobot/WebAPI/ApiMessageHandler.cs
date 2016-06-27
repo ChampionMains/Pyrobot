@@ -4,10 +4,13 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.WebPages.Scope;
 using Newtonsoft.Json;
+using WebApiContrib.Formatting.Jsonp;
 
 namespace ChampionMains.Pyrobot.WebAPI
 {
@@ -70,8 +73,12 @@ namespace ChampionMains.Pyrobot.WebAPI
                 }
             }
 
+
             if (content != null)
+            {
+                string callback;
                 response.Content = new ObjectContent(content.GetType(), content, JsonFormatter);
+            }
             return response;
         }
 

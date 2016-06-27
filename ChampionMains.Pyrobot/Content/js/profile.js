@@ -43,7 +43,8 @@
             getChampionMastery: function(championId) {
                 var points = 0;
                 var level = 0;
-                for(var i = 0; i < this.items.length; i++) {
+                var prestige = 0;
+                for (var i = 0; i < this.items.length; i++) {
                     var summoner = this.items[i];
                     if(summoner.hidden)
                         continue;
@@ -54,11 +55,27 @@
                     points += champ.points;
                     if (champ.level > level)
                         level = champ.level;
+                    if (champ.prestige > prestige)
+                        prestige = champ.prestige;
                 }
                 return {
                     points: points,
-                    level: level
+                    level: level,
+                    prestige: prestige
                 };
+            },
+
+            getTopTier: function() {
+                var tier = 0;
+                var tierString = "";
+                for (var i = 0; i < this.items.length; i++) {
+                    var summoner = this.items[i];
+                    if(summoner.tier <= tier)
+                        continue;
+                    tier = summoner.tier;
+                    tierString = summoner.tierString;
+                }
+                return tierString;
             }
         };
     }).factory('subreddits', function ($q, $timeout, ajax) {
@@ -116,7 +133,10 @@
         $scope.subreddits.update();
 
         $scope.subredditSorter = function(subreddit) {
-            return $scope.summoners.getChampionMastery(subreddit.championId);
+            var points = $scope.summoners.getChampionMastery(subreddit.championId).points;
+            //if (!subreddit.rankEnabled && !subreddit.championMasteryEnabled)
+            //    points -= 2e9;
+            return points;
         };
 
         var modalDelete = modal('#modal-confirm-delete');

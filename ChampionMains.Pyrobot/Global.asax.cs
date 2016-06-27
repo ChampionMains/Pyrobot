@@ -10,6 +10,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Autofac;
 using ChampionMains.Pyrobot.Data;
+using WebApiContrib.Formatting.Jsonp;
 using GlobalConfiguration = System.Web.Http.GlobalConfiguration;
 
 namespace ChampionMains.Pyrobot
@@ -53,6 +54,7 @@ namespace ChampionMains.Pyrobot
             // do database migrations
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<UnitOfWork, Data.Migrations.Configuration>());
 
+            // jsonp MediaTypeFormatter
             GlobalConfiguration.Configure(WebApiConfig.Register);
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);

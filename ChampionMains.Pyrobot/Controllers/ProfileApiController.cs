@@ -79,7 +79,8 @@ namespace ChampionMains.Pyrobot.Controllers
                 region = summoner.Region.ToUpperInvariant(),
                 summonerName = summoner.Name,
                 rank = RankUtil.Stringify(summoner.Rank),
-                tier = ((Tier) summoner.Rank.Tier).ToString().ToLower(),
+                tier = summoner.Rank.Tier,
+                tierString = ((Tier) summoner.Rank.Tier).ToString().ToLower(),
                 division = summoner.Rank.Division,
                 totalPoints = summoner.ChampionMasteries.Select(cm => cm.Points).Sum(),
                 champions = summoner.ChampionMasteries.ToDictionary(cm => cm.ChampionId, champ => new
@@ -88,9 +89,17 @@ namespace ChampionMains.Pyrobot.Controllers
                     id = champ.ChampionId,
                     identifier = champ.Champion.Identifier,
                     points = champ.Points,
-                    level = champ.Level
+                    level = champ.Level,
+                    prestige = RankUtil.GetprestigeLevel(champ.Points)
                 })
             });
+        }
+
+        [HttpGet]
+        [Route("profile/api/prestiges")]
+        public IEnumerable<int> GetPrestiges()
+        {
+            return RankUtil.PrestigeLevels;
         }
 
         private IHttpActionResult Conflict(string message)
