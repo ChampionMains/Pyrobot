@@ -171,46 +171,10 @@ namespace ChampionMains.Pyrobot.Data.Migrations
                 new SubReddit()
                 {
                     ChampionId = cd["Zyra"],
-                    Name = "Umarrii",
-                    AdminOnly = false,
-                    RankEnabled = true,
-                    ChampionMasteryEnabled = true,
-                    BindEnabled = false
-                },
-                new SubReddit()
-                {
-                    ChampionId = cd["Zyra"],
                     Name = "ZyraMains",
                     AdminOnly = false,
                     RankEnabled = true,
                     ChampionMasteryEnabled = true,
-                    BindEnabled = false
-                }, 
-                new SubReddit()
-                {
-                    ChampionId = cd["Nami"],
-                    Name = "NamiMains",
-                    AdminOnly = false,
-                    RankEnabled = false,
-                    ChampionMasteryEnabled = false,
-                    BindEnabled = false
-                },
-                new SubReddit()
-                {
-                    ChampionId = cd["Janna"],
-                    Name = "JannaMains",
-                    AdminOnly = false,
-                    RankEnabled = false,
-                    ChampionMasteryEnabled = false,
-                    BindEnabled = false
-                },
-                new SubReddit()
-                {
-                    ChampionId = cd["Sona"],
-                    Name = "SonaMains",
-                    AdminOnly = false,
-                    RankEnabled = false,
-                    ChampionMasteryEnabled = false,
                     BindEnabled = false
                 },
                 new SubReddit()
@@ -221,6 +185,42 @@ namespace ChampionMains.Pyrobot.Data.Migrations
                     RankEnabled = true,
                     ChampionMasteryEnabled = true,
                     BindEnabled = true
+                },
+                new SubReddit()
+                {
+                    ChampionId = cd["Nami"],
+                    Name = "NamiMains",
+                    AdminOnly = true,
+                    RankEnabled = false,
+                    ChampionMasteryEnabled = false,
+                    BindEnabled = false
+                },
+                new SubReddit()
+                {
+                    ChampionId = cd["Janna"],
+                    Name = "JannaMains",
+                    AdminOnly = true,
+                    RankEnabled = false,
+                    ChampionMasteryEnabled = false,
+                    BindEnabled = false
+                },
+                new SubReddit()
+                {
+                    ChampionId = cd["Sona"],
+                    Name = "SonaMains",
+                    AdminOnly = true,
+                    RankEnabled = false,
+                    ChampionMasteryEnabled = false,
+                    BindEnabled = false
+                },
+                new SubReddit()
+                {
+                    ChampionId = cd["Zyra"],
+                    Name = "Umarrii",
+                    AdminOnly = true,
+                    RankEnabled = true,
+                    ChampionMasteryEnabled = true,
+                    BindEnabled = false
                 });
         }
     }
