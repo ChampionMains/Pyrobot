@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using ChampionMains.Pyrobot.Data.Enums;
@@ -44,10 +45,12 @@ namespace ChampionMains.Pyrobot
         private const string RankPrefix = "rank-";
         private const string MasteryPrefix = "mastery-";
 
-        public static string GenerateFlairCss(User user, int championId, bool rankEnabled, bool masteryEnabled, string oldFlair = "")
+        public static string GenerateFlairCss(User user, int championId, bool rankEnabled, bool masteryEnabled, string oldFlair)
         {
-            var classes = oldFlair.Split()
-                .Where(c => !string.IsNullOrWhiteSpace(c) && !c.StartsWith(RankPrefix) && !c.StartsWith(MasteryPrefix)).ToList();
+            var classes = new List<string>();
+            if (oldFlair != null)
+                classes.AddRange(oldFlair.Split()
+                    .Where(c => !string.IsNullOrWhiteSpace(c) && !c.StartsWith(RankPrefix) && !c.StartsWith(MasteryPrefix)));
 
             if (rankEnabled)
             {

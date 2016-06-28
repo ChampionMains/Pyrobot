@@ -49,7 +49,6 @@
 <table class="table table-pad">
     <thead>
         <tr>
-            @*<th><span ng-class="{ 'fade-out': !subreddits.loading }" class="fa fa-refresh spinning fade"></span></th>*@
             <th style="width: 40%;">Flair</th>
             <th>Subreddit</th>
             <th>Prestige</th>
@@ -58,26 +57,19 @@
     </thead>
     <tbody>
         <tr ng-repeat="subreddit in subreddits.items | orderBy:subredditSorter:true track by subreddit.id">
-            @*<td><a class="btn btn-default btn-xs" href="#" ng-click="refreshSubreddit(summoner)"><span class="fa fa-refresh"></span></a></td>*@
             <td>
-                <form class="flair-toggles input-group input-group-sm">
-                    <span class="input-group-btn" data-toggle="buttons">
+                <form ng-init="flairData = subreddit.flair" ng-submit="updateSubredditFormSubmit(flairData)" class="flair-toggles input-group input-group-sm">
+                    <span class="input-group-btn">
                         <label class="btn btn-default" ng-class="[ 'disabled' ][+subreddit.rankEnabled]">
-                            <input ng-if="subreddit.rankEnabled" type="checkbox" autocomplete="off" />
-                            <span class="off fa fa-fw fa-square"></span>
-                            <span class="on fa fa-fw fa-check-square"></span>
-                            <span class="dis fa fa-fw fa-square-o"></span>
+                            <input ng-model="flairData.rankEnabled" type="checkbox" autocomplete="off" />
                             <span class="rank xs" ng-class="'rank-' + summoners.getTopTier()"></span>
                         </label>
                         <label class="btn btn-default" ng-class="[ 'disabled' ][+subreddit.championMasteryEnabled]">
-                            <input ng-if="subreddit.championMasteryEnabled" type="checkbox" autocomplete="off" />
-                            <span class="off fa fa-fw fa-square"></span>
-                            <span class="on fa fa-fw fa-check-square"></span>
-                            <span class="dis fa fa-fw fa-square-o"></span>
+                            <input ng-model="flairData.championMasteryEnabled" type="checkbox" autocomplete="off" />
                             <span class="mastery" ng-class="'mastery-' + summoners.getChampionMastery(subreddit.champion.id).prestige"></span>
                         </label>
                     </span>
-                    <input type="text" class="form-control" placeholder="flair text" />
+                    <input type="text" ng-model="flairData.flairText" class="form-control" placeholder="flair text" />
                     <span class="input-group-btn"><button class="btn btn-success" type="submit"><span class="fa fa-check"></span></button></span>
                 </form>
             </td>

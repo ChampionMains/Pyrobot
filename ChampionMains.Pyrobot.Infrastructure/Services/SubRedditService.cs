@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,6 +26,37 @@ namespace ChampionMains.Pyrobot.Services
         public async Task<ICollection<SubReddit>> GetAllAsync()
         {
             return await _context.SubReddits.OrderBy(sub => sub.Name).ToListAsync();
+        }
+
+        public async Task<ICollection<SubRedditUser>> GetSubRedditUsers(User user)
+        {
+            return await _context.SubRedditUsers.Where(f => f.User.Id == user.Id).ToListAsync();
+        }
+
+        public async Task<bool> UpdateSubRedditUser(User user, string subRedditName, bool rankEnabled, bool championMasteryEnaabled, string flairText)
+        {
+            var subRedditUser =
+                _context.SubRedditUsers.FirstOrDefault(u => u.UserId == user.Id && u.SubReddit.Name == subRedditName);
+
+            if (subRedditUser == null)
+            {
+                var subReddit = _context.SubReddits.FirstOrDefault(r => r.Name == subRedditName);
+                if (subReddit == null)
+                    return false;
+
+                subRedditUser = new SubRedditUser()
+                {
+                    User = user,
+                    SubReddit = subReddit
+                };
+                _context.SubRedditUsers.Add(subRedditUser);
+            }
+            
+            subRedditUser.RankEnabled = rankEnabled;
+            subRedditUser.ChampionMasteryEnabled = championMasteryEnaabled;
+            subRedditUser.FlairText = flairText;
+
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }

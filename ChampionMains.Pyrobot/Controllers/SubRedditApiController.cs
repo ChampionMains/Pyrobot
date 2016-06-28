@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using ChampionMains.Pyrobot.Attributes;
+using ChampionMains.Pyrobot.Data.WebJob;
 using ChampionMains.Pyrobot.Models;
 using ChampionMains.Pyrobot.Services;
 
@@ -35,30 +37,70 @@ namespace ChampionMains.Pyrobot.Controllers
 
             var subReddits = await _subReddits.GetAllAsync();
 
-            return subReddits.Where(subReddit => !subReddit.AdminOnly || user.IsAdmin).Select(subReddit => new
+            var subRedditUsers = await _subReddits.GetSubRedditUsers(user);
+
+            return subReddits.Where(subReddit => !subReddit.AdminOnly || user.IsAdmin).Select(subReddit =>
             {
-                id = subReddit.Id,
-                name = subReddit.Name,
-                //totalPoints = user.Summoners.Select(s => s.ChampionMasteries.FirstOrDefault(m => m.ChampionId == subReddit.ChampionId)?.Points ?? 0).Sum(),
-                //level = user.Summoners.Select(s => s.ChampionMasteries.FirstOrDefault(m => m.ChampionId == subReddit.ChampionId)?.Level ?? 0).Max(),
-                champion = new
+                FlairViewModel flair = new FlairViewModel()
                 {
-                    name = subReddit.Champion.Name,
-                    identifier = subReddit.Champion.Identifier,
-                    id = subReddit.ChampionId
-                },
-                championMasteryEnabled = subReddit.ChampionMasteryEnabled,
-                rankEnabled = subReddit.RankEnabled,
-                adminOnly = subReddit.AdminOnly
+                    SubReddit = subReddit.Name
+                };
+
+                var subRedditUser = subRedditUsers.FirstOrDefault(f => f.SubReddit == subReddit);
+                if (subRedditUser != null)
+                {
+                    flair.RankEnabled = subRedditUser.RankEnabled;
+                    flair.ChampionMasteryEnabled = subRedditUser.ChampionMasteryEnabled;
+                    flair.FlairText = subRedditUser.FlairText;
+                }
+                else
+                {
+                    flair.RankEnabled = false;
+                    flair.ChampionMasteryEnabled = false;
+                    flair.FlairText = "";
+                }
+
+                return new
+                {
+                    id = subReddit.Id,
+                    name = subReddit.Name,
+                    //totalPoints = user.Summoners.Select(s => s.ChampionMasteries.FirstOrDefault(m => m.ChampionId == subReddit.ChampionId)?.Points ?? 0).Sum(),
+                    //level = user.Summoners.Select(s => s.ChampionMasteries.FirstOrDefault(m => m.ChampionId == subReddit.ChampionId)?.Level ?? 0).Max(),
+                    champion = new
+                    {
+                        name = subReddit.Champion.Name,
+                        identifier = subReddit.Champion.Identifier,
+                        id = subReddit.ChampionId
+                    },
+                    championMasteryEnabled = subReddit.ChampionMasteryEnabled,
+                    rankEnabled = subReddit.RankEnabled,
+                    adminOnly = subReddit.AdminOnly,
+                    flair
+                };
             });
         }
 
         [HttpPost]
-        [Route("profile/api/subreddits/refresh")]
-        public async Task<IHttpActionResult> RefreshSubReddits()
+        [ValidateModel]
+        [Route("profile/api/subreddit/update")]
+        public async Task<IHttpActionResult> UpdateSubReddit(FlairViewModel model)
         {
             var user = await _users.GetUserAsync();
-            await _webJob.QueueFlairUpdate(user.Id);
+
+            await _webJob.QueueFlairUpdate(new FlairUpdateMessage()
+            {
+                UserId = user.Id,
+                SubRedditName = model.SubReddit,
+                RankEnabled = model.RankEnabled,
+                ChampionMasteryEnabled = model.ChampionMasteryEnabled,
+                FlairText = model.FlairText // can be null
+            });
+
+            // if this fails, the queue will already be sent
+            if (!await _subReddits.UpdateSubRedditUser(user, model.SubReddit, model.RankEnabled,
+                model.ChampionMasteryEnabled, model.FlairText))
+                return Conflict("Unabled to find/create SubRedditUser");
+
             return Ok();
         }
 

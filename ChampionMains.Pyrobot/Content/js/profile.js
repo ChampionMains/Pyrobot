@@ -184,6 +184,14 @@
         $scope.registerSummoner = function() {
             modalRegister.show();
         };
+
+        $scope.formData = {};
+        $scope.updateSubredditFormSubmit = function(data) {
+            console.log(data);
+            ajax.post('/profile/api/subreddit/update', data, function(ok, data) {
+                //ok
+            });
+        };
     });
 
     app.controller('DeleteController', function($scope, ajax, modal) {

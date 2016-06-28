@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System.Data.Entity.Validation;
+using System.Linq;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data.Enums;
+using ChampionMains.Pyrobot.Data.WebJob;
 using ChampionMains.Pyrobot.Services;
 using Microsoft.Azure.WebJobs;
 
@@ -23,19 +25,20 @@ namespace ChampionMains.Pyrobot.Jobs
             _subReddits = subReddits;
         }
 
-        public async Task Execute([QueueTrigger(WebJobQueue.FlairUpdate)] int userId)
+        public async Task Execute([QueueTrigger(WebJobQueue.FlairUpdate)] FlairUpdateMessage data)
         {
-            var user = await _users.FindAsync(userId);
+            var user = await _users.FindAsync(data.UserId);
 
-            //TODO: optimize
-            var subReddits = (await _subReddits.GetAllAsync()).Where(s => (s.RankEnabled || s.ChampionMasteryEnabled) && (!s.AdminOnly || user.IsAdmin));
+            var subReddit = (await _subReddits.GetAllAsync()).FirstOrDefault(s => s.Name == data.SubRedditName
+                &&(s.RankEnabled || s.ChampionMasteryEnabled) && (!s.AdminOnly || user.IsAdmin));
 
-            await Task.WhenAll(subReddits.Select(async x =>
-            {
-                var oldFlair = await _reddit.GetFlairAsync(x.Name, user.Name);
-                var classes = RankUtil.GenerateFlairCss(user, x.ChampionId, x.RankEnabled, x.ChampionMasteryEnabled, oldFlair?.CssClass);
-                await _reddit.SetFlairAsync(x.Name, user.Name, oldFlair.Text, classes);
-            }));
+            if (subReddit == null)
+                return;
+
+            var oldFlair = await _reddit.GetFlairAsync(subReddit.Name, user.Name);
+            var classes = RankUtil.GenerateFlairCss(user, subReddit.ChampionId, subReddit.RankEnabled & data.RankEnabled,
+                subReddit.ChampionMasteryEnabled & data.ChampionMasteryEnabled, oldFlair?.CssClass);
+            await _reddit.SetFlairAsync(subReddit.Name, user.Name, data.FlairText ?? oldFlair?.Text, classes);
         }
     }
 }

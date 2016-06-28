@@ -119,6 +119,7 @@
     <Compile Include="Enums\Tier.cs" />
     <Compile Include="UnitOfWork.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="WebJob\FlairUpdateMessage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -126,9 +127,7 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="WebJobModels\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201606260449096_subreddit-settings.resx">
       <DependentUpon>201606260449096_subreddit-settings.cs</DependentUpon>

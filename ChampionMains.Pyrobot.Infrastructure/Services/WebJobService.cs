@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Web.Helpers;
 using ChampionMains.Pyrobot.Data.Enums;
+using ChampionMains.Pyrobot.Data.WebJob;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.RetryPolicies;
@@ -35,9 +37,9 @@ namespace ChampionMains.Pyrobot.Services
             await queue.AddMessageAsync(queueMessage);
         }
 
-        public async Task QueueFlairUpdate(int userId)
+        public async Task QueueFlairUpdate(FlairUpdateMessage data)
         {
-            var queueMessage = new CloudQueueMessage(userId.ToString());
+            var queueMessage = new CloudQueueMessage(Json.Encode(data));
             var queue = await GetCreateQueueClient(WebJobQueue.FlairUpdate);
             await queue.AddMessageAsync(queueMessage);
         }
