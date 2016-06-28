@@ -77,7 +77,7 @@
                 <img class="champion" champ-img="subreddit.champion.identifier"
                      alt="{{ subreddit.champion.name }}" title="{{ subreddit.champion.name }}"/>
                 <a href="#" ng-href="http://www.reddit.com/r/{{ subreddit.name }}" target="_blank">/r/<span ng-bind="subreddit.name"></span></a>
-                <span class="hint" ng-if="subreddit.AdminOnly" ng-tooltip="right,This subreddit is only visible to Flair Bot admins."><span class="fa fa-shield"></span></span>
+                <span class="hint" ng-if="subreddit.adminOnly" ng-tooltip="right,This subreddit is only visible to Flair Bot admins."><span class="fa fa-shield"></span></span>
             </td>
             <td>
                 <!-- TODO: optimize -->
