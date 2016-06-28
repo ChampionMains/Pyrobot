@@ -175,6 +175,7 @@ namespace ChampionMains.Pyrobot.Data.Migrations
                     AdminOnly = false,
                     RankEnabled = true,
                     ChampionMasteryEnabled = true,
+                    BindEnabled = false
                 },
                 new SubReddit()
                 {
@@ -183,6 +184,7 @@ namespace ChampionMains.Pyrobot.Data.Migrations
                     AdminOnly = false,
                     RankEnabled = true,
                     ChampionMasteryEnabled = true,
+                    BindEnabled = false
                 }, 
                 new SubReddit()
                 {
@@ -191,6 +193,7 @@ namespace ChampionMains.Pyrobot.Data.Migrations
                     AdminOnly = false,
                     RankEnabled = false,
                     ChampionMasteryEnabled = false,
+                    BindEnabled = false
                 },
                 new SubReddit()
                 {
@@ -199,6 +202,7 @@ namespace ChampionMains.Pyrobot.Data.Migrations
                     AdminOnly = false,
                     RankEnabled = false,
                     ChampionMasteryEnabled = false,
+                    BindEnabled = false
                 },
                 new SubReddit()
                 {
@@ -207,14 +211,16 @@ namespace ChampionMains.Pyrobot.Data.Migrations
                     AdminOnly = false,
                     RankEnabled = false,
                     ChampionMasteryEnabled = false,
+                    BindEnabled = false
                 },
                 new SubReddit()
                 {
                     ChampionId = cd["Bard"],
                     Name = "BardMains",
                     AdminOnly = false,
-                    RankEnabled = false,
-                    ChampionMasteryEnabled = false,
+                    RankEnabled = true,
+                    ChampionMasteryEnabled = true,
+                    BindEnabled = true
                 });
         }
     }
