@@ -128,7 +128,7 @@
         return {
             scope: { champImg: '=' },
             link: function(scope, element, attrs) {
-                scope.$watch('champImg', function(nVal) {
+                scope.$watch('champImg', function(val) {
                     attrs.$set('src', baseUrl + scope.champImg + '.png');
                 });
             }

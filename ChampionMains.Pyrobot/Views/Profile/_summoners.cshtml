@@ -44,12 +44,12 @@
     </tfoot>
 </table>
 
-<h2><a class="btn btn-default" href="#" ng-click="subreddits.refresh() && subreddits.update()"><span class="fa fa-refresh"></span></a> Subreddit Flair Settings</h2>
+<h2>Subreddit Flair Settings</h2>
 
 <table class="table table-pad">
     <thead>
         <tr>
-            <th><span ng-class="{ 'fade-out': !subreddits.loading }" class="fa fa-refresh spinning fade"></span></th>
+            @*<th><span ng-class="{ 'fade-out': !subreddits.loading }" class="fa fa-refresh spinning fade"></span></th>*@
             <th style="width: 40%;">Flair</th>
             <th>Subreddit</th>
             <th>Prestige</th>
@@ -58,7 +58,7 @@
     </thead>
     <tbody>
         <tr ng-repeat="subreddit in subreddits.items | orderBy:subredditSorter:true track by subreddit.id">
-            <td><a class="btn btn-default btn-xs" href="#" ng-click="refreshSubreddit(summoner)"><span class="fa fa-refresh"></span></a></td>
+            @*<td><a class="btn btn-default btn-xs" href="#" ng-click="refreshSubreddit(summoner)"><span class="fa fa-refresh"></span></a></td>*@
             <td>
                 <form class="flair-toggles input-group input-group-sm">
                     <span class="input-group-btn" data-toggle="buttons">

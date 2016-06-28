@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Cryptography.X509Certificates;
 
 namespace ChampionMains.Pyrobot.Data.Models
 {
@@ -23,6 +24,12 @@ namespace ChampionMains.Pyrobot.Data.Models
 
         [Required]
         public bool ChampionMasteryEnabled { get; set; }
+
+        /// <summary>
+        /// If true, users can only enable both or neither (rank, championmastery)
+        /// </summary>
+        [Required]
+        public bool BindEnabled { get; set; }
         
         [Required]
         [ForeignKey("Champion")]

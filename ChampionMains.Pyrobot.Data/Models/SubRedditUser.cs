@@ -15,6 +15,9 @@ namespace ChampionMains.Pyrobot.Data.Models
 
         [Required]
         public bool ChampionMasteryEnabled { get; set; }
+        
+        [MaxLength(64)]
+        public string FlairText { get; set; }
 
         [Index("IX_SubReddit_User", 1, IsUnique = true)]
         [ForeignKey("SubReddit")]

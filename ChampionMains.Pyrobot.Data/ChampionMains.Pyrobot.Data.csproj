@@ -104,6 +104,10 @@
     <Compile Include="Migrations\201606262055591_subreddit-champion-required.Designer.cs">
       <DependentUpon>201606262055591_subreddit-champion-required.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201606280541163_flairtext-bindenabled.cs" />
+    <Compile Include="Migrations\201606280541163_flairtext-bindenabled.Designer.cs">
+      <DependentUpon>201606280541163_flairtext-bindenabled.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Champion.cs" />
     <Compile Include="Models\SubRedditUser.cs" />
@@ -143,6 +147,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201606262055591_subreddit-champion-required.resx">
       <DependentUpon>201606262055591_subreddit-champion-required.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606280541163_flairtext-bindenabled.resx">
+      <DependentUpon>201606280541163_flairtext-bindenabled.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
