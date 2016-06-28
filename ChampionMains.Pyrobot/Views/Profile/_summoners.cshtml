@@ -44,14 +44,13 @@
     </tfoot>
 </table>
 
-<h2>Subreddit Flair Settings</h2>
+<h2><a class="btn btn-default" href="#" ng-click="subreddits.refresh() && subreddits.update()"><span class="fa fa-refresh"></span></a> Subreddit Flair Settings</h2>
 
-<table class="table">
+<table class="table table-pad">
     <thead>
         <tr>
             <th><span ng-class="{ 'fade-out': !subreddits.loading }" class="fa fa-refresh spinning fade"></span></th>
-            <th><span class="hint" ng-tooltip="top,Click to enalbe or disable flair parts.">Set Flair</span></th>
-            <th>Champion</th>
+            <th style="width: 40%;">Flair</th>
             <th>Subreddit</th>
             <th>Prestige</th>
             <th>Mastery Points</th>
@@ -61,27 +60,37 @@
         <tr ng-repeat="subreddit in subreddits.items | orderBy:subredditSorter:true track by subreddit.id">
             <td><a class="btn btn-default btn-xs" href="#" ng-click="refreshSubreddit(summoner)"><span class="fa fa-refresh"></span></a></td>
             <td>
-                <div class="btn-group btn-group-xs" data-toggle="buttons">
-                    <label class="btn" ng-class="[ 'disabled btn-default', 'btn-success' ][+subreddit.rankEnabled]">
-                        <input ng-if="subreddit.rankEnabled" type="checkbox" autocomplete="off" />
-                        <span class="rank xs" ng-class="'rank-' + summoners.getTopTier()"></span> Rank
-                    </label>
-                    <label class="btn" ng-class="[ 'disabled btn-default', 'btn-success' ][+subreddit.championMasteryEnabled]">
-                        <input ng-if="subreddit.championMasteryEnabled" type="checkbox" autocomplete="off" />
-                        <span class="mastery" ng-class="'mastery-' + summoners.getChampionMastery(subreddit.champion.id).prestige"></span> Prestige
-                    </label>
-                </div>
+                <form class="flair-toggles input-group input-group-sm">
+                    <span class="input-group-btn" data-toggle="buttons">
+                        <label class="btn btn-default" ng-class="[ 'disabled' ][+subreddit.rankEnabled]">
+                            <input ng-if="subreddit.rankEnabled" type="checkbox" autocomplete="off" />
+                            <span class="off fa fa-fw fa-square"></span>
+                            <span class="on fa fa-fw fa-check-square"></span>
+                            <span class="dis fa fa-fw fa-square-o"></span>
+                            <span class="rank xs" ng-class="'rank-' + summoners.getTopTier()"></span>
+                        </label>
+                        <label class="btn btn-default" ng-class="[ 'disabled' ][+subreddit.championMasteryEnabled]">
+                            <input ng-if="subreddit.championMasteryEnabled" type="checkbox" autocomplete="off" />
+                            <span class="off fa fa-fw fa-square"></span>
+                            <span class="on fa fa-fw fa-check-square"></span>
+                            <span class="dis fa fa-fw fa-square-o"></span>
+                            <span class="mastery" ng-class="'mastery-' + summoners.getChampionMastery(subreddit.champion.id).prestige"></span>
+                        </label>
+                    </span>
+                    <input type="text" class="form-control" placeholder="flair text" />
+                    <span class="input-group-btn"><button class="btn btn-success" type="submit"><span class="fa fa-check"></span></button></span>
+                </form>
             </td>
             <td>
                 <img class="champion" champ-img="subreddit.champion.identifier"
                      alt="{{ subreddit.champion.name }}" title="{{ subreddit.champion.name }}"/>
-                <span ng-bind="subreddit.champion.name"></span>
+                <a href="#" ng-href="http://www.reddit.com/r/{{ subreddit.name }}" target="_blank">/r/<span ng-bind="subreddit.name"></span></a>
             </td>
-            <td><a href="#" ng-href="http://www.reddit.com/r/{{ subreddit.name }}" target="_blank">/r/<span ng-bind="subreddit.name"></span></a></td>
             <td>
+                <!-- TODO: optimize -->
                 <span class="mastery" ng-class="'mastery-' + summoners.getChampionMastery(subreddit.champion.id).prestige"></span>
                 <span ng-bind="summoners.getChampionMastery(subreddit.champion.id).points | number"></span> /
-                <span ng-bind="summoners.getChampionMastery(subreddit.champion.id).points | number"></span>
+                <span ng-bind="getNextPrestige(summoners.getChampionMastery(subreddit.champion.id).points, prestiges)"></span>
             </td>
             <td>
                 <span class="mastery" ng-class="'mastery-' + summoners.getChampionMastery(subreddit.champion.id).level"></span>

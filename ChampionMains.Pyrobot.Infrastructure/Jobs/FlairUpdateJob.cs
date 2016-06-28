@@ -27,13 +27,15 @@ namespace ChampionMains.Pyrobot.Jobs
         {
             var user = await _users.FindAsync(userId);
 
-            var subReddits = await _subReddits.GetAllAsync();
+            //TODO: optimize
+            var subReddits = (await _subReddits.GetAllAsync()).Where(s => (s.RankEnabled || s.ChampionMasteryEnabled) && (!s.AdminOnly || user.IsAdmin));
 
-            var summoner = await _summoners.GetActiveSummonerAsync(user);
-            var css = summoner == null ? "" : "rank-" + ((Tier)summoner.Rank.Tier);
-            css = css.ToLower();
-
-            await Task.WhenAll(subReddits.Select(x => _reddit.SetUserFlairAsync(x.Name, user.Name, "", css)));
+            await Task.WhenAll(subReddits.Select(async x =>
+            {
+                var oldFlair = await _reddit.GetFlairAsync(x.Name, user.Name);
+                var classes = RankUtil.GenerateFlairCss(user, x.ChampionId, x.RankEnabled, x.ChampionMasteryEnabled, oldFlair?.CssClass);
+                await _reddit.SetFlairAsync(x.Name, user.Name, oldFlair.Text, classes);
+            }));
         }
     }
 }

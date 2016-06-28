@@ -43,6 +43,10 @@ table.table thead th {
     font-weight: bold;
 }
 
+table.table.table-pad > tbody > tr > td {
+    padding: 16px 8px;
+}
+
 table.table {
     margin-bottom: 100px;
 
@@ -73,18 +77,19 @@ table.table {
     height: auto;
 }
 
-.btn-group[data-toggle="buttons"] {
-    $opacity: 0.7;
-    >.btn {
-        color: rgba(#fff, $opacity);
-        span {
-            opacity: $opacity;
+.flair-toggles {
+    margin: -5px 0;
+    label.btn {
+        padding-left: 6px !important;
+        padding-right: 6px !important;
+        &:not(.active), &.disabled {
+            .on { display: none; }
         }
-    }
-    >.btn.active {
-        color: #fff;
-        span {
-            opacity: 1;
+        &.active, &.disabled {
+            .off { display: none; }
+        }
+        &:not(.disabled) .dis {
+            display: none;
         }
     }
 }

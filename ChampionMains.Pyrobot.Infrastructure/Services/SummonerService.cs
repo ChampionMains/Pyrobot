@@ -49,12 +49,6 @@ namespace ChampionMains.Pyrobot.Services
                 summoner.Name == summonerName);
         }
 
-        public Task<Summoner> GetActiveSummonerAsync(User user)
-        {
-            //TODO
-            return Task.Run(() => user.Summoners.FirstOrDefault());
-        } 
-
         public Task<bool> IsSummonerRegistered(string region, string summonerName)
         {
             return UnitOfWork.Summoners.AnyAsync(summoner =>

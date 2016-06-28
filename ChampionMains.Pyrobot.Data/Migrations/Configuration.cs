@@ -197,8 +197,8 @@ namespace ChampionMains.Pyrobot.Data.Migrations
                     ChampionId = cd["Janna"],
                     Name = "JannaMains",
                     AdminOnly = false,
-                    RankEnabled = true,
-                    ChampionMasteryEnabled = true,
+                    RankEnabled = false,
+                    ChampionMasteryEnabled = false,
                 },
                 new SubReddit()
                 {
@@ -206,14 +206,14 @@ namespace ChampionMains.Pyrobot.Data.Migrations
                     Name = "SonaMains",
                     AdminOnly = false,
                     RankEnabled = false,
-                    ChampionMasteryEnabled = true,
+                    ChampionMasteryEnabled = false,
                 },
                 new SubReddit()
                 {
                     ChampionId = cd["Bard"],
                     Name = "BardMains",
                     AdminOnly = false,
-                    RankEnabled = true,
+                    RankEnabled = false,
                     ChampionMasteryEnabled = false,
                 });
         }

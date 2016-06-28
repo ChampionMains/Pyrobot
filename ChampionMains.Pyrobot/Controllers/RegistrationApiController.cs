@@ -110,7 +110,7 @@ namespace ChampionMains.Pyrobot.Controllers
 
                 //TODO:these must be executed in order
                 // Queue up flair update.
-                await WebJob.QueueFlairUpdate(user.Id);
+                //await WebJob.QueueFlairUpdate(user.Id);
 
                 // Queue up confirmation mail.
                 //jobId = BackgroundJob.ContinueWith<ConfirmFlairUpdatedMailJob>(jobId,

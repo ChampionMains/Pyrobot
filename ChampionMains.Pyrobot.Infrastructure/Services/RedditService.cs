@@ -72,26 +72,58 @@ namespace ChampionMains.Pyrobot.Services
             return true;
         }
 
-        public async Task<bool> SetUserFlairAsync(string subreddit, string name, string text, string css = null)
+        public async Task<UserFlairParameter> GetFlairAsync(string subreddit, string name)
+        {
+            var flair = (await GetFlairsAsync(subreddit, name)).FirstOrDefault();
+            // If flair doesn't exist, UserFlairParameter will parse,
+            // but flair_css_class and flair_text will be null.
+            // Flair should never be null
+            return flair?.CssClass == null ? null : flair;
+        }
+
+        public async Task<ICollection<UserFlairParameter>> GetFlairsAsync(string subreddit, string name = "")
+        {
+            var flairs = new List<UserFlairParameter>();
+            string nextToken = "";
+
+            var uri = $"{BaseUri}/r/{subreddit}/api/flairlist";
+
+            do
+            {
+                var data = new[]
+                {
+                    new KeyValuePair<string, string>("limit", "5"), //TODO: make this "1000"
+                    new KeyValuePair<string, string>("after", nextToken),
+                    new KeyValuePair<string, string>("name", name)
+                };
+                var result = await _requester.GetAsync(uri, data);
+                flairs.AddRange(result["users"].ToObject<ICollection<UserFlairParameter>>());
+                nextToken = result["next"]?.ToString();
+
+            } while (nextToken != null);
+
+            return flairs;
+        }
+
+        public async Task<bool> SetFlairAsync(string subreddit, string name, string text = null, string classes = null)
         {
             var uri = $"{BaseUri}/r/{subreddit}/api/flair";
             var data = new List<KeyValuePair<string, string>>
             {
                 new KeyValuePair<string, string>("api_type", "json"),
-                new KeyValuePair<string, string>("name", name),
-                new KeyValuePair<string, string>("text", text)
+                new KeyValuePair<string, string>("name", name)
             };
-            if (css != null)
-            {
-                data.Add(new KeyValuePair<string, string>("css_class", css));
-            }
+            if (text != null)
+                data.Add(new KeyValuePair<string, string>("text", text));
+            if (classes != null)
+                data.Add(new KeyValuePair<string, string>("css_class", classes));
 
             var result = await _requester.PostAsync(uri, data);
 
             return !result["json"]["errors"].Any();
         }
 
-        public async Task<bool> SetUserFlairsAsync(string subreddit, ICollection<UserFlairParameter> flairs)
+        public async Task<bool> SetFlairsAsync(string subreddit, ICollection<UserFlairParameter> flairs)
         {
             if (flairs.Count > 100)
             {
@@ -105,28 +137,6 @@ namespace ChampionMains.Pyrobot.Services
             };
             var result = await _requester.PostAsync(uri, data);
             return !result.Any(token => token["errors"].Any());
-        }
-
-        public async Task<ICollection<UserFlairParameter>> GetUserFlairsAsync(string subreddit, string nextToken = "")
-        {
-            var flairs = new List<UserFlairParameter>();
-
-            var uri = $"{BaseUri}/r/{subreddit}/api/flairlist";
-
-            do
-            {
-                var data = new[]
-                {
-                    new KeyValuePair<string, string>("limit", "1"), //TODO: make this "1000"
-                    new KeyValuePair<string, string>("after", nextToken)
-                };
-                var result = await _requester.GetAsync(uri, data);
-                flairs.AddRange(result["users"].ToObject<ICollection<UserFlairParameter>>());
-                nextToken = result["next"]?.ToString();
-
-            } while (nextToken != null);
-
-            return flairs;
         }
 
         private static string ResolveBulkFlairParameter(IEnumerable<UserFlairParameter> flairs)

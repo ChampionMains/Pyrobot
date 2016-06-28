@@ -40,5 +40,28 @@ namespace ChampionMains.Pyrobot
         {
             return (byte) PrestigeLevels.Where(i => i <= points).Count();
         }
+
+        private const string RankPrefix = "rank-";
+        private const string MasteryPrefix = "mastery-";
+
+        public static string GenerateFlairCss(User user, int championId, bool rankEnabled, bool masteryEnabled, string oldFlair = "")
+        {
+            var classes = oldFlair.Split()
+                .Where(c => !string.IsNullOrWhiteSpace(c) && !c.StartsWith(RankPrefix) && !c.StartsWith(MasteryPrefix)).ToList();
+
+            if (rankEnabled)
+            {
+                var tier = (Tier) user.Summoners.Select(s => s.Rank.Tier).DefaultIfEmpty().Max();
+                classes.Add((RankPrefix + tier).ToLower());
+            }
+            if (masteryEnabled)
+            {
+                var points = user.Summoners
+                    .Select(s => s.ChampionMasteries.FirstOrDefault(m => m.ChampionId == championId)?.Points ?? 0).DefaultIfEmpty().Sum();
+                classes.Add(MasteryPrefix + GetprestigeLevel(points));
+            }
+
+            return string.Join(" ", classes);
+        }
     }
 }

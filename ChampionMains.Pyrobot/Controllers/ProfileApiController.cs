@@ -82,7 +82,7 @@ namespace ChampionMains.Pyrobot.Controllers
                 tier = summoner.Rank.Tier,
                 tierString = ((Tier) summoner.Rank.Tier).ToString().ToLower(),
                 division = summoner.Rank.Division,
-                totalPoints = summoner.ChampionMasteries.Select(cm => cm.Points).Sum(),
+                totalPoints = summoner.ChampionMasteries.Select(cm => cm.Points).DefaultIfEmpty().Sum(),
                 champions = summoner.ChampionMasteries.ToDictionary(cm => cm.ChampionId, champ => new
                 {
                     name = champ.Champion.Name,

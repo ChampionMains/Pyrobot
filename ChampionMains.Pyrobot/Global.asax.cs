@@ -10,7 +10,6 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Autofac;
 using ChampionMains.Pyrobot.Data;
-using WebApiContrib.Formatting.Jsonp;
 using GlobalConfiguration = System.Web.Http.GlobalConfiguration;
 
 namespace ChampionMains.Pyrobot

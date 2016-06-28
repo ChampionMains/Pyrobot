@@ -53,6 +53,15 @@ namespace ChampionMains.Pyrobot.Controllers
             });
         }
 
+        [HttpPost]
+        [Route("profile/api/subreddits/refresh")]
+        public async Task<IHttpActionResult> RefreshSubReddits()
+        {
+            var user = await _users.GetUserAsync();
+            await _webJob.QueueFlairUpdate(user.Id);
+            return Ok();
+        }
+
         private IHttpActionResult Conflict(string message)
         {
             return Content(HttpStatusCode.Conflict, new HttpError(message));

@@ -73,7 +73,7 @@ namespace ChampionMains.Pyrobot.Jobs
 
                 foreach (var sub in subReddits)
                 {
-                    if (!await _reddit.SetUserFlairsAsync(sub.Name, flairParams))
+                    if (!await _reddit.SetFlairsAsync(sub.Name, flairParams))
                     {
                         throw new InvalidOperationException($"Update flair failed on /r/{sub.Name}.");
                     }
@@ -88,10 +88,10 @@ namespace ChampionMains.Pyrobot.Jobs
             }
         }
 
-        private async Task<string> GetFlairTextAsync(User user)
+        //TODO
+        private Task<string> GetFlairTextAsync(User user)
         {
-            var summoner = await _summoners.GetActiveSummonerAsync(user);
-            return summoner == null ? "" : "rank-" + ((Tier) summoner.Rank.Tier);
+            throw new NotImplementedException();
         }
     }
 }

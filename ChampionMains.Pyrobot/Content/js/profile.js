@@ -36,7 +36,7 @@
 
                     $this.pollPromise = $timeout(function () {
                         $this.poll();
-                    }, 6000);
+                    }, 10e3);
                 });
             },
 
@@ -112,6 +112,16 @@
                     $this.items = data.result;
                 });
             },
+
+            refresh: function() {
+                var $this = this;
+                ajax.post('/profile/api/subreddits/refresh', function(ok, data) {
+                    if(!ok) {
+                        $this.status = { error: 'Error setting subreddit flairs' };
+                        return;
+                    }
+                });
+            }
         };
     }).directive('champImg', function() {
         var baseUrl = Riot.DDragon.m.cdn + '/' + Riot.DDragon.m.n.champion + '/img/champion/';
@@ -123,7 +133,7 @@
                 });
             }
         }
-    });;
+    });
 
     app.controller('MainController', function($scope, $timeout, ajax, modal, summoners, subreddits) {
         $scope.summoners = summoners;
@@ -131,6 +141,18 @@
 
         $scope.subreddits = subreddits;
         $scope.subreddits.update();
+
+        $scope.prestiges = [];
+        ajax.get('/profile/api/prestiges', function(ok, data) {
+            if (ok)
+                $scope.prestiges = data.result;
+        });
+        $scope.getNextPrestige = function(points, p) {
+            for (var i = 0; i < p.length; i++)
+                if (p[i] > points)
+                    return (p[i] / 1e3) + 'k';
+            return '?';
+        };
 
         $scope.subredditSorter = function(subreddit) {
             var points = $scope.summoners.getChampionMastery(subreddit.championId).points;
@@ -143,13 +165,12 @@
         var modalRegister = modal('#modal-register');
 
         $scope.refreshSummoner = function(summoner) {
-            var data = {
+            ajax.post('/profile/api/summoner/refresh', {
                 region: summoner.region,
                 summonerName: summoner.summonerName
-            };
-            ajax.post('/profile/api/summoner/refresh', data, function(success, data) {
-                    $scope.summoners.poll();
-                });
+            }, function(ok, data) {
+                $scope.summoners.poll();
+            });
         }
 
         $scope.deleteSummoner = function(summoner) {
