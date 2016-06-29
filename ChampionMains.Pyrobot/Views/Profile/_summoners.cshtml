@@ -20,8 +20,8 @@
     <tr ng-repeat="summoner in summoners.items | filter: { hidden: '!' } | orderBy:'totalPoints':true track by summoner.id">
         <td>
             <div class="btn-group btn-group-xs">
-                <a class="btn btn-default" href="#" ng-click="refreshSummoner(summoner)"><span class="fa fa-refresh"></span></a>
-                <a class="btn btn-danger" href="#" ng-click="deleteSummoner(summoner)"><span class="fa fa-times"></span></a>
+                <button class="btn btn-default" href="#" ng-click="refreshSummoner(summoner)"><span class="fa fa-refresh"></span></button>
+                <button class="btn btn-danger" href="#" ng-click="deleteSummoner(summoner)"><span class="fa fa-times"></span></button>
             </div>
         </td>
         <td ng-bind="summoner.region"></td>
@@ -48,53 +48,53 @@
 
 <table class="table table-pad">
     <thead>
-        <tr>
-            <th style="width: 40%;">Flair</th>
-            <th>Subreddit</th>
-            <th>Prestige</th>
-            <th>Mastery Points</th>
-        </tr>
+    <tr>
+        <th style="width: 40%;">Flair</th>
+        <th>Subreddit</th>
+        <th>Prestige</th>
+        <th>Mastery Points</th>
+    </tr>
     </thead>
     <tbody>
-        <tr ng-repeat="subreddit in subreddits.items | orderBy:subredditSorter:true track by subreddit.id">
-            <td>
-                <form ng-init="flairData = subreddit.flair" ng-submit="updateSubredditFormSubmit(flairData)" class="flair-toggles input-group input-group-sm">
-                    <span class="input-group-btn">
+    <tr ng-repeat="subreddit in subreddits.items | orderBy:subredditSorter:true track by subreddit.id">
+        <td>
+            <form ng-init="flairData = subreddit.flair" ng-submit="updateSubredditFormSubmit(flairData, subreddit)" class="flair-toggles input-group input-group-sm">
+                <span class="input-group-btn">
                         <label class="btn btn-default" ng-class="[ 'disabled' ][+subreddit.rankEnabled]">
-                            <input ng-model="flairData.rankEnabled" type="checkbox" autocomplete="off" />
+                            <input ng-model="flairData.rankEnabled" ng-disabled="!subreddit.rankEnabled || subreddit.busy" type="checkbox" autocomplete="off" />
                             <span class="rank xs" ng-class="'rank-' + summoners.getTopTier()"></span>
                         </label>
                         <label class="btn btn-default" ng-class="[ 'disabled' ][+subreddit.championMasteryEnabled]">
-                            <input ng-model="flairData.championMasteryEnabled" type="checkbox" autocomplete="off" />
+                            <input ng-model="flairData.championMasteryEnabled" ng-disabled="!subreddit.championMasteryEnabled || subreddit.busy" type="checkbox" autocomplete="off" />
                             <span class="mastery" ng-class="'mastery-' + summoners.getChampionMastery(subreddit.champion.id).prestige"></span>
                         </label>
                     </span>
-                    <input type="text" ng-model="flairData.flairText" class="form-control" placeholder="flair text" />
-                    <span class="input-group-btn"><button class="btn btn-success" type="submit"><span class="fa fa-check"></span></button></span>
-                </form>
-            </td>
-            <td>
-                <img class="champion" champ-img="subreddit.champion.identifier"
-                     alt="{{ subreddit.champion.name }}" title="{{ subreddit.champion.name }}"/>
-                <a href="#" ng-href="http://www.reddit.com/r/{{ subreddit.name }}" target="_blank">/r/<span ng-bind="subreddit.name"></span></a>
-                <span class="hint" ng-if="subreddit.adminOnly" ng-tooltip="right,This subreddit is only visible to Flair Bot admins."><span class="fa fa-shield"></span></span>
-            </td>
-            <td>
-                <!-- TODO: optimize -->
-                <span class="mastery" ng-class="'mastery-' + summoners.getChampionMastery(subreddit.champion.id).prestige"></span>
-                <span ng-bind="summoners.getChampionMastery(subreddit.champion.id).points | number"></span> /
-                <span ng-bind="getNextPrestige(summoners.getChampionMastery(subreddit.champion.id).points, prestiges)"></span>
-            </td>
-            <td>
-                <span class="mastery" ng-class="'mastery-' + summoners.getChampionMastery(subreddit.champion.id).level"></span>
-                <span ng-bind="summoners.getChampionMastery(subreddit.champion.id).points | number"></span>
-            </td>
-        </tr>
+                <input type="text" ng-model="flairData.flairText" ng-disabled="subreddit.busy" class="form-control" placeholder="flair text"/>
+                <span class="input-group-btn"><button class="btn btn-success" ng-disabled="subreddit.busy" type="submit"><span class="fa fa-check"></span></button></span>
+            </form>
+        </td>
+        <td>
+            <img class="champion" champ-img="subreddit.champion.identifier"
+                 alt="{{ subreddit.champion.name }}" title="{{ subreddit.champion.name }}"/>
+            <a href="#" ng-href="http://www.reddit.com/r/{{ subreddit.name }}" target="_blank">/r/<span ng-bind="subreddit.name"></span></a>
+            <span class="hint" ng-if="subreddit.adminOnly" ng-tooltip="right,This subreddit is only visible to Flair Bot admins."><span class="fa fa-shield"></span></span>
+        </td>
+        <td>
+            <!-- TODO: optimize -->
+            <span class="mastery" ng-class="'mastery-' + summoners.getChampionMastery(subreddit.champion.id).prestige"></span>
+            <span ng-bind="summoners.getChampionMastery(subreddit.champion.id).points | number"></span> /
+            <span ng-bind="getNextPrestige(summoners.getChampionMastery(subreddit.champion.id).points, prestiges)"></span>
+        </td>
+        <td>
+            <span class="mastery" ng-class="'mastery-' + summoners.getChampionMastery(subreddit.champion.id).level"></span>
+            <span ng-bind="summoners.getChampionMastery(subreddit.champion.id).points | number"></span>
+        </td>
+    </tr>
     </tbody>
     <tfoot>
-        <tr ng-show="subreddits.items.length == 0">
-            <td colspan="5">No subreddits linked.</td>
-        </tr>
+    <tr ng-show="subreddits.items.length == 0">
+        <td colspan="5">No subreddits linked.</td>
+    </tr>
     </tfoot>
 </table>
 
@@ -113,7 +113,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal" ng-disabled="busy">Cancel</button>
                 <button type="button" class="btn btn-primary" ng-click="confirm()" ng-disabled="busy">
-                    <i class="fa fa-spin fa-spinner" ng-show="busy"></i> Confirm
+                    <span class="fa fa-spin fa-spinner" ng-show="busy"></span> Confirm
                 </button>
             </div>
         </div>
@@ -173,7 +173,7 @@
                 </div>
                 <button type="button" class="btn btn-default" data-dismiss="modal" ng-disabled="busy">Cancel</button>
                 <button type="button" class="btn btn-primary" ng-click="confirm()" ng-disabled="busy || !(summonerName && region)">
-                    <i class="fa fa-spin fa-spinner" ng-show="busy"></i> Confirm
+                    <span class="fa fa-spin fa-spinner" ng-show="busy"></span> Confirm
                 </button>
             </div>
         </div>

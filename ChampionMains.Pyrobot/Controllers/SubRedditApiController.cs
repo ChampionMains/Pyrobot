@@ -97,9 +97,8 @@ namespace ChampionMains.Pyrobot.Controllers
             });
 
             // if this fails, the queue will already be sent
-            if (!await _subReddits.UpdateSubRedditUser(user, model.SubReddit, model.RankEnabled,
-                model.ChampionMasteryEnabled, model.FlairText))
-                return Conflict("Unabled to find/create SubRedditUser");
+            await _subReddits.UpdateSubRedditUser(user, model.SubReddit, model.RankEnabled,
+                model.ChampionMasteryEnabled, model.FlairText)
 
             return Ok();
         }

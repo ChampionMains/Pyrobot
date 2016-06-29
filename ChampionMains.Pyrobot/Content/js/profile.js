@@ -171,6 +171,7 @@
             }, function(ok, data) {
                 $scope.summoners.poll();
             });
+            return false;
         }
 
         $scope.deleteSummoner = function(summoner) {
@@ -179,17 +180,17 @@
                 summonerName: summoner.summonerName
             };
             modalDelete.show();
+            return false;
         };
 
         $scope.registerSummoner = function() {
             modalRegister.show();
         };
 
-        $scope.formData = {};
-        $scope.updateSubredditFormSubmit = function(data) {
-            console.log(data);
+        $scope.updateSubredditFormSubmit = function(data, subreddit) {
+            subreddit.busy = true;
             ajax.post('/profile/api/subreddit/update', data, function(ok, data) {
-                //ok
+                subreddit.busy = false;
             });
         };
     });
@@ -234,7 +235,7 @@
             ajax.post('/profile/api/summoner/validate', data, function(success, data, status) {
                 console.log(arguments);
 
-                if (status == 417) {
+                if (status === 417) {
                     if (--validationAttempts) {
                         $timeout(executeValidation, 5000);
                         return;
