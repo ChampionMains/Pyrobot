@@ -83,29 +83,24 @@ namespace ChampionMains.Pyrobot.Controllers
         [HttpPost]
         [ValidateModel]
         [Route("profile/api/subreddit/update")]
-        public async Task<IHttpActionResult> UpdateSubReddit(FlairViewModel model)
+        public async Task<IHttpActionResult> UpdateSubReddit(SubredditUserDataViewModel model)
         {
             var user = await _users.GetUserAsync();
 
             await _webJob.QueueFlairUpdate(new FlairUpdateMessage()
             {
                 UserId = user.Id,
-                SubRedditName = model.SubReddit,
+                SubRedditName = model.SubredditName,
                 RankEnabled = model.RankEnabled,
                 ChampionMasteryEnabled = model.ChampionMasteryEnabled,
                 FlairText = model.FlairText // can be null
             });
 
             // if this fails, the queue will already be sent
-            await _subReddits.UpdateSubRedditUser(user, model.SubReddit, model.RankEnabled,
-                model.ChampionMasteryEnabled, model.FlairText)
+            await _subReddits.UpdateSubRedditUser(user, model.SubredditName, model.RankEnabled,
+                model.ChampionMasteryEnabled, model.FlairText);
 
             return Ok();
-        }
-
-        private IHttpActionResult Conflict(string message)
-        {
-            return Content(HttpStatusCode.Conflict, new HttpError(message));
         }
     }
 }

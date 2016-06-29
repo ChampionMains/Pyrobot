@@ -56,22 +56,11 @@ namespace ChampionMains.Pyrobot.Services
                 summoner.Name == summonerName);
         }
 
-        public async Task<bool> RemoveAsync(string region, string summonerName)
+        public async Task<bool> RemoveAsync(int summonerId)
         {
-            var entity = await FindAsync(region, summonerName);
+            var entity = await FindAsync(summonerId);
             if (entity == null) return false;
 
-            //TODO
-            /*
-            if (entity.IsActive)
-            {
-                // pass the active flag to another summoner if one exists.
-                var summoner = entity.User.Summoners.FirstOrDefault(x => x.Id != entity.Id);
-                if (summoner != null)
-                {
-                    summoner.IsActive = true;
-                }
-            }*/
             UnitOfWork.Leagues.Remove(entity.Rank);
             UnitOfWork.Summoners.Remove(entity);
             return await UnitOfWork.SaveChangesAsync() > 0;

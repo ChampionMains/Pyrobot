@@ -244,6 +244,7 @@
     <Compile Include="Attributes\WebApiAuthorizeAttribute.cs" />
     <Compile Include="CacheUtil.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\PeriodicUpdateApiController.cs" />
     <Compile Include="Controllers\SubRedditApiController.cs" />
     <Compile Include="Controllers\ProfileApiController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
@@ -251,6 +252,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\ProfileApiViewModels.cs" />
     <Compile Include="Models\ProfileViewModel.cs" />
     <Compile Include="Models\FlairViewModel.cs" />
     <Compile Include="Models\SummonerModel.cs" />

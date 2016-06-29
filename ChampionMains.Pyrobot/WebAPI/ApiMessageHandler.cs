@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace ChampionMains.Pyrobot.WebAPI
 {
@@ -18,7 +19,11 @@ namespace ChampionMains.Pyrobot.WebAPI
     {
         private static readonly MediaTypeFormatter JsonFormatter = new JsonMediaTypeFormatter
         {
-            SerializerSettings = new JsonSerializerSettings {NullValueHandling = NullValueHandling.Ignore}
+            SerializerSettings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            }
         };
 
         /// <summary>

@@ -26,20 +26,20 @@ namespace ChampionMains.Pyrobot
             return tier + " " + division;
         }
 
+        // must be ascending order
         public static readonly int[] PrestigeLevels = new[]
         {
-            21600,
-            50000,
-            80000,
-            125000,
-            250000,
-            500000,
-            1000000
+            250000, 500000, 750000, 1000000, 2000000
         };
 
-        public static byte GetprestigeLevel(int points)
+        public static int? GetPrestigeLevel(int points)
         {
-            return (byte) PrestigeLevels.Where(i => i <= points).Count();
+            return PrestigeLevels.Reverse().FirstOrDefault(p => p <= points);
+        }
+
+        public static int? GetNextPrestigeLevel(int points)
+        {
+            return PrestigeLevels.FirstOrDefault(p => p > points);
         }
 
         private const string RankPrefix = "rank-";
@@ -59,9 +59,10 @@ namespace ChampionMains.Pyrobot
             }
             if (masteryEnabled)
             {
-                var points = user.Summoners
-                    .Select(s => s.ChampionMasteries.FirstOrDefault(m => m.ChampionId == championId)?.Points ?? 0).DefaultIfEmpty().Sum();
-                classes.Add(MasteryPrefix + GetprestigeLevel(points));
+                var mastery = user.Summoners
+                    .Select(s => s.ChampionMasteries.FirstOrDefault(m => m.ChampionId == championId)?.Level ?? 0)
+                    .DefaultIfEmpty().Aggregate((a, b) => a > b ? a : b);
+                classes.Add(MasteryPrefix + mastery);
             }
 
             return string.Join(" ", classes);

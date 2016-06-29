@@ -33,6 +33,8 @@ namespace ChampionMains.Pyrobot.Jobs
             var rankTask = _riot.GetLeaguesAsync(summoner.Region, summoner.SummonerId);
             var championMasteriesTask = _riot.GetChampionMasteriesAsync(summoner.Region, summoner.SummonerId);
 
+            //TODO: update if name changes
+
             var rank = await rankTask;
             var championMasteries = await championMasteriesTask;
 
