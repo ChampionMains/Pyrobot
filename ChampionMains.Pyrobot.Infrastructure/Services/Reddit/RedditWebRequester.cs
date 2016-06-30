@@ -12,7 +12,7 @@ namespace ChampionMains.Pyrobot.Services.Reddit
     public class RedditWebRequester
     {
         private const string AccessTokenUrl = "https://www.reddit.com/api/v1/access_token";
-        private static readonly string UserAgent = Uri.EscapeDataString("aspnet:championMains.pyrobot");
+        private readonly string _userAgent;
         private readonly HttpClient _httpClient = new HttpClient();
 
         private readonly string _clientId;
@@ -29,12 +29,13 @@ namespace ChampionMains.Pyrobot.Services.Reddit
         private DateTime _ratePeriodStart;
         private int _numRequests;
 
-        public RedditWebRequester(string clientId, string clientSecret, string username, string password)
+        public RedditWebRequester(string clientId, string clientSecret, string username, string password, string userAgent)
         {
             _clientId = clientId;
             _clientSecret = clientSecret;
             _userName = username;
             _password = password;
+            _userAgent = Uri.EscapeDataString(userAgent);
         }
 
         public async Task<JToken> GetAsync(string uri, IEnumerable<KeyValuePair<string, string>> parameters = null)
@@ -81,7 +82,7 @@ namespace ChampionMains.Pyrobot.Services.Reddit
         private HttpRequestMessage CreateRequestMessage(HttpMethod method, string uri)
         {
             var message = new HttpRequestMessage(method, uri);
-            message.Headers.Add("User-Agent", UserAgent);
+            message.Headers.Add("User-Agent", _userAgent);
             message.Headers.Add("Authorization", "bearer " + _accessToken);
             return message;
         }
@@ -128,7 +129,7 @@ namespace ChampionMains.Pyrobot.Services.Reddit
                 Credentials = new NetworkCredential(_clientId, _clientSecret)
             });
             var request = new HttpRequestMessage(HttpMethod.Post, AccessTokenUrl);
-            request.Headers.Add("User-Agent", UserAgent);
+            request.Headers.Add("User-Agent", _userAgent);
             request.Content = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("grant_type", "password"),

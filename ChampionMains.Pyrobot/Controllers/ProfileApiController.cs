@@ -150,6 +150,7 @@ namespace ChampionMains.Pyrobot.Controllers
                     Id = r.Id,
                     Name = r.Name,
                     ChampionId = r.ChampionId,
+                    AdminOnly = r.AdminOnly,
                     RankEnabled = r.RankEnabled,
                     ChampionMasteryEnabled = r.ChampionMasteryEnabled,
                     BindEnabled = r.BindEnabled,

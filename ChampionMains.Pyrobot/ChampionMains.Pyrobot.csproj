@@ -283,8 +283,6 @@
     <Content Include="Content\css\profile.scss" />
     <Content Include="Content\css\site.scss" />
     <None Include="Properties\PublishProfiles\championmains-pyrobot - Web Deploy.pubxml" />
-    <None Include="Properties\PublishProfiles\Grass.pubxml" />
-    <None Include="Properties\PublishProfiles\RedditRankedFlairs.pubxml" />
     <Content Include="Properties\webjobs-list.json" />
     <Content Include="Views\Web.config" />
     <None Include="Web.Debug.config">

@@ -58,10 +58,12 @@ namespace ChampionMains.Pyrobot.WebJob
             }).SingleInstance();
 
             // Reddit WebRequester
-            builder.Register(context => new RedditWebRequester(s["reddit.script.clientId"],
+            builder.Register(context => new RedditWebRequester(
+                    s["reddit.script.clientId"],
                     s["reddit.script.clientSecret"],
                     s["reddit.modUserName"],
-                    s["reddit.modPassword"])).SingleInstance();
+                    s["reddit.modPassword"],
+                    s["userAgent"])).SingleInstance();
 
             //// Jobs
             //builder.RegisterType(typeof(SummonerUpdateJob)).InstancePerLifetimeScope();

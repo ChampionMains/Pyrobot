@@ -68,11 +68,18 @@ namespace ChampionMains.Pyrobot
                     RetryInterval = TimeSpan.Parse(s["riot.retryInterval"])
                 }
             }).SingleInstance();
-            builder.Register(context => new WebJobService(s["AzureWebJobsStorage"]));
-            builder.Register(context => new RedditWebRequester(s["reddit.script.clientId"], 
-                    s["reddit.script.clientSecret"],
-                    s["reddit.modUserName"], 
-                    s["reddit.modPassword"])).SingleInstance();
+            builder.Register(context => new WebJobService(
+                s["AzureWebJobsStorage"],
+                s["webjob.wakeup.username"],
+                s["webjob.wakeup.password"],
+                s["webjob.wakeup.url"],
+                s["userAgent"]));
+            builder.Register(context => new RedditWebRequester(
+                s["reddit.script.clientId"], 
+                s["reddit.script.clientSecret"],
+                s["reddit.modUserName"], 
+                s["reddit.modPassword"],
+                s["userAgent"])).SingleInstance();
 
             //// Jobs
             //builder.RegisterType(typeof (SummonerUpdateJob)).InstancePerLifetimeScope();

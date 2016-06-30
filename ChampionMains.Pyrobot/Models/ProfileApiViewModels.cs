@@ -39,6 +39,7 @@ namespace ChampionMains.Pyrobot.Models
         public string Name { get; set; }
         public short ChampionId { get; set; }
 
+        public bool AdminOnly { get; set; }
         public bool RankEnabled { get; set; }
         public bool ChampionMasteryEnabled { get; set; }
         public bool BindEnabled { get; set; }
