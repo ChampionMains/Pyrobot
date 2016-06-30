@@ -29,7 +29,7 @@ namespace ChampionMains.Pyrobot.Jobs
         {
             var user = await _users.FindAsync(data.UserId);
 
-            var subReddit = (await _subReddits.GetAllAsync()).FirstOrDefault(s => s.Name == data.SubRedditName
+            var subReddit = (await _subReddits.GetAllAsync()).FirstOrDefault(s => s.Id == data.SubRedditId
                 &&(s.RankEnabled || s.ChampionMasteryEnabled) && (!s.AdminOnly || user.IsAdmin));
 
             if (subReddit == null)

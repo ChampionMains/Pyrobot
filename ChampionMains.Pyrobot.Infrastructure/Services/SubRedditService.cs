@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data;
@@ -32,21 +33,21 @@ namespace ChampionMains.Pyrobot.Services
             return await _context.SubRedditUsers.Where(f => f.User.Id == user.Id).ToListAsync();
         }
 
-        public async Task<bool> UpdateSubRedditUser(User user, string subRedditName, bool rankEnabled, bool championMasteryEnaabled, string flairText)
+        public async Task<bool> UpdateSubRedditUser(int userId, int subredditId, bool rankEnabled, bool championMasteryEnaabled, string flairText)
         {
             var subRedditUser =
-                _context.SubRedditUsers.FirstOrDefault(u => u.UserId == user.Id && u.SubReddit.Name == subRedditName);
+                _context.SubRedditUsers.FirstOrDefault(u => u.UserId == userId && u.SubRedditId == subredditId);
 
             if (subRedditUser == null)
             {
-                var subReddit = _context.SubReddits.FirstOrDefault(r => r.Name == subRedditName);
-                if (subReddit == null)
+                var subreddit = _context.SubReddits.Find(subredditId);
+                if (subreddit == null)
                     return false;
 
                 subRedditUser = new SubRedditUser()
                 {
-                    User = user,
-                    SubReddit = subReddit
+                    UserId = userId,
+                    SubRedditId = subredditId
                 };
                 _context.SubRedditUsers.Add(subRedditUser);
             }
@@ -55,7 +56,15 @@ namespace ChampionMains.Pyrobot.Services
             subRedditUser.ChampionMasteryEnabled = championMasteryEnaabled;
             subRedditUser.FlairText = flairText;
 
-            return await _context.SaveChangesAsync() > 0;
+            try
+            {
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (DbEntityValidationException)
+            {
+                return false;
+            }
         }
     }
 }

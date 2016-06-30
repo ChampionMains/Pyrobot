@@ -144,7 +144,18 @@ namespace ChampionMains.Pyrobot.Controllers
 
             var subreddits = (await _subreddit.GetAllAsync()).Where(r => !r.AdminOnly || user.IsAdmin).Select(r =>
             {
-                var flair = user.SubRedditUsers.FirstOrDefault(f => f.SubReddit.Id == r.Id && f.UserId == user.Id);
+                var subredditUserData = user.SubRedditUsers.FirstOrDefault(f => f.SubRedditId == r.Id);
+                var flair = new SubredditUserDataViewModel()
+                {
+                    SubredditId = r.Id,
+                };
+                if (subredditUserData != null)
+                {
+                    flair.RankEnabled = subredditUserData.RankEnabled;
+                    flair.ChampionMasteryEnabled = subredditUserData.ChampionMasteryEnabled;
+                    flair.FlairText = subredditUserData.FlairText;
+                }
+
                 return new SubredditDataViewModel()
                 {
                     Id = r.Id,
@@ -154,14 +165,7 @@ namespace ChampionMains.Pyrobot.Controllers
                     RankEnabled = r.RankEnabled,
                     ChampionMasteryEnabled = r.ChampionMasteryEnabled,
                     BindEnabled = r.BindEnabled,
-                    Flair = flair == null ? null : new SubredditUserDataViewModel()
-                    {
-                        SubredditId = r.Id,
-                        SubredditName = r.Name,
-                        RankEnabled = flair.RankEnabled,
-                        ChampionMasteryEnabled = flair.ChampionMasteryEnabled,
-                        FlairText = flair.FlairText
-                    }
+                    Flair = flair
                 };
             }).ToList();
 

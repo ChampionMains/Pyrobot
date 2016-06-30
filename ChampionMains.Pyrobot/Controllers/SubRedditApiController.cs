@@ -87,18 +87,18 @@ namespace ChampionMains.Pyrobot.Controllers
         {
             var user = await _users.GetUserAsync();
 
+            if (!await _subReddits.UpdateSubRedditUser(user.Id, model.SubredditId, model.RankEnabled,
+                model.ChampionMasteryEnabled, model.FlairText))
+                return BadRequest("Request did not match database");
+
             await _webJob.QueueFlairUpdate(new FlairUpdateMessage()
             {
                 UserId = user.Id,
-                SubRedditName = model.SubredditName,
+                SubRedditId = model.SubredditId,
                 RankEnabled = model.RankEnabled,
                 ChampionMasteryEnabled = model.ChampionMasteryEnabled,
-                FlairText = model.FlairText // can be null
+                FlairText = model.FlairText, // can be null
             });
-
-            // if this fails, the queue will already be sent
-            await _subReddits.UpdateSubRedditUser(user, model.SubredditName, model.RankEnabled,
-                model.ChampionMasteryEnabled, model.FlairText);
 
             return Ok();
         }

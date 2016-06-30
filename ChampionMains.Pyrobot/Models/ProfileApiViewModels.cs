@@ -50,7 +50,7 @@ namespace ChampionMains.Pyrobot.Models
     public class SubredditUserDataViewModel
     {
         public int SubredditId { get; set; }
-        public string SubredditName { get; set; }
+        //public string SubredditName { get; set; }
 
         public bool RankEnabled { get; set; }
         public bool ChampionMasteryEnabled { get; set; }
