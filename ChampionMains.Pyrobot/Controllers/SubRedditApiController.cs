@@ -12,72 +12,21 @@ using ChampionMains.Pyrobot.Services;
 namespace ChampionMains.Pyrobot.Controllers
 {
     [WebApiAuthorize]
-    public class SubRedditApiController : ApiController
+    public class SubredditApiController : ApiController
     {
         private readonly FlairService _flair;
         private readonly SummonerService _summoners;
         private readonly UserService _users;
         private readonly WebJobService _webJob;
-        private readonly SubRedditService _subReddits;
+        private readonly SubredditService _subreddits;
 
-        public SubRedditApiController(UserService users, SummonerService summoners, FlairService flair, WebJobService webJob, SubRedditService subReddits)
+        public SubredditApiController(UserService users, SummonerService summoners, FlairService flair, WebJobService webJob, SubredditService subreddits)
         {
             _users = users;
             _summoners = summoners;
             _flair = flair;
             _webJob = webJob;
-            _subReddits = subReddits;
-        }
-
-        [HttpGet]
-        [Route("profile/api/subreddits")]
-        public async Task<IEnumerable<object>> GetSubReddits()
-        {
-            var user = await _users.GetUserAsync();
-
-            var subReddits = await _subReddits.GetAllAsync();
-
-            var subRedditUsers = await _subReddits.GetSubRedditUsers(user);
-
-            return subReddits.Where(subReddit => !subReddit.AdminOnly || user.IsAdmin).Select(subReddit =>
-            {
-                FlairViewModel flair = new FlairViewModel()
-                {
-                    SubReddit = subReddit.Name
-                };
-
-                var subRedditUser = subRedditUsers.FirstOrDefault(f => f.SubReddit == subReddit);
-                if (subRedditUser != null)
-                {
-                    flair.RankEnabled = subRedditUser.RankEnabled;
-                    flair.ChampionMasteryEnabled = subRedditUser.ChampionMasteryEnabled;
-                    flair.FlairText = subRedditUser.FlairText;
-                }
-                else
-                {
-                    flair.RankEnabled = false;
-                    flair.ChampionMasteryEnabled = false;
-                    flair.FlairText = "";
-                }
-
-                return new
-                {
-                    id = subReddit.Id,
-                    name = subReddit.Name,
-                    //totalPoints = user.Summoners.Select(s => s.ChampionMasteries.FirstOrDefault(m => m.ChampionId == subReddit.ChampionId)?.Points ?? 0).Sum(),
-                    //level = user.Summoners.Select(s => s.ChampionMasteries.FirstOrDefault(m => m.ChampionId == subReddit.ChampionId)?.Level ?? 0).Max(),
-                    champion = new
-                    {
-                        name = subReddit.Champion.Name,
-                        identifier = subReddit.Champion.Identifier,
-                        id = subReddit.ChampionId
-                    },
-                    championMasteryEnabled = subReddit.ChampionMasteryEnabled,
-                    rankEnabled = subReddit.RankEnabled,
-                    adminOnly = subReddit.AdminOnly,
-                    flair
-                };
-            });
+            _subreddits = subreddits;
         }
 
         [HttpPost]
@@ -87,8 +36,8 @@ namespace ChampionMains.Pyrobot.Controllers
         {
             var user = await _users.GetUserAsync();
 
-            if (!await _subReddits.UpdateSubRedditUser(user.Id, model.SubredditId, model.RankEnabled,
-                model.ChampionMasteryEnabled, model.FlairText))
+            if (!await _subreddits.UpdateSubRedditUser(user.Id, model.SubredditId, model.RankEnabled,
+                model.ChampionMasteryEnabled, model.PrestigeEnabled, model.FlairText))
                 return BadRequest("Request did not match database");
 
             await _webJob.QueueFlairUpdate(new FlairUpdateMessage()
@@ -97,6 +46,7 @@ namespace ChampionMains.Pyrobot.Controllers
                 SubRedditId = model.SubredditId,
                 RankEnabled = model.RankEnabled,
                 ChampionMasteryEnabled = model.ChampionMasteryEnabled,
+                PrestigeEnabled = model.PrestigeEnabled,
                 FlairText = model.FlairText, // can be null
             });
 

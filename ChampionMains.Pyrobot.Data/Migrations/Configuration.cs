@@ -168,58 +168,65 @@ namespace ChampionMains.Pyrobot.Data.Migrations
 
 
             context.SubReddits.AddOrUpdate(x => x.Name,
-                new SubReddit()
+                new Subreddit()
                 {
                     ChampionId = cd["Zyra"],
                     Name = "ZyraMains",
                     AdminOnly = false,
                     RankEnabled = true,
                     ChampionMasteryEnabled = true,
+                    PrestigeEnabled = true,
                     BindEnabled = false
                 },
-                new SubReddit()
+                new Subreddit()
                 {
                     ChampionId = cd["Bard"],
                     Name = "BardMains",
                     AdminOnly = false,
                     RankEnabled = true,
                     ChampionMasteryEnabled = true,
+                    PrestigeEnabled = false,
                     BindEnabled = true
                 },
-                new SubReddit()
+                // ADMIN ONLY BELOW
+                new Subreddit()
                 {
                     ChampionId = cd["Nami"],
                     Name = "NamiMains",
                     AdminOnly = true,
                     RankEnabled = false,
                     ChampionMasteryEnabled = false,
+                    PrestigeEnabled = true,
                     BindEnabled = false
                 },
-                new SubReddit()
+                new Subreddit()
                 {
                     ChampionId = cd["Janna"],
                     Name = "JannaMains",
                     AdminOnly = true,
                     RankEnabled = false,
                     ChampionMasteryEnabled = false,
+                    PrestigeEnabled = true,
                     BindEnabled = false
                 },
-                new SubReddit()
+                new Subreddit()
                 {
                     ChampionId = cd["Sona"],
                     Name = "SonaMains",
                     AdminOnly = true,
                     RankEnabled = false,
                     ChampionMasteryEnabled = false,
+                    PrestigeEnabled = true,
                     BindEnabled = false
                 },
-                new SubReddit()
+                new Subreddit()
                 {
                     ChampionId = cd["Zyra"],
                     Name = "Umarrii",
                     AdminOnly = true,
                     RankEnabled = true,
                     ChampionMasteryEnabled = true,
+                    PrestigeEnabled = true,
                     BindEnabled = false
                 });
         }

@@ -5,8 +5,8 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace ChampionMains.Pyrobot.Data.Models
 {
-    [Table("SubReddit")]
-    public class SubReddit
+    [Table("Subreddit")]
+    public class Subreddit
     {
         [Key]
         [Required]
@@ -25,6 +25,9 @@ namespace ChampionMains.Pyrobot.Data.Models
         [Required]
         public bool ChampionMasteryEnabled { get; set; }
 
+        [Required]
+        public bool PrestigeEnabled { get; set; }
+
         /// <summary>
         /// If true, users can only enable both or neither (rank, championmastery)
         /// </summary>
@@ -37,6 +40,6 @@ namespace ChampionMains.Pyrobot.Data.Models
 
         public virtual Champion Champion { get; set; }
 
-        public virtual ICollection<SubRedditUser> SubRedditUsers { get; set; }
+        public virtual ICollection<SubredditUserFlair> SubredditUserFlairs { get; set; }
     }
 }

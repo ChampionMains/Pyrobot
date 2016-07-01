@@ -8,8 +8,8 @@ namespace ChampionMains.Pyrobot.Data
     public class UnitOfWork : DbContext
     {
         public IDbSet<SummonerRank> Leagues { get; set; }
-        public IDbSet<SubReddit> SubReddits { get; set; }
-        public IDbSet<SubRedditUser> SubRedditUsers { get; set; }
+        public IDbSet<Subreddit> SubReddits { get; set; }
+        public IDbSet<SubredditUserFlair> SubRedditUsers { get; set; }
         public IDbSet<Summoner> Summoners { get; set; }
         public IDbSet<User> Users { get; set; }
         public IDbSet<Champion> Champions { get; set; }

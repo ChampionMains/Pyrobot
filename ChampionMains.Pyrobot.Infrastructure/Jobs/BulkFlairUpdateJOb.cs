@@ -15,19 +15,18 @@ namespace ChampionMains.Pyrobot.Jobs
         private const int MaxUsersPerLoop = 100;
         private static readonly TimeSpan NoUsersWaitInterval = TimeSpan.FromSeconds(30);
         private static readonly Mutex Lock = new Mutex();
-
         private readonly FlairService _flairs;
         private readonly UserService _users;
         private readonly RedditService _reddit;
-        private readonly SubRedditService _subReddits;
+        private readonly SubredditService _subreddits;
         private readonly SummonerService _summoners;
 
-        public BulkFlairUpdateJob(UserService users, FlairService flairs, RedditService reddit, SubRedditService subReddits, SummonerService summoners)
+        public BulkFlairUpdateJob(UserService users, FlairService flairs, RedditService reddit, SubredditService subreddits, SummonerService summoners)
         {
             _flairs = flairs;
             _users = users;
             _reddit = reddit;
-            _subReddits = subReddits;
+            _subreddits = subreddits;
             _summoners = summoners;
         }
 
@@ -52,7 +51,7 @@ namespace ChampionMains.Pyrobot.Jobs
             while (true)
             {
                 var users = await _flairs.GetUsersForUpdateAsync(MaxUsersPerLoop);
-                var subReddits = await _subReddits.GetAllAsync();
+                var subreddits = await _subreddits.GetAllAsync();
 
                 if (!users.Any())
                 {
@@ -71,7 +70,7 @@ namespace ChampionMains.Pyrobot.Jobs
                     });
                 }
 
-                foreach (var sub in subReddits)
+                foreach (var sub in subreddits)
                 {
                     if (!await _reddit.SetFlairsAsync(sub.Name, flairParams))
                     {

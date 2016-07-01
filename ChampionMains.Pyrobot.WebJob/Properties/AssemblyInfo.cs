@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ChampionMains.Pyrobot.WebJob")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
+[assembly: AssemblyCopyright("GPLv2")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

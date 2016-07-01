@@ -11,9 +11,9 @@ namespace ChampionMains.Pyrobot.Data.Migrations
             AddColumn("dbo.SubReddit", "RankEnabled", c => c.Boolean());
             AddColumn("dbo.SubReddit", "ChampionMasteryEnabled", c => c.Boolean());
 
-            Sql("UPDATE dbo.SubReddit SET AdminOnly = false WHERE Identifier IS NULL");
-            Sql("UPDATE dbo.SubReddit SET RankEnabled = true WHERE Identifier IS NULL");
-            Sql("UPDATE dbo.SubReddit SET ChampionMasteryEnabled = true WHERE Identifier IS NULL");
+            Sql("UPDATE dbo.SubReddit SET AdminOnly = 0 WHERE Identifier IS NULL");
+            Sql("UPDATE dbo.SubReddit SET RankEnabled = 1 WHERE Identifier IS NULL");
+            Sql("UPDATE dbo.SubReddit SET ChampionMasteryEnabled = 1 WHERE Identifier IS NULL");
 
             AlterColumn("dbo.SubReddit", "AdminOnly", c => c.Boolean(nullable: false));
             AlterColumn("dbo.SubReddit", "RankEnabled", c => c.Boolean(nullable: false));

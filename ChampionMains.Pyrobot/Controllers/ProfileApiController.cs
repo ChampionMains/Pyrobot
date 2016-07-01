@@ -14,18 +14,16 @@ namespace ChampionMains.Pyrobot.Controllers
     [WebApiAuthorize]
     public class ProfileApiController : ApiController
     {
-        private readonly FlairService _flair;
         private readonly SummonerService _summoners;
         private readonly UserService _users;
-        private readonly SubRedditService _subreddit;
+        private readonly SubredditService _subreddit;
         private readonly WebJobService _webJob;
         private readonly UnitOfWork _unitOfWork;
 
-        public ProfileApiController(UserService users, SummonerService summoners, FlairService flair, SubRedditService subreddit, WebJobService webJob, UnitOfWork unitOfWork)
+        public ProfileApiController(UserService users, SummonerService summoners, SubredditService subreddit, WebJobService webJob, UnitOfWork unitOfWork)
         {
             _users = users;
             _summoners = summoners;
-            _flair = flair;
             _subreddit = subreddit;
             _webJob = webJob;
             _unitOfWork = unitOfWork;
@@ -48,11 +46,6 @@ namespace ChampionMains.Pyrobot.Controllers
             {
                 return Ok();
             }
-
-            if (!await _flair.SetUpdateFlagAsync(new[] {user}))
-            {
-                return Conflict("Unable to remove summoner.");
-            }
             return Conflict("Unable to remove summoner.");
         }
 
@@ -71,33 +64,6 @@ namespace ChampionMains.Pyrobot.Controllers
 
             await _webJob.QueueSummonerUpdate(summoner.Id);
             return Ok();
-        }
-
-        [HttpGet]
-        [Route("profile/api/summoners")]
-        public async Task<IEnumerable<object>> GetSummoners()
-        {
-            var user = await _users.GetUserAsync();
-            return user.Summoners.Select(summoner => new
-            {
-                id = summoner.Id,
-                region = summoner.Region.ToUpperInvariant(),
-                summonerName = summoner.Name,
-                rank = RankUtil.Stringify(summoner.Rank),
-                tier = summoner.Rank.Tier,
-                tierString = ((Tier) summoner.Rank.Tier).ToString().ToLower(),
-                division = summoner.Rank.Division,
-                totalPoints = summoner.ChampionMasteries.Select(cm => cm.Points).DefaultIfEmpty().Sum(),
-                champions = summoner.ChampionMasteries.ToDictionary(cm => cm.ChampionId, champ => new
-                {
-                    name = champ.Champion.Name,
-                    id = champ.ChampionId,
-                    identifier = champ.Champion.Identifier,
-                    points = champ.Points,
-                    level = champ.Level,
-                    prestige = RankUtil.GetPrestigeLevel(champ.Points)
-                })
-            });
         }
 
         [HttpGet]
@@ -144,7 +110,7 @@ namespace ChampionMains.Pyrobot.Controllers
 
             var subreddits = (await _subreddit.GetAllAsync()).Where(r => !r.AdminOnly || user.IsAdmin).Select(r =>
             {
-                var subredditUserData = user.SubRedditUsers.FirstOrDefault(f => f.SubRedditId == r.Id);
+                var subredditUserData = user.SubredditUserFlairs.FirstOrDefault(f => f.SubredditId == r.Id);
                 var flair = new SubredditUserDataViewModel()
                 {
                     SubredditId = r.Id,
@@ -153,6 +119,7 @@ namespace ChampionMains.Pyrobot.Controllers
                 {
                     flair.RankEnabled = subredditUserData.RankEnabled;
                     flair.ChampionMasteryEnabled = subredditUserData.ChampionMasteryEnabled;
+                    flair.PrestigeEnabled = r.PrestigeEnabled;
                     flair.FlairText = subredditUserData.FlairText;
                 }
 
@@ -164,6 +131,7 @@ namespace ChampionMains.Pyrobot.Controllers
                     AdminOnly = r.AdminOnly,
                     RankEnabled = r.RankEnabled,
                     ChampionMasteryEnabled = r.ChampionMasteryEnabled,
+                    PrestigeEnabled = r.PrestigeEnabled,
                     BindEnabled = r.BindEnabled,
                     Flair = flair
                 };

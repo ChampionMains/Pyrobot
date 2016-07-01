@@ -10,35 +10,31 @@ namespace ChampionMains.Pyrobot.Jobs
 {
     public class FlairUpdateJob
     {
-        private readonly FlairService _flairs;
         private readonly UserService _users;
-        private readonly SummonerService _summoners;
         private readonly RedditService _reddit;
-        private readonly SubRedditService _subReddits;
+        private readonly SubredditService _subreddits;
 
-        public FlairUpdateJob(FlairService flairs, UserService users, SummonerService summoners, RedditService reddit, SubRedditService subReddits)
+        public FlairUpdateJob(UserService users, RedditService reddit, SubredditService subreddits)
         {
-            _flairs = flairs;
             _users = users;
-            _summoners = summoners;
             _reddit = reddit;
-            _subReddits = subReddits;
+            _subreddits = subreddits;
         }
 
         public async Task Execute([QueueTrigger(WebJobQueue.FlairUpdate)] FlairUpdateMessage data)
         {
             var user = await _users.FindAsync(data.UserId);
 
-            var subReddit = (await _subReddits.GetAllAsync()).FirstOrDefault(s => s.Id == data.SubRedditId
+            var subreddit = (await _subreddits.GetAllAsync()).FirstOrDefault(s => s.Id == data.SubRedditId
                 &&(s.RankEnabled || s.ChampionMasteryEnabled) && (!s.AdminOnly || user.IsAdmin));
 
-            if (subReddit == null)
+            if (subreddit == null)
                 return;
 
-            var oldFlair = await _reddit.GetFlairAsync(subReddit.Name, user.Name);
-            var classes = RankUtil.GenerateFlairCss(user, subReddit.ChampionId, subReddit.RankEnabled & data.RankEnabled,
-                subReddit.ChampionMasteryEnabled & data.ChampionMasteryEnabled, oldFlair?.CssClass);
-            await _reddit.SetFlairAsync(subReddit.Name, user.Name, data.FlairText ?? oldFlair?.Text, classes);
+            var oldFlair = await _reddit.GetFlairAsync(subreddit.Name, user.Name);
+            var classes = RankUtil.GenerateFlairCss(user, subreddit.ChampionId, subreddit.RankEnabled & data.RankEnabled,
+                subreddit.ChampionMasteryEnabled & data.ChampionMasteryEnabled, oldFlair?.CssClass);
+            await _reddit.SetFlairAsync(subreddit.Name, user.Name, data.FlairText ?? oldFlair?.Text, classes);
         }
     }
 }

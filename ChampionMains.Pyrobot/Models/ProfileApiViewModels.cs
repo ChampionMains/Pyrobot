@@ -42,6 +42,7 @@ namespace ChampionMains.Pyrobot.Models
         public bool AdminOnly { get; set; }
         public bool RankEnabled { get; set; }
         public bool ChampionMasteryEnabled { get; set; }
+        public bool PrestigeEnabled { get; set; }
         public bool BindEnabled { get; set; }
 
         public SubredditUserDataViewModel Flair { get; set; }
@@ -50,10 +51,10 @@ namespace ChampionMains.Pyrobot.Models
     public class SubredditUserDataViewModel
     {
         public int SubredditId { get; set; }
-        //public string SubredditName { get; set; }
 
         public bool RankEnabled { get; set; }
         public bool ChampionMasteryEnabled { get; set; }
+        public bool PrestigeEnabled { get; set; }
         public string FlairText { get; set; }
     }
 }

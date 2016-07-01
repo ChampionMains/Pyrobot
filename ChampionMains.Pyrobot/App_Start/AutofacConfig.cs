@@ -50,9 +50,8 @@ namespace ChampionMains.Pyrobot
             // Services
             builder.RegisterType(typeof(UserService)).InstancePerLifetimeScope();
             builder.RegisterType(typeof(SummonerService)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof(SubRedditService)).InstancePerLifetimeScope();
+            builder.RegisterType(typeof(SubredditService)).InstancePerLifetimeScope();
             builder.RegisterType(typeof(RedditService)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof(FlairService)).InstancePerLifetimeScope();
             builder.RegisterType(typeof(ValidationService)).SingleInstance();
             builder.RegisterType(typeof(LeagueUpdateService)).InstancePerLifetimeScope();
             builder.Register(context => new RoleService(

@@ -14,11 +14,11 @@ namespace ChampionMains.Pyrobot.Areas.AdminPanel.Controllers
     public class SubscriptionsController : ApiController
     {
         private readonly RedditService _reddit;
-        private readonly SubRedditService _subReddits;
+        private readonly SubredditService _subreddits;
 
-        public SubscriptionsController(SubRedditService subReddits, RedditService reddit)
+        public SubscriptionsController(SubredditService subreddits, RedditService reddit)
         {
-            _subReddits = subReddits;
+            _subreddits = subreddits;
             _reddit = reddit;
         }
 
@@ -38,7 +38,7 @@ namespace ChampionMains.Pyrobot.Areas.AdminPanel.Controllers
         [HttpGet, Route("adminPanel/api/subscriptions")]
         public async Task<IHttpActionResult> Get()
         {
-            var entries = await _subReddits.GetAllAsync();
+            var entries = await _subreddits.GetAllAsync();
             return Ok(from e in entries
                       orderby e.Name
                       select new { name = e.Name, status = "Linked" });
@@ -57,7 +57,7 @@ namespace ChampionMains.Pyrobot.Areas.AdminPanel.Controllers
                 return BadRequest(ModelState);
 
             var moderatorSubs = await _reddit.GetSubRedditsAsync(SubRedditKind.Moderator);
-            var currentSubs = await _subReddits.GetAllAsync();
+            var currentSubs = await _subreddits.GetAllAsync();
 
             if (!moderatorSubs.Contains(model.Name, StringComparer.InvariantCultureIgnoreCase))
             {
@@ -69,7 +69,7 @@ namespace ChampionMains.Pyrobot.Areas.AdminPanel.Controllers
                 return Conflict("That Sub Reddit is already linked.");
             }
 
-            if (!await _subReddits.AddAsync(model.Name))
+            if (!await _subreddits.AddAsync(model.Name))
             {
                 return Conflict("Error linking Sub Reddit.");
             }

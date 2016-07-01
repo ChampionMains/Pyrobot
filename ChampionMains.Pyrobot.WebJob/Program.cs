@@ -38,9 +38,8 @@ namespace ChampionMains.Pyrobot.WebJob
             // Services
             builder.RegisterType(typeof(UserService)).InstancePerDependency();
             builder.RegisterType(typeof(SummonerService)).InstancePerDependency();
-            builder.RegisterType(typeof(SubRedditService)).InstancePerDependency();
+            builder.RegisterType(typeof(SubredditService)).InstancePerDependency();
             builder.RegisterType(typeof(RedditService)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof(FlairService)).InstancePerDependency();
             builder.RegisterType(typeof(ValidationService)).SingleInstance();
             builder.RegisterType(typeof(LeagueUpdateService)).InstancePerDependency();
             builder.Register(context => new RoleService(

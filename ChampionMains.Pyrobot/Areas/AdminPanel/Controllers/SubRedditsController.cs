@@ -8,17 +8,17 @@ namespace ChampionMains.Pyrobot.Areas.AdminPanel.Controllers
     [AdminAuthorize]
     public class SubRedditsController : ApiController
     {
-        private readonly SubRedditService _subReddits;
+        private readonly SubredditService _subreddits;
 
-        public SubRedditsController(SubRedditService subReddits)
+        public SubRedditsController(SubredditService subreddits)
         {
-            _subReddits = subReddits;
+            _subreddits = subreddits;
         }
 
-        [HttpGet, Route("adminPanel/subReddits")]
+        [HttpGet, Route("adminPanel/subreddits")]
         public async Task<IHttpActionResult> Get()
         {
-            var items = await _subReddits.GetAllAsync();
+            var items = await _subreddits.GetAllAsync();
             return Ok(from i in items
                       orderby i.Name
                       select new {name = i.Name, status = "Connected"});

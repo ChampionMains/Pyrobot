@@ -108,13 +108,37 @@
     <Compile Include="Migrations\201606280541163_flairtext-bindenabled.Designer.cs">
       <DependentUpon>201606280541163_flairtext-bindenabled.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201607010436276_rename-subreddituser-subreddituserflair.cs" />
+    <Compile Include="Migrations\201607010436276_rename-subreddituser-subreddituserflair.Designer.cs">
+      <DependentUpon>201607010436276_rename-subreddituser-subreddituserflair.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607010437362_rename-subreddit.cs" />
+    <Compile Include="Migrations\201607010437362_rename-subreddit.Designer.cs">
+      <DependentUpon>201607010437362_rename-subreddit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607010440287_rename-subreddituserflair-fksubredditid.cs" />
+    <Compile Include="Migrations\201607010440287_rename-subreddituserflair-fksubredditid.Designer.cs">
+      <DependentUpon>201607010440287_rename-subreddituserflair-fksubredditid.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607010442444_add-prestige.cs" />
+    <Compile Include="Migrations\201607010442444_add-prestige.Designer.cs">
+      <DependentUpon>201607010442444_add-prestige.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607010454452_rename-ixsubreddituser.cs" />
+    <Compile Include="Migrations\201607010454452_rename-ixsubreddituser.Designer.cs">
+      <DependentUpon>201607010454452_rename-ixsubreddituser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607010457007_rename-subreddituser-subredditfk.cs" />
+    <Compile Include="Migrations\201607010457007_rename-subreddituser-subredditfk.Designer.cs">
+      <DependentUpon>201607010457007_rename-subreddituser-subredditfk.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Champion.cs" />
     <Compile Include="Models\SubRedditUser.cs" />
     <Compile Include="Models\SummonerChampionMastery.cs" />
     <Compile Include="Models\SummonerRank.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Models\SubReddit.cs" />
+    <Compile Include="Models\Subreddit.cs" />
     <Compile Include="Models\Summoner.cs" />
     <Compile Include="Enums\Tier.cs" />
     <Compile Include="UnitOfWork.cs" />
@@ -149,6 +173,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201606280541163_flairtext-bindenabled.resx">
       <DependentUpon>201606280541163_flairtext-bindenabled.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607010436276_rename-subreddituser-subreddituserflair.resx">
+      <DependentUpon>201607010436276_rename-subreddituser-subreddituserflair.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607010437362_rename-subreddit.resx">
+      <DependentUpon>201607010437362_rename-subreddit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607010440287_rename-subreddituserflair-fksubredditid.resx">
+      <DependentUpon>201607010440287_rename-subreddituserflair-fksubredditid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607010442444_add-prestige.resx">
+      <DependentUpon>201607010442444_add-prestige.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607010454452_rename-ixsubreddituser.resx">
+      <DependentUpon>201607010454452_rename-ixsubreddituser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607010457007_rename-subreddituser-subredditfk.resx">
+      <DependentUpon>201607010457007_rename-subreddituser-subredditfk.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
