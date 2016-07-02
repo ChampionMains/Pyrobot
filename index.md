@@ -17,6 +17,8 @@ layout: default
   - ##### [Is it secure?](#security)
 - #### [Usage Manual](#manual)
   - ##### [Signing-in](#login)
+  - ##### [Adding Summoners](#add-summoner)
+  - ##### [Setting your flairs](#set-flair)
 
 * * *
 
@@ -143,25 +145,78 @@ directly, fell free to send a pull request.
 ## Signing-in
 {:id="login" name="login"}
 
-### Click the sign-in button
-
 Click the sign-in button on the index page to begin.
 
-![Reddit login page](./img/login.png){:class="img-thumbnail"}
-
-### Log in using your Reddit account
+![](./img/login-1.png){:class="img-thumbnail"}
 
 This is an official Reddit OAuth2 portal, and only gives this site publicly available information.
 Click allow.
 
-![Reddit login page](./img/reddit-oauth.png){:class="img-thumbnail"}
+![](./img/login-2.png){:class="img-thumbnail"}
 
-### Profile Page
+You will now see your profile page. On the top half of the page is a list of linked summoners, which
+is currently empty. On the bottom half is a list of subreddits.
 
-* * *
+To the left of each subreddit name is a mini-form where you change your flair settings. The three
+check buttons correspond to rank, champion mastery level, and champion mastery prestige. Prestige
+shows people who have over 250,000 champion mastery points. The greyed-out check boxes have been
+disabled by subreddit moderators.
+
+Because there aren't any linked summoners, you will be unranked, and your champion mastery will show
+up as zero.
+
+![](./img/login-3.png){:class="img-thumbnail"}
+
+## Adding Summoners
+{:id="add-summoner" name="add-summoner"}
+
+Click the "Add Summoner" button. This will bring up a dialog asking for your summoner's basic
+information: name and region. Enter your information, then click "confirm".
+
+![](./img/add-1.png){:class="img-thumbnail"}
+
+The site will then generate a random code to validate your summoner. You will need to go to your
+League of Legends client and rename a rune page to the code.
+
+![](./img/add-2.png){:class="img-thumbnail"}
+
+In your League client, click the rune page title bar and enter your validation code, then click the
+floppy disk button in the bottom right corner to save. You will be able to change the name back
+after you validate.
+
+![](./img/add-3.png){:class="img-thumbnail"}
+
+Go back to the website, and click the "confirm" button. If successful, you should now see your
+summoner in the list. The rank and mastery points should load in soon after. You can now change back
+your rune page name if you wish.
+
+The summoner info will refresh nightly. If you wish to refresh it manually, you can click the button
+on the left with the refresh icon. If you want to remove the summoner, click the red "x" button.
+
+You can add as many summoners as you like, and the site will automatically add up your champion
+mastery points. The rank shown will be the highest rank of all your summoners.
+
+![](./img/add-4.png){:class="img-thumbnail"}
+
+## Setting your flairs
+{:id="set-flair" name="set-flair"}
+
+Go to the subreddit you want to set your flair for. Click the checkboxes on the left to set enable
+or disable different parts of the flair. Enter your flair text in the textbox to the right.
+
+![](./img/flair-1.png){:class="img-thumbnail"}
+
+Click the checkmark button on the right to have the bot update your flair. The bot will preserve
+your existing flair image. In a few moments, the Reddit flair will be updated.
+
+If you change your flair image or flair text, the bot will re-add the rank/mastery/prestige,
+but preserve the changes.
+
+![](./img/flair-2.png){:class="img-thumbnail"}
 
 
-> Finally everyone knows how massive my dick is, thanks to the flairbot, thanks LUGNUTSK
->
-> _-Michael Scott_
+
+
+
+
 
