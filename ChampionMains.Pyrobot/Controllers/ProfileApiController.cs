@@ -119,7 +119,7 @@ namespace ChampionMains.Pyrobot.Controllers
                 {
                     flair.RankEnabled = subredditUserData.RankEnabled;
                     flair.ChampionMasteryEnabled = subredditUserData.ChampionMasteryEnabled;
-                    flair.PrestigeEnabled = r.PrestigeEnabled;
+                    flair.PrestigeEnabled = subredditUserData.PrestigeEnabled;
                     flair.FlairText = subredditUserData.FlairText;
                 }
 
