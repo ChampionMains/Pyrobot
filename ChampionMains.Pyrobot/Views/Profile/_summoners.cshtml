@@ -72,7 +72,7 @@
                             <span class="prestige" ng-class="'prestige-' + (api.champions[subreddit.championId].prestige / 1000)"></span>
                         </label>
                     </span>
-                    <input type="text" ng-model="subreddit.flair.flairText" ng-disabled="subreddit.busy" class="form-control" placeholder="flair text"/>
+                    <input type="text" ng-model="flairData.flairText" ng-disabled="subreddit.busy" class="form-control" placeholder="flair text"/>
                     <span class="input-group-btn"><button class="btn btn-success" ng-disabled="subreddit.busy" type="submit"><span class="fa fa-check"></span></button></span>
                 </form>
             </td>

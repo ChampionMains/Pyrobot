@@ -191,6 +191,16 @@ namespace ChampionMains.Pyrobot.Data.Migrations
                 // ADMIN ONLY BELOW
                 new Subreddit()
                 {
+                    ChampionId = cd["Soraka"],
+                    Name = "SorakaMains",
+                    AdminOnly = false,
+                    RankEnabled = false,
+                    ChampionMasteryEnabled = true,
+                    PrestigeEnabled = false,
+                    BindEnabled = false
+                },
+                new Subreddit()
+                {
                     ChampionId = cd["Nami"],
                     Name = "NamiMains",
                     AdminOnly = true,

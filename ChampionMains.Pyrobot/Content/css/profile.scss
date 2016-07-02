@@ -82,7 +82,7 @@ table.table {
     label.btn {
         padding-left: 6px !important;
         padding-right: 6px !important;
-        &:not(.active), &.disabled {
+        /*&:not(.active), &.disabled {
             .on { display: none; }
         }
         &.active, &.disabled {
@@ -90,6 +90,9 @@ table.table {
         }
         &:not(.disabled) .dis {
             display: none;
+        }*/
+        &.disabled {
+            opacity: 0.4;
         }
     }
 }
