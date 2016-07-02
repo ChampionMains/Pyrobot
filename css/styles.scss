@@ -1,0 +1,54 @@
+---
+---
+body {
+  font-size: 16px;
+}
+
+@media (min-width: 1200px) {
+  body > .container {
+    width: 940px;
+  }
+}
+
+.content {
+  padding-left: 45px;
+  h1, h2, hr {
+    margin-left: -30px;
+  }
+  h3 {
+    margin-left: -15px;
+  }
+}
+
+blockquote {
+  font-size: inherit;
+  position: relative;
+  padding-top: 21px;
+  
+  &::before {
+    content: '“';
+    
+    color: #464545;
+    font-size: 5em;
+    font-family: serif;
+    
+    position: absolute;
+    top: 0;
+    left: 19px;
+    line-height: 70%;
+    z-index: -1;
+  }
+}
+
+h2 {
+  margin-top: 42px;
+}
+
+footer {
+  color: #777;
+}
+
+img {
+  filter: saturate(125%) brightness(80%);
+  -webkit-filter: saturate(125%) brightness(80%);
+}
