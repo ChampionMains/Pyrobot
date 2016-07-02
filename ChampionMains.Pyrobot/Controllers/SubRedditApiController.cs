@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Data.Entity.Validation;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Web.Http;
 using ChampionMains.Pyrobot.Attributes;
 using ChampionMains.Pyrobot.Data.WebJob;
@@ -14,17 +10,15 @@ namespace ChampionMains.Pyrobot.Controllers
     [WebApiAuthorize]
     public class SubredditApiController : ApiController
     {
-        private readonly FlairService _flair;
         private readonly SummonerService _summoners;
         private readonly UserService _users;
         private readonly WebJobService _webJob;
         private readonly SubredditService _subreddits;
 
-        public SubredditApiController(UserService users, SummonerService summoners, FlairService flair, WebJobService webJob, SubredditService subreddits)
+        public SubredditApiController(UserService users, SummonerService summoners, WebJobService webJob, SubredditService subreddits)
         {
             _users = users;
             _summoners = summoners;
-            _flair = flair;
             _webJob = webJob;
             _subreddits = subreddits;
         }

@@ -96,32 +96,48 @@ table.table {
 
 /* Spritesheets */
 
+$prestiges: 0 250 500 750 1000;
+@each $prestige in $prestiges {
+  .prestige.prestige-#{$prestige}::after {
+    content: '' + if($prestige == 1000, '1M', $prestige);
+  }
+}
+
 $ranks: unranked bronze silver gold platinum diamond master challenger;
 @each $rank in $ranks {
     $i: index($ranks, $rank);
     .rank.rank-#{$rank}, .mastery.mastery-#{$i} { background-position: 0 (-100% * ($i - 1)); }
 }
-.rank {
-    background: url("~/Content/img/ranks.png") 999px 0 / 100% repeat-y;
-    width: 70px;
-    height: 70px;
+
+.rank.xs, .mastery, .prestige {
     display: inline-block;
-    vertical-align: middle;
+    width: 25px;
+    height: 25px;
+    margin: -3px 0;
+    vertical-align: top;
+    text-align: center;
+    line-height: 25px;
+
+    border-radius: 3px;
+    background-color: rgba(#fff, 0.1) !important;
 }
 
+.rank {
+    background: url("~/Content/img/ranks.png") 0 0 / 100% repeat-y;
+    width: 70px;
+    height: 70px;
+    vertical-align: middle;
+}
 .rank.sm {
     width: 35px;
     height: 35px;
     margin: -5px 0;
 }
-.rank.xs, .mastery {
-    width: 25px;
-    height: 25px;
-    margin: -3px 0;
-    vertical-align: top;
-}
 
 .mastery {
     background: url("~/Content/img/masteries.png") 999px 0 / 100% repeat-y;
-    display: inline-block;
+    &.mastery-0::after { content: '0'; }
+}
+.prestige {
+    color: #fd0;
 }
