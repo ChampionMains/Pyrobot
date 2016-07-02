@@ -1,6 +1,0 @@
-﻿CREATE TABLE [dbo].[Champion](
-	[Id] SMALLINT IDENTITY NOT NULL,
-	[Name] NVARCHAR(24) NOT NULL UNIQUE,
-
-	CONSTRAINT PK_ChampionEnum PRIMARY KEY ([Id])
-)

@@ -193,7 +193,7 @@ namespace ChampionMains.Pyrobot.Data.Migrations
                 {
                     ChampionId = cd["Soraka"],
                     Name = "SorakaMains",
-                    AdminOnly = false,
+                    AdminOnly = true,
                     RankEnabled = false,
                     ChampionMasteryEnabled = true,
                     PrestigeEnabled = false,
