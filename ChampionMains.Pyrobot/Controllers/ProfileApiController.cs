@@ -77,6 +77,7 @@ namespace ChampionMains.Pyrobot.Controllers
                 Id = s.Id,
                 Region = s.Region.ToUpperInvariant(),
                 Name = s.Name,
+                ProfileIcon = s.ProfileIconId,
                 Rank = RankUtil.Stringify(s.Rank),
                 Tier = s.Rank.Tier,
                 TierString = ((Tier) s.Rank.Tier).ToString().ToLower(),

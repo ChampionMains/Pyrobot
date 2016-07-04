@@ -25,7 +25,10 @@
                 </div>
             </td>
             <td ng-bind="summoner.region"></td>
-            <td ng-bind="summoner.name"></td>
+            <td>
+                <img class="champion" summoner-img="summoner.profileIcon" alt="icon" />
+                <span ng-bind="summoner.name"></span>
+            </td>
             <td>
                 <span ng-show="summoner.rank" class="rank sm" ng-class="'rank-' + summoner.tierString"></span>
                 <span ng-bind="summoner.rank"></span>

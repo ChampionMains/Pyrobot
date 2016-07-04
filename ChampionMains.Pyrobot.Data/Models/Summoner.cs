@@ -15,10 +15,15 @@ namespace ChampionMains.Pyrobot.Data.Models
         [Required]
         public string Name { get; set; }
 
+        [Index("IX_Region_SummonerId", 1, IsUnique = true)]
         [StringLength(5)]
         [Required]
         public string Region { get; set; }
         
+        [Required]
+        public int ProfileIconId { get; set; }
+
+        [Index("IX_Region_SummonerId", 2, IsUnique = true)]
         [Required]
         public long SummonerId { get; set; }
 

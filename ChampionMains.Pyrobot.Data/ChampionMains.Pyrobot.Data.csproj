@@ -54,12 +54,12 @@
       <HintPath>..\packages\Microsoft.Data.Services.Client.5.7.0\lib\net40\Microsoft.Data.Services.Client.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.WindowsAzure.Storage, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\WindowsAzure.Storage.7.0.0\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
+    <Reference Include="Microsoft.WindowsAzure.Storage, Version=7.1.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\WindowsAzure.Storage.7.1.2\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -136,6 +136,22 @@
     <Compile Include="Migrations\201607030216202_user-users.Designer.cs">
       <DependentUpon>201607030216202_user-users.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201607042016239_profileicon.cs" />
+    <Compile Include="Migrations\201607042016239_profileicon.Designer.cs">
+      <DependentUpon>201607042016239_profileicon.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607042022277_profileicon-profileiconid.cs" />
+    <Compile Include="Migrations\201607042022277_profileicon-profileiconid.Designer.cs">
+      <DependentUpon>201607042022277_profileicon-profileiconid.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607042031149_profileiconid-int.cs" />
+    <Compile Include="Migrations\201607042031149_profileiconid-int.Designer.cs">
+      <DependentUpon>201607042031149_profileiconid-int.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607042117407_ixregionsummonerid.cs" />
+    <Compile Include="Migrations\201607042117407_ixregionsummonerid.Designer.cs">
+      <DependentUpon>201607042117407_ixregionsummonerid.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Champion.cs" />
     <Compile Include="Models\SubRedditUser.cs" />
@@ -198,6 +214,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201607030216202_user-users.resx">
       <DependentUpon>201607030216202_user-users.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607042016239_profileicon.resx">
+      <DependentUpon>201607042016239_profileicon.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607042022277_profileicon-profileiconid.resx">
+      <DependentUpon>201607042022277_profileicon-profileiconid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607042031149_profileiconid-int.resx">
+      <DependentUpon>201607042031149_profileiconid-int.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607042117407_ixregionsummonerid.resx">
+      <DependentUpon>201607042117407_ixregionsummonerid.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -30,19 +30,18 @@ namespace ChampionMains.Pyrobot.Jobs
             if (summoner == null)
                 return;
 
-            var rankTask = _riot.GetLeaguesAsync(summoner.Region, summoner.SummonerId);
-            var championMasteriesTask = _riot.GetChampionMasteriesAsync(summoner.Region, summoner.SummonerId);
-
-            //TODO: update if name changes
-
-            var rank = await rankTask;
-            var championMasteries = await championMasteriesTask;
+            var summoner2 = await _riot.FindSummonerAsync(summoner.Region, summoner.SummonerId);
+            var rank = await _riot.GetLeaguesAsync(summoner.Region, summoner.SummonerId);
+            var championMasteries = await _riot.GetChampionMasteriesAsync(summoner.Region, summoner.SummonerId);
 
             if (rank != null)
-                _summoners.UpdateLeagueAsync(summoner, (byte)rank.Item1, rank.Item2);
+                _summoners.UpdateLeagueAsync(summoner, (byte) rank.Item1, rank.Item2);
             _summoners.UpdateChampionMasteriesAsync(championMasteries, summoner);
+            // calls savechanges
+            await _summoners.AddOrUpdateSummonerAsync(summoner.User, summoner.SummonerId, summoner.Region,
+                summoner2.Name, summoner2.ProfileIconId);
 
-            await _summoners.SaveChanges();
+            //await _summoners.SaveChanges();
         }
     }
 }

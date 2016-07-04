@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
 
 namespace ChampionMains.Pyrobot.Models
 {
@@ -15,6 +14,7 @@ namespace ChampionMains.Pyrobot.Models
         public int Id { get; set; }
         public string Region { get; set; }
         public string Name { get; set; }
+        public int ProfileIcon { get; set; }
         public string Rank { get; set; }
         public byte Tier { get; set; }
         public string TierString { get; set; }

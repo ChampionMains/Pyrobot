@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Validation;
 using System.Linq;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data;
 using ChampionMains.Pyrobot.Data.Models;
 using ChampionMains.Pyrobot.Riot;
-using ChampionMains.Pyrobot.Services;
 using Summoner = ChampionMains.Pyrobot.Data.Models.Summoner;
 
 namespace ChampionMains.Pyrobot.Services
@@ -21,18 +19,32 @@ namespace ChampionMains.Pyrobot.Services
             UnitOfWork = unitOfWork;
         }
 
-        public async Task<Summoner> AddSummonerAsync(User user, long summonerId, string region, string name)
+        public async Task<Summoner> AddOrUpdateSummonerAsync(User user, long summonerId, string region, string name, int profileIconId)
         {
-            var summoner = new Summoner
+            var summoner = user.Summoners.FirstOrDefault(s => s.Region == region && s.SummonerId == summonerId);
+            if (summoner == null)
             {
-                Rank = new SummonerRank(),
-                Name = name,
-                Region = region,
-                SummonerId = summonerId,
-                User = user
-            };
-            user.Summoners.Add(summoner);
-            await UnitOfWork.SaveChangesAsync();
+                summoner = new Summoner()
+                {
+                    Rank = new SummonerRank(),
+                    User = user,
+                    Region = region,
+                    SummonerId = summonerId
+                };
+                user.Summoners.Add(summoner);
+            }
+
+            summoner.Name = name;
+            summoner.ProfileIconId = profileIconId;
+
+            try
+            {
+                await UnitOfWork.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
             return summoner;
         }
 

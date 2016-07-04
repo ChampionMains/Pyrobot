@@ -6,6 +6,7 @@ using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Riot;
 using ChampionMains.Pyrobot.Services.Riot;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Summoner = ChampionMains.Pyrobot.Data.Models.Summoner;
 
 namespace ChampionMains.Pyrobot.Services
@@ -20,10 +21,21 @@ namespace ChampionMains.Pyrobot.Services
         public async Task<Summoner> FindSummonerAsync(string region, string summonerName)
         {
             var uri = SummonerBaseUri + "by-name/" + Uri.EscapeDataString(summonerName);
-            var json = await WebRequester.SendRequestAsync(region, uri);
+            return GetSummonerFromResponse(await WebRequester.SendRequestAsync(region, uri));
+        }
+
+        public async Task<Summoner> FindSummonerAsync(string region, long summonerId)
+        {
+            var uri = SummonerBaseUri + summonerId;
+            return GetSummonerFromResponse(await WebRequester.SendRequestAsync(region, uri));
+        }
+
+        private Summoner GetSummonerFromResponse(JToken json)
+        {
             var results = json?.ToObject<IDictionary<string, Summoner>>();
             return results?.Count > 0 ? results.First().Value : null;
         }
+
 
         public async Task<Tuple<Tier, byte>> GetLeaguesAsync(string region, long summonerId)
         {

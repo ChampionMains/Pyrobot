@@ -98,7 +98,7 @@ namespace ChampionMains.Pyrobot.Controllers
 
                 // Create the data entity and associate it with the current user
                 var currentSummoner =
-                    await Summoners.AddSummonerAsync(user, riotSummoner.Id, model.Region, riotSummoner.Name);
+                    await Summoners.AddOrUpdateSummonerAsync(user, riotSummoner.Id, model.Region, riotSummoner.Name, riotSummoner.ProfileIconId);
 
                 // Send confirmation mail.
                 //TODO
@@ -107,14 +107,6 @@ namespace ChampionMains.Pyrobot.Controllers
 
                 // Queue up the league update.
                 await WebJob.QueueSummonerUpdate(currentSummoner.Id);
-
-                //TODO:these must be executed in order
-                // Queue up flair update.
-                //await WebJob.QueueFlairUpdate(user.Id);
-
-                // Queue up confirmation mail.
-                //jobId = BackgroundJob.ContinueWith<ConfirmFlairUpdatedMailJob>(jobId,
-                //    job => job.Execute(user.Id, currentSummoner.Id));
 
                 return Ok();
             }

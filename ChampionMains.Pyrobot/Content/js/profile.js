@@ -39,12 +39,22 @@
             }
         };
     }).directive('champImg', function() {
-        var baseUrl = Riot.DDragon.m.cdn + '/' + Riot.DDragon.m.n.champion + '/img/champion/';
+        var baseUrl = window.Riot.DDragon.m.cdn + '/' + window.Riot.DDragon.m.n.champion + '/img/champion/';
         return {
             scope: { champImg: '=' },
             link: function(scope, element, attrs) {
                 scope.$watch('champImg', function(val) {
-                    attrs.$set('src', baseUrl + scope.champImg + '.png');
+                    attrs.$set('src', baseUrl + val + '.png');
+                });
+            }
+        }
+    }).directive('summonerImg', function() {
+        var baseUrl = window.Riot.DDragon.m.cdn + '/' + window.Riot.DDragon.m.n.profileicon + '/img/profileicon/';
+        return {
+            scope: { summonerImg: '=' },
+            link: function(scope, element, attrs) {
+                scope.$watch('summonerImg', function(val) {
+                    attrs.$set('src', baseUrl + val + '.png');
                 });
             }
         }
