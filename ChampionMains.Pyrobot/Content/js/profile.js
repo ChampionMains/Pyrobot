@@ -1,4 +1,6 @@
 ﻿(function(app) {
+    'use strict';
+
     app.factory('api', function($q, $timeout, ajax) {
         return {
             summoners: [],
@@ -6,22 +8,27 @@
             subreddits: [],
             loading: false,
 
+            status: null,
+
             pollPromise: null,
             poll: function(i) {
                 // default: polls 4 times every 5 seconds (total ~15 seconds; fencepost counting)
-                i = i == undefined ? 4 : 0;
+                i = i === undefined ? 4 : i;
                 var $this = this;
                 $timeout.cancel($this.pollPromise);
                 $this.loading = true;
+
                 ajax.get('/profile/api/data', function(ok, data) {
                     $this.loading = false;
-                    if(!ok) {
-                        $this.status = { error: 'Error loading summoners' };
-                        return;
+
+                    if(ok) {
+                        $this.status = null;
+                        var keys = Object.keys(data.result);
+                        for(var j = 0; j < keys.length; j++)
+                            $this[keys[j]] = data.result[keys[j]];
                     }
-                    var keys = Object.keys(data.result);
-                    for (var j = 0; j < keys.length; j++)
-                        $this[keys[j]] = data.result[keys[j]];
+                    else
+                        $this.status = { error: 'Error loading summoners' };
 
                     // delay either 5 seconds or an hour
                     var delay = (--i > 0) ? 5e3 : 3.6e6;
@@ -41,6 +48,14 @@
                 });
             }
         }
+    }).filter('prestige', function() {
+        return function(num) {
+            if (typeof num !== 'number')
+                return num;
+            if (num > 1e6)
+                return num / 1e6 + 'M';
+            return num / 1e3 + 'k';
+        };
     });
 
     app.controller('MainController', function($scope, $timeout, ajax, modal, api) {

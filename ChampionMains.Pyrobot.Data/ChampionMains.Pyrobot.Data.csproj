@@ -132,6 +132,10 @@
     <Compile Include="Migrations\201607010457007_rename-subreddituser-subredditfk.Designer.cs">
       <DependentUpon>201607010457007_rename-subreddituser-subredditfk.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201607030216202_user-users.cs" />
+    <Compile Include="Migrations\201607030216202_user-users.Designer.cs">
+      <DependentUpon>201607030216202_user-users.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Champion.cs" />
     <Compile Include="Models\SubRedditUser.cs" />
@@ -191,6 +195,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201607010457007_rename-subreddituser-subredditfk.resx">
       <DependentUpon>201607010457007_rename-subreddituser-subredditfk.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607030216202_user-users.resx">
+      <DependentUpon>201607030216202_user-users.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

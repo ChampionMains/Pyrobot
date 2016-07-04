@@ -1,4 +1,6 @@
-﻿(function (app) {
+﻿(function(app) {
+    'use strict';
+
     app.directive('ngTooltip', function () {
         return {
             restrict: 'A',

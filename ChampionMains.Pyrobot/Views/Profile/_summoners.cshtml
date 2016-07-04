@@ -87,7 +87,7 @@
                 <span class="prestige" ng-class="'prestige-' + (api.champions[subreddit.championId].prestige / 1000)"></span>
 
                 <span ng-bind="api.champions[subreddit.championId].points | number"></span> / 
-                <span ng-bind="api.champions[subreddit.championId].nextPrestige / 1000 | number"></span>k
+                <span ng-bind="api.champions[subreddit.championId].nextPrestige | prestige"></span>
             </td>
         </tr>
     </tbody>

@@ -223,6 +223,7 @@
     <Content Include="Content\js\angular-services.js" />
     <Content Include="Content\js\angular.min.js" />
     <Content Include="Content\js\bootstrap.min.js" />
+    <Content Include="Content\js\ga.js" />
     <Content Include="Content\js\jquery.min.js" />
     <Content Include="Content\js\profile.js" />
     <Content Include="Global.asax" />

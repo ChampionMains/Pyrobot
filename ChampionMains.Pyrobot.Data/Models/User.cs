@@ -6,22 +6,27 @@ using System.Data;
 
 namespace ChampionMains.Pyrobot.Data.Models
 {
+    [Table("User")]
     public class User
     {
         public DateTimeOffset? FlairUpdateRequiredTime { get; set; }
         public DateTimeOffset? FlairUpdatedTime { get; set; }
 
+        [Required]
+        [Key]
         public int Id { get; set; }
-
-        public bool IsBanned { get; set; }
-
-        public bool IsAdmin { get; set; }
         
         [Index(IsUnique = true)]
         [Required]
         [StringLength(21)]
         public string Name { get; set; }
-        
+
+        [Required]
+        public bool IsBanned { get; set; }
+
+        [Required]
+        public bool IsAdmin { get; set; }
+
         public virtual ICollection<Summoner> Summoners { get; set; } 
 
         public virtual ICollection<SubredditUserFlair> SubredditUserFlairs { get; set; }
