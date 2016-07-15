@@ -286,11 +286,15 @@
     <None Include="Properties\PublishProfiles\championmains-pyrobot - Web Deploy.pubxml" />
     <Content Include="Properties\webjobs-list.json" />
     <Content Include="Views\Web.config" />
-    <None Include="Web.Debug.config">
+    <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
-    </None>
-    <None Include="Web.Release.config">
+    </Content>
+    <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <None Include="Web.template.config" />
+    <None Include="Web.Local.config">
+      <DependentUpon>Web.template.config</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -361,4 +365,14 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="CopyWebTemplateConfig" BeforeTargets="Build">
+    <Copy SourceFiles="Web.template.config"
+          DestinationFiles="Web.config"/>
+  </Target>
+  <Target Name="UpdateWebConfigBeforeRun" AfterTargets="CopyWebTemplateConfig">
+    <Message Text="Configuration: $(Configuration): Web.Local.config" Importance="high" />
+    <TransformXml Source="Web.template.config"
+              Transform="Web.Local.config"
+              Destination="Web.config" />
+  </Target>
 </Project>
