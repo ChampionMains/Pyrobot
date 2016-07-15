@@ -227,9 +227,6 @@
     <Content Include="Content\js\jquery.min.js" />
     <Content Include="Content\js\profile.js" />
     <Content Include="Global.asax" />
-    <Content Include="Web.config">
-      <SubType>Designer</SubType>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\ValidateModelAttribute.cs" />
@@ -269,7 +266,6 @@
     </Content>
     <Content Include="Views\Login\index.cshtml" />
     <Content Include="Views\Profile\index.cshtml" />
-    <Content Include="Areas\AdminPanel\Views\Web.config" />
     <Content Include="Areas\AdminPanel\Views\AdminDefault\index.cshtml" />
     <Content Include="Areas\AdminPanel\Views\AdminDefault\_subreddits.cshtml" />
     <Content Include="Areas\AdminPanel\Views\AdminDefault\_subscriptions.cshtml" />
@@ -279,18 +275,18 @@
     <Content Include="Content\css\normalize.css" />
     <Content Include="Content\css\bootswatch.css" />
     <Content Include="Views\Profile\_summoners.cshtml" />
-    <Content Include="Views\Login\about.cshtml" />
+    <Content Include="Areas\AdminPanel\Views\Web.config" />
     <None Include="Content\css\about.scss" />
     <Content Include="Content\css\profile.scss" />
     <Content Include="Content\css\site.scss" />
     <None Include="Properties\PublishProfiles\championmains-pyrobot - Web Deploy.pubxml" />
     <Content Include="Properties\webjobs-list.json" />
     <Content Include="Views\Web.config" />
-    <None Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
-    <None Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
+    <!-- - -->
+    <None Include="Web.config" />
+    <Content Include="Web.template.config" />
+    <None Include="Web.Local.config">
+      <DependentUpon>Web.template.config</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -361,4 +357,11 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="CopyWebTemplateConfig" BeforeTargets="Build">
+    <Copy SourceFiles="Web.template.config" DestinationFiles="Web.config" />
+  </Target>
+  <Target Name="UpdateWebConfigBeforeRun" AfterTargets="CopyWebTemplateConfig" Condition="Exists('Web.Local.Config')">
+    <Message Text="Configuration: $(Configuration): Web.Local.config" Importance="high" />
+    <TransformXml Source="Web.template.config" Transform="Web.Local.config" Destination="Web.config" />
+  </Target>
 </Project>

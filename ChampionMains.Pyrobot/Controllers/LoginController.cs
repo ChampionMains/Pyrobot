@@ -19,10 +19,10 @@ namespace ChampionMains.Pyrobot.Controllers
             _users = users;
         }
 
-        public ActionResult About()
-        {
-            return View();
-        }
+        //public ActionResult About()
+        //{
+        //    return View();
+        //}
 
         public ActionResult Index(string subreddit)
         {
