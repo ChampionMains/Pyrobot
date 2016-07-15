@@ -285,14 +285,14 @@
     <Content Include="Content\css\site.scss" />
     <None Include="Properties\PublishProfiles\championmains-pyrobot - Web Deploy.pubxml" />
     <Content Include="Properties\webjobs-list.json" />
-    <Content Include="Views\Web.config" />
-    <Content Include="Web.Debug.config">
+    <None Include="Views\Web.config" />
+    <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
-    </Content>
-    <Content Include="Web.Release.config">
+    </None>
+    <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
-    </Content>
-    <None Include="Web.template.config" />
+    </None>
+    <Content Include="Web.template.config" />
     <None Include="Web.Local.config">
       <DependentUpon>Web.template.config</DependentUpon>
     </None>
