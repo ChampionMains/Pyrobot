@@ -361,7 +361,7 @@
     <Copy SourceFiles="Web.template.config" DestinationFiles="Web.config" />
   </Target>
   <Target Name="UpdateWebConfigBeforeRun" AfterTargets="CopyWebTemplateConfig" Condition="Exists('Web.Local.Config')">
-    <Message Text="Applying Web.config transform: Web.Local.config" Importance="high" />
+    <Message Text="Configuration: $(Configuration): Web.Local.config" Importance="high" />
     <TransformXml Source="Web.template.config" Transform="Web.Local.config" Destination="Web.config" />
   </Target>
 </Project>
