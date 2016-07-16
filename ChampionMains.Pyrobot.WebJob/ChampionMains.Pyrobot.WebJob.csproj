@@ -168,6 +168,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Content Include="App.template.config" />
+    <None Include="App.Local.config">
+      <DependentUpon>App.template.config</DependentUpon>
+    </None>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -215,4 +219,11 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="CopyAppTemplateConfig" BeforeTargets="Build">
+    <Copy SourceFiles="App.template.config" DestinationFiles="App.config" />
+  </Target>
+  <Target Name="UpdateAppConfigBeforeRun" AfterTargets="CopyAppTemplateConfig" Condition="Exists('App.Local.Config')">
+    <Message Text="Applying App.config transform: App.Local.config" Importance="high" />
+    <TransformXml Source="App.template.config" Transform="App.Local.config" Destination="App.config" />
+  </Target>
 </Project>
