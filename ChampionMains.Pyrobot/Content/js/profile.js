@@ -39,7 +39,7 @@
             }
         };
     }).directive('champImg', function() {
-        var baseUrl = window.Riot.DDragon.m.cdn + '/' + window.Riot.DDragon.m.n.champion + '/img/champion/';
+        var baseUrl = window.Riot.DDragon.m.cdn.replace('http://', '//') + '/' + window.Riot.DDragon.m.n.champion + '/img/champion/';
         return {
             scope: { champImg: '=' },
             link: function(scope, element, attrs) {
@@ -49,7 +49,7 @@
             }
         }
     }).directive('summonerImg', function() {
-        var baseUrl = window.Riot.DDragon.m.cdn + '/' + window.Riot.DDragon.m.n.profileicon + '/img/profileicon/';
+        var baseUrl = window.Riot.DDragon.m.cdn.replace('http://', '//') + '/' + window.Riot.DDragon.m.n.profileicon + '/img/profileicon/';
         return {
             scope: { summonerImg: '=' },
             link: function(scope, element, attrs) {
