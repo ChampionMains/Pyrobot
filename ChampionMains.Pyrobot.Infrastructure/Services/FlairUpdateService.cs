@@ -17,7 +17,7 @@ namespace ChampionMains.Pyrobot.Services
             _context = context;
         }
 
-        public async Task<ICollection<User>> GetUsersForUpdateAsync(int max)
+        public async Task<ICollection<User>> GetUsersForUpdateAsync(int max = 100)
         {
             var query = from user in _context.Users
                         where user.FlairUpdateRequiredTime.HasValue

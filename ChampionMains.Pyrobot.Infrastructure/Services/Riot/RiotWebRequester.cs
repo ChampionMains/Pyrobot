@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data.Enums;
@@ -17,27 +18,105 @@ namespace ChampionMains.Pyrobot.Services.Riot
             new[] { "BR1", "EUN1", "EUW1", "JP1", "KR", "LA1", "LA2", "NA1", "OC1", "RU", "TR1" }, 
             (k, v) => new { k, v }).ToDictionary(x => x.k, x => x.v, StringComparer.OrdinalIgnoreCase);
 
-        private static readonly TimeSpan RatePeriodDuration = TimeSpan.FromSeconds(10);
-
-        private class ThrottleState
+        private class RateLimitThrottle
         {
+            private const string XRateLimitCount = "X-Rate-Limit-Count";
+
+            private readonly IDictionary<TimeSpan, int> _timeSpanLimits;
+            private readonly IDictionary<TimeSpan, int> _counts = new Dictionary<TimeSpan, int>();
+
             public readonly SemaphoreSlim Lock = new SemaphoreSlim(1, 1);
-            public int NumRequests;
-            public DateTime RatePeriodStart = DateTime.MinValue;
+
+            private DateTime _lastUpdate = DateTime.MinValue;
+            private TimeSpan _retryAfter = TimeSpan.Zero;
+
+            public RateLimitThrottle(string rateLimit)
+            {
+                _timeSpanLimits = ParseRateLimit(rateLimit);
+
+                if (_timeSpanLimits == null)
+                {
+                    throw new ArgumentException(nameof(rateLimit) + " string format is invalid");
+                }
+
+                foreach (var timeSpan in _timeSpanLimits.Keys)
+                {
+                    _counts[timeSpan] = 0;
+                }
+            }
+
+            public void UpdateRateLimit(HttpResponseMessage response)
+            {
+                _lastUpdate = DateTime.Now;
+
+                if (response.Headers.Contains(XRateLimitCount))
+                {
+                    var rateLimitHeader = response.Headers.GetValues(XRateLimitCount).First();
+                    var newCounts = ParseRateLimit(rateLimitHeader);
+                    if  (newCounts != null)
+                        foreach (var kvp in newCounts)
+                            _counts[kvp.Key] = kvp.Value;
+                }
+
+                if (response.Headers.RetryAfter != null)
+                {
+                    int delay;
+                    if (int.TryParse(response.Headers.RetryAfter.ToString().Trim(), out delay))
+                        _retryAfter = TimeSpan.FromSeconds(delay);
+                }
+            }
+
+            private static IDictionary<TimeSpan, int> ParseRateLimit(string rateLimit)
+            {
+                if (!Regex.IsMatch(rateLimit, @"^\d+:\d+(,\s*\d+:\d+)*$"))
+                    return null;
+
+                return rateLimit.Split(',')
+                    .Select(str => str.Trim().Split(':'))
+                    .ToDictionary(pair => TimeSpan.FromSeconds(int.Parse(pair[1])), pair => int.Parse(pair[0]));
+            }
+
+            public async Task Throttle()
+            {
+                var now = DateTime.Now;
+                var waitTime = TimeSpan.Zero;
+
+                // respect x-rate-limit header
+                foreach (var kvp in _timeSpanLimits)
+                {
+                    var timeSpan = kvp.Key;
+
+                    var delay = _lastUpdate + timeSpan - now;
+                    if (delay <= waitTime)
+                        continue;
+
+                    if (_counts[kvp.Key] < kvp.Value)
+                        continue;
+
+                    waitTime = delay;
+                }
+
+                // respect retryafter header
+                var retryAfterTime = _lastUpdate + _retryAfter - now;
+                if (waitTime < retryAfterTime)
+                    waitTime = retryAfterTime;
+
+                if (waitTime > TimeSpan.Zero)
+                    await Task.Delay(waitTime);
+            }
         }
 
         private readonly HttpClient _httpClient = new HttpClient();
-        private readonly Dictionary<string, ThrottleState> _throttleStatesForRegions;
+        private readonly Dictionary<string, RateLimitThrottle> _throttlePerRegion;
 
         public string ApiKey { get; set; }
         public int MaxAttempts { get; set; }
-        public int MaxRequestsPer10Seconds { get; set; }
         public TimeSpan RetryInterval { get; set; }
 
-        public RiotWebRequester()
+        public RiotWebRequester(string rateLimit)
         {
-            _throttleStatesForRegions = Regions.ToDictionary(region => region,
-                region => new ThrottleState(), StringComparer.OrdinalIgnoreCase);
+            _throttlePerRegion = Regions.ToDictionary(region => region,
+                region => new RateLimitThrottle(rateLimit), StringComparer.OrdinalIgnoreCase);
         }
 
         public async Task<JToken> SendRequestAsync(string region, string relativeUri,
@@ -96,58 +175,47 @@ namespace ChampionMains.Pyrobot.Services.Riot
             while (attempts-- > 0)
             {
                 var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
-                await EnforceRateLimitAsync(region);
-                var response = await _httpClient.SendAsync(request);
-                
-                switch ((int) response.StatusCode)
-                {
-                    case 404:
-                    case 200:
-                        // 404 and 200 are both considered "success" status codes, with
-                        // 404 indicating the request was successful but the entity did not exist (invalid summoner id, for example)
-                        return response;
 
-                    case 500:
-                    case 503:
-                        // 500 and 503 indicate an error on Riot's API. If the attempts aren't depleted, we'll requeue and try again.
-                        if (attempts > 0)
-                        {
-                            await Task.Delay(RetryInterval);
-                            continue;
-                        }
-                        break;
+
+                var throttler = _throttlePerRegion[region];
+                await throttler.Lock.WaitAsync();
+
+                try
+                {
+                    // do throttling
+                    await throttler.Throttle();
+                    var response = await _httpClient.SendAsync(request);
+                    throttler.UpdateRateLimit(response);
+
+
+                    switch ((int) response.StatusCode)
+                    {
+                        case 404:
+                        case 200:
+                            // 404 and 200 are both considered "success" status codes, with
+                            // 404 indicating the request was successful but the entity did not exist (invalid summoner id, for example)
+                            return response;
+
+                        case 500:
+                        case 503:
+                            // 500 and 503 indicate an error on Riot's API. If the attempts aren't depleted, we'll requeue and try again.
+                            if (attempts > 0)
+                            {
+                                await Task.Delay(RetryInterval);
+                            }
+                            break;
+                            // 429 too many requests (rate limtied)
+                            // 403 blacklisted (temp or permanent) -- shouldn't happen
+                        default:
+                            throw new RiotHttpException(response.StatusCode, requestUri);
+                    }
                 }
-                throw new RiotHttpException(response.StatusCode, requestUri);
+                finally
+                {
+                    throttler.Lock.Release();
+                }
             }
             throw new InvalidOperationException();
-        }
-
-        private async Task EnforceRateLimitAsync(string region)
-        {
-            var state = _throttleStatesForRegions[region];
-            await state.Lock.WaitAsync();
-            try
-            {
-                // The duration since the rate period began.
-                var runDuration = DateTime.Now - state.RatePeriodStart;
-
-                if (runDuration >= RatePeriodDuration)
-                {
-                    state.NumRequests = 0;
-                    state.RatePeriodStart = DateTime.Now;
-                }
-
-                if (++state.NumRequests > MaxRequestsPer10Seconds)
-                {
-                    var timeToWait = RatePeriodDuration - runDuration;
-                    await Task.Delay(timeToWait.TotalSeconds < 1 ? TimeSpan.FromSeconds(1) : timeToWait);
-                    state.NumRequests = 1;
-                }
-            }
-            finally
-            {
-                state.Lock.Release();
-            }
         }
     }
 }
