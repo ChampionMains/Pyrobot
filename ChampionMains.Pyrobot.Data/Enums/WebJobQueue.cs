@@ -10,5 +10,6 @@ namespace ChampionMains.Pyrobot.Data.Enums
     {
         public const string SummonerUpdate = "summoner-update";
         public const string FlairUpdate = "flair-update";
+        public const string BulkUpdate = "flair-update-bulk";
     }
 }

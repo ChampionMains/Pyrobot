@@ -7,12 +7,12 @@ using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Data.Models;
 using ChampionMains.Pyrobot.Reddit;
 using ChampionMains.Pyrobot.Services;
+using Microsoft.Azure.WebJobs;
 
 namespace ChampionMains.Pyrobot.Jobs
 {
     public class BulkFlairUpdateJob
     {
-        private const int MaxUsersPerLoop = 100;
         private static readonly TimeSpan NoUsersWaitInterval = TimeSpan.FromSeconds(30);
         private static readonly Mutex Lock = new Mutex();
         private readonly FlairService _flairs;
@@ -30,7 +30,7 @@ namespace ChampionMains.Pyrobot.Jobs
             _summoners = summoners;
         }
 
-        public void Execute()
+        public void Execute([QueueTrigger(WebJobQueue.BulkUpdate)] string data)
         {
             if (!Lock.WaitOne(1000))
             {
@@ -50,7 +50,7 @@ namespace ChampionMains.Pyrobot.Jobs
         {
             while (true)
             {
-                var users = await _flairs.GetUsersForUpdateAsync(MaxUsersPerLoop);
+                var users = await _flairs.GetUsersForUpdateAsync();
                 var subreddits = await _subreddits.GetAllAsync();
 
                 if (!users.Any())

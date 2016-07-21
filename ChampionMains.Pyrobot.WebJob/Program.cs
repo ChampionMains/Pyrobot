@@ -47,11 +47,10 @@ namespace ChampionMains.Pyrobot.WebJob
             ).SingleInstance();
             builder.Register(context => new RiotService
             {
-                WebRequester = new RiotWebRequester
+                WebRequester = new RiotWebRequester(s["riot.rateLimit"])
                 {
                     ApiKey = s["riot.apiKey"],
                     MaxAttempts = int.Parse(s["riot.maxAttempts"]),
-                    MaxRequestsPer10Seconds = int.Parse(s["riot.maxRequestsPer10Seconds"]),
                     RetryInterval = TimeSpan.Parse(s["riot.retryInterval"])
                 }
             }).SingleInstance();
