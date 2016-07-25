@@ -237,7 +237,7 @@
     <Compile Include="Areas\AdminPanel\AdminAuthorizeAttribute.cs" />
     <Compile Include="Areas\AdminPanel\AdminPanelAreaRegistration.cs" />
     <Compile Include="Areas\AdminPanel\Controllers\AdminDefaultController.cs" />
-    <Compile Include="Areas\AdminPanel\Controllers\SubRedditsController.cs" />
+    <Compile Include="Areas\AdminPanel\Controllers\SubredditsController.cs" />
     <Compile Include="Areas\AdminPanel\Controllers\SubscriptionsController.cs" />
     <Compile Include="Attributes\WebApiAuthorizeAttribute.cs" />
     <Compile Include="CacheUtil.cs" />
