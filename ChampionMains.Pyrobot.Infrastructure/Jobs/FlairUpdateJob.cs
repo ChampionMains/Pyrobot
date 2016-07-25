@@ -1,6 +1,7 @@
 ﻿using System.Data.Entity.Validation;
 using System.Linq;
 using System.Threading.Tasks;
+using ChampionMains.Pyrobot.Data;
 using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Data.WebJob;
 using ChampionMains.Pyrobot.Services;
@@ -13,12 +14,14 @@ namespace ChampionMains.Pyrobot.Jobs
         private readonly UserService _users;
         private readonly RedditService _reddit;
         private readonly SubredditService _subreddits;
+        private readonly UnitOfWork _unitOfWork;
 
-        public FlairUpdateJob(UserService users, RedditService reddit, SubredditService subreddits)
+        public FlairUpdateJob(UserService users, RedditService reddit, SubredditService subreddits, UnitOfWork unitOfWork)
         {
             _users = users;
             _reddit = reddit;
             _subreddits = subreddits;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task Execute([QueueTrigger(WebJobQueue.FlairUpdate)] FlairUpdateMessage data)

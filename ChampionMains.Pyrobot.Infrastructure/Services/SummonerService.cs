@@ -24,8 +24,8 @@ namespace ChampionMains.Pyrobot.Services
 
         public async Task<IList<Summoner>> GetSummonersForUpdateAsync()
         {
-            var now = DateTimeOffset.Now;
-            return await _unitOfWork.Summoners.Where(s => now - s.LastUpdate > _staleTime).Include(x => x.User).ToListAsync();
+            var staleAfter = DateTimeOffset.Now - _staleTime;
+            return await _unitOfWork.Summoners.Where(s => s.LastUpdate < staleAfter).Include(x => x.User).ToListAsync();
         }
 
         public Summoner AddSummoner(User user, long summonerId, string region, string name, int profileIconId)
@@ -116,15 +116,7 @@ namespace ChampionMains.Pyrobot.Services
 
         public async Task SaveChangesAsync()
         {
-            try
-            {
-                await _unitOfWork.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                Console.Error.WriteLine(e);
-                throw e;
-            }
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

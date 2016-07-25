@@ -19,28 +19,28 @@ namespace ChampionMains.Pyrobot.Services
 
         public async Task<bool> AddAsync(string name)
         {
-            _context.SubReddits.Add(new Subreddit {Name = name});
+            _context.Subreddits.Add(new Subreddit {Name = name});
             return await _context.SaveChangesAsync() > 0;
         } 
 
         public async Task<ICollection<Subreddit>> GetAllAsync()
         {
-            return await _context.SubReddits.OrderBy(sub => sub.Name).ToListAsync();
+            return await _context.Subreddits.OrderBy(sub => sub.Name).ToListAsync();
         }
 
         public async Task<ICollection<SubredditUserFlair>> GetSubRedditUserFlairs(User user)
         {
-            return await _context.SubRedditUsers.Where(f => f.User.Id == user.Id).ToListAsync();
+            return await _context.SubredditUserFlairs.Where(f => f.User.Id == user.Id).ToListAsync();
         }
 
         public async Task<bool> UpdateSubRedditUser(int userId, int subredditId, bool rankEnabled, bool championMasteryEnaabled, bool prestigeEnabled, string flairText)
         {
             var subredditUserFlair =
-                _context.SubRedditUsers.FirstOrDefault(u => u.UserId == userId && u.SubredditId == subredditId);
+                _context.SubredditUserFlairs.FirstOrDefault(u => u.UserId == userId && u.SubredditId == subredditId);
 
             if (subredditUserFlair == null)
             {
-                var subreddit = _context.SubReddits.Find(subredditId);
+                var subreddit = _context.Subreddits.Find(subredditId);
                 if (subreddit == null)
                     return false;
 
@@ -49,7 +49,7 @@ namespace ChampionMains.Pyrobot.Services
                     UserId = userId,
                     SubredditId = subredditId
                 };
-                _context.SubRedditUsers.Add(subredditUserFlair);
+                _context.SubredditUserFlairs.Add(subredditUserFlair);
             }
             
             subredditUserFlair.RankEnabled = rankEnabled;

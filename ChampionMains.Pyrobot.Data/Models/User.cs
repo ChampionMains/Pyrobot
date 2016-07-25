@@ -9,10 +9,10 @@ namespace ChampionMains.Pyrobot.Data.Models
     [Table("User")]
     public class User
     {
-        [NotMapped]
-        public DateTimeOffset? FlairUpdateRequiredTime { get; set; }
-        [NotMapped]
-        public DateTimeOffset? FlairUpdatedTime { get; set; }
+        //[NotMapped]
+        //public DateTimeOffset? FlairUpdateRequiredTime { get; set; }
+        //[NotMapped]
+        //public DateTimeOffset? FlairUpdatedTime { get; set; }
 
         [Required]
         [Key]

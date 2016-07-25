@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ChampionMains.Pyrobot.Data.Models
@@ -9,6 +10,8 @@ namespace ChampionMains.Pyrobot.Data.Models
         [Key]
         [Required]
         public int Id { get; set; }
+
+        public DateTimeOffset? LastUpdate { get; set; }
 
         [Required]
         public bool RankEnabled { get; set; }

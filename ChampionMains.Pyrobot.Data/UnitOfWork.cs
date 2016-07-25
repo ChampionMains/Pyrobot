@@ -8,8 +8,8 @@ namespace ChampionMains.Pyrobot.Data
     public class UnitOfWork : DbContext
     {
         public IDbSet<SummonerRank> Leagues { get; set; }
-        public IDbSet<Subreddit> SubReddits { get; set; }
-        public IDbSet<SubredditUserFlair> SubRedditUsers { get; set; }
+        public IDbSet<Subreddit> Subreddits { get; set; }
+        public IDbSet<SubredditUserFlair> SubredditUserFlairs { get; set; }
         public IDbSet<Summoner> Summoners { get; set; }
         public IDbSet<User> Users { get; set; }
         public IDbSet<Champion> Champions { get; set; }
@@ -23,9 +23,9 @@ namespace ChampionMains.Pyrobot.Data
             {
                 return await base.SaveChangesAsync();
             }
-            catch (AggregateException e)
+            catch (Exception e)
             {
-                throw e.InnerException;
+                throw e.InnerException ?? e;
             }
         }
     }

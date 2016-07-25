@@ -32,7 +32,8 @@ namespace ChampionMains.Pyrobot.WebJob
             builder.Register(context => new ApplicationConfiguration
             {
                 FlairBotVersion = s["bot.version"],
-                LeagueDataStaleTime = TimeSpan.Parse(s["website.leagueUpdateStaleTime"])
+                LeagueDataStaleTime = TimeSpan.Parse(s["website.leagueUpdateStaleTime"]),
+                FlairStaleTime = TimeSpan.Parse(s["website.flairStaleTime"])
             }).SingleInstance();
 
             // Services

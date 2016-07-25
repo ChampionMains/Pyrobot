@@ -11,40 +11,49 @@ namespace ChampionMains.Pyrobot.Services
     public class FlairService
     {
         private readonly UnitOfWork _context;
+        private readonly TimeSpan _staleTime;
 
-        public FlairService(UnitOfWork context)
+        public FlairService(UnitOfWork context, ApplicationConfiguration config)
         {
             _context = context;
+            _staleTime = config.FlairStaleTime;
         }
 
-        public async Task<ICollection<User>> GetUsersForUpdateAsync(int max = 100)
+        public async Task<ICollection<SubredditUserFlair>> GetFlairsForUpdateAsync()
         {
-            var query = from user in _context.Users
-                        where user.FlairUpdateRequiredTime.HasValue
-                              || !user.FlairUpdatedTime.HasValue
-                        orderby user.FlairUpdateRequiredTime
-                        select user;
-
-            return await query.Take(max).ToListAsync();
+            var staleAfter = DateTimeOffset.Now - _staleTime;
+            return await _context.SubredditUserFlairs.Where(s => s.LastUpdate < staleAfter)
+                    .Include(x => x.User).Include(x => x.Subreddit).ToListAsync();
         }
 
-        public async Task<bool> SetUpdateFlagAsync(IEnumerable<User> users, bool requiresUpdate = true)
-        {
-            foreach (var user in users)
-            {
-                user.FlairUpdateRequiredTime = requiresUpdate ? DateTimeOffset.Now : (DateTimeOffset?)null;
-            }
-            return await _context.SaveChangesAsync() > 0;
-        }
+        //public async Task<ICollection<User>> GetUsersForUpdateAsync(int max = 100)
+        //{
+        //    var query = from user in _context.Users
+        //                where user.FlairUpdateRequiredTime.HasValue
+        //                      || !user.FlairUpdatedTime.HasValue
+        //                orderby user.FlairUpdateRequiredTime
+        //                select user;
 
-        public async Task<bool> SetUpdatedAsync(IEnumerable<User> users)
-        {
-            foreach (var user in users)
-            {
-                user.FlairUpdateRequiredTime = null;
-                user.FlairUpdatedTime = DateTimeOffset.Now;
-            }
-            return await _context.SaveChangesAsync() > 0;
-        }
+        //    return await query.Take(max).ToListAsync();
+        //}
+
+        //public async Task<bool> SetUpdateFlagAsync(IEnumerable<User> users, bool requiresUpdate = true)
+        //{
+        //    foreach (var user in users)
+        //    {
+        //        user.FlairUpdateRequiredTime = requiresUpdate ? DateTimeOffset.Now : (DateTimeOffset?)null;
+        //    }
+        //    return await _context.SaveChangesAsync() > 0;
+        //}
+
+        //public async Task<bool> SetUpdatedAsync(IEnumerable<User> users)
+        //{
+        //    foreach (var user in users)
+        //    {
+        //        user.FlairUpdateRequiredTime = null;
+        //        user.FlairUpdatedTime = DateTimeOffset.Now;
+        //    }
+        //    return await _context.SaveChangesAsync() > 0;
+        //}
     }
 }

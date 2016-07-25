@@ -6,11 +6,11 @@ using ChampionMains.Pyrobot.Services;
 namespace ChampionMains.Pyrobot.Areas.AdminPanel.Controllers
 {
     [AdminAuthorize]
-    public class SubRedditsController : ApiController
+    public class SubredditsController : ApiController
     {
         private readonly SubredditService _subreddits;
 
-        public SubRedditsController(SubredditService subreddits)
+        public SubredditsController(SubredditService subreddits)
         {
             _subreddits = subreddits;
         }

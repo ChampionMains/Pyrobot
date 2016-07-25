@@ -170,7 +170,7 @@ namespace ChampionMains.Pyrobot.Data.Migrations
             context.Champions.AddOrUpdate(c => c.Id, champions);
 
 
-            AddSubredditIfNew(context.SubReddits,
+            AddSubredditIfNew(context.Subreddits,
                 new Subreddit
                 {
                     ChampionId = cd["Zyra"],
