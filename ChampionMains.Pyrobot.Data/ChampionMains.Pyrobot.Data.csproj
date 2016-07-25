@@ -158,7 +158,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Champion.cs" />
-    <Compile Include="Models\SubRedditUser.cs" />
+    <Compile Include="Models\SubredditUser.cs" />
     <Compile Include="Models\SummonerChampionMastery.cs" />
     <Compile Include="Models\SummonerRank.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
