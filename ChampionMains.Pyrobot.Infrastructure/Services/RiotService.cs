@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Riot;
 using ChampionMains.Pyrobot.Services.Riot;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Summoner = ChampionMains.Pyrobot.Data.Models.Summoner;
 
@@ -13,49 +12,60 @@ namespace ChampionMains.Pyrobot.Services
 {
     public class RiotService
     {
+        private const int MaxSummonerRequestSize = 40;
+        private const int MaxLeagueRequestSize = 10;
+
         private const string LeagueBaseUri = "v2.5/league/";
         private const string SummonerBaseUri = "v1.4/summoner/";
 
         public RiotWebRequester WebRequester { get; set; }
+        
 
-        public async Task<Summoner> FindSummonerAsync(string region, string summonerName)
+
+        public async Task<Summoner> GetSummoner(string region, string summonerName)
         {
             var uri = SummonerBaseUri + "by-name/" + Uri.EscapeDataString(summonerName);
-            return GetSummonerFromResponse(await WebRequester.SendRequestAsync(region, uri));
+            return GetSummonersFromResponse(await WebRequester.SendRequestAsync(region, uri)).First();
         }
 
-        public async Task<Summoner> FindSummonerAsync(string region, long summonerId)
+        public async Task<Summoner> GetSummoner(string region, long summonerId)
         {
             var uri = SummonerBaseUri + summonerId;
-            return GetSummonerFromResponse(await WebRequester.SendRequestAsync(region, uri));
+            return GetSummonersFromResponse(await WebRequester.SendRequestAsync(region, uri)).First();
         }
 
-        private Summoner GetSummonerFromResponse(JToken json)
+        public async Task<IList<Summoner>> GetSummoners(string region, IEnumerable<long> summonerIds)
         {
-            var results = json?.ToObject<IDictionary<string, Summoner>>();
-            return results?.Count > 0 ? results.First().Value : null;
+            var data = summonerIds.Select((id, i) => new {id, g = i/MaxSummonerRequestSize}).GroupBy(x => x.g)
+                .Select(async group =>
+                {
+                    var uri = SummonerBaseUri + group.Select(id => id.ToString()).Aggregate((a, b) => a + ',' + b);
+                    return GetSummonersFromResponse(await WebRequester.SendRequestAsync(region, uri));
+                }).ToList();
+            await Task.WhenAll(data);
+            return data.SelectMany(d => d.Result).ToList();
         }
 
-
-        public async Task<Tuple<Tier, byte>> GetLeaguesAsync(string region, long summonerId)
+        public async Task<Tuple<Tier, byte>> GetRank(string region, long summonerId)
         {
             var uri = LeagueBaseUri + "by-summoner/" + summonerId + "/entry";
-            var json = await WebRequester.SendRequestAsync(region, uri);
-            if (json == null) return Tuple.Create(Tier.Unranked, (byte)0);
-            
-            var leagues = json[summonerId.ToString()]?.ToObject<ICollection<League>>();
-
-            var solo = leagues?.FirstOrDefault(league => league.Queue == QueueType.RANKED_SOLO_5x5);
-
-            if (solo == null) return Tuple.Create(Tier.Unranked, (byte) 0);
-
-            var entry = solo.Entries.First(e => e.PlayerOrTeamId == summonerId.ToString());
-            var division = (byte) entry.Division;
-            var tier = (Tier) Enum.Parse(typeof(Tier), solo.Tier.ToString(), true);
-            return Tuple.Create(tier, division);
+            return GetRanksFromResponse(await WebRequester.SendRequestAsync(region, uri)).First().Value;
         }
 
-        public async Task<ICollection<ChampionMastery>> GetChampionMasteriesAsync(string region, long summonerId)
+        public async Task<IDictionary<long, Tuple<Tier, byte>>> GetRanks(string region, IEnumerable<long> summonerIds)
+        {
+            var data = summonerIds.Select((id, i) => new {id, g = i/MaxLeagueRequestSize}).GroupBy(x => x.g)
+                .Select(async group =>
+                {
+                    var uri = LeagueBaseUri + "by-summoner/" +
+                          group.Select(id => id.ToString()).Aggregate((a, b) => a + ',' + b) + "/entry";
+                    return GetRanksFromResponse(await WebRequester.SendRequestAsync(region, uri));
+                }).ToList();
+            await Task.WhenAll(data);
+            return data.SelectMany(d => d.Result).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        }
+
+        public async Task<ICollection<ChampionMastery>> GetChampionMastery(string region, long summonerId)
         {
             var uri = "player/" + summonerId + "/champions";
             var json = await WebRequester.SendRequestAsync(region, uri, innerUri: "championmastery/location", usePlatform: true);
@@ -63,12 +73,45 @@ namespace ChampionMains.Pyrobot.Services
             return json.ToObject<ICollection<ChampionMastery>>();
         }
 
-        public async Task<ICollection<RunePage>> GetRunePagesAsync(string region, long summonerId)
+        public async Task<IDictionary<long, ICollection<ChampionMastery>>> GetChampionMasteries(string region,
+            IEnumerable<long> summonerIds)
+        {
+            var data = summonerIds.ToDictionary(id => id, async id => await GetChampionMastery(region, id));
+            await Task.WhenAll(data.Values);
+            return data.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Result);
+        }
+
+        public async Task<ICollection<RunePage>> GetRunePages(string region, long summonerId)
         {
             var uri = SummonerBaseUri + summonerId + "/runes";
             var json = await WebRequester.SendRequestAsync(region, uri);
 
             return json[summonerId.ToString()]?["pages"]?.ToObject<ICollection<RunePage>>();
         }
+
+        private static IList<Summoner> GetSummonersFromResponse(JToken json)
+        {
+            var results = json.ToObject<IDictionary<string, Summoner>>();
+            return results.Values.ToList();
+        }
+
+        private static IDictionary<long, Tuple<Tier, byte>> GetRanksFromResponse(JToken json)
+        {
+            var data = json.ToObject<IDictionary<long, ICollection<League>>>();
+
+            return data.ToDictionary(kvp => kvp.Key,
+                kvp =>
+                {
+                    var solo = kvp.Value.FirstOrDefault(l => l.Queue == QueueType.RANKED_SOLO_5x5);
+
+                    if (solo == null) return Tuple.Create(Tier.Unranked, (byte)0);
+
+                    var entry = solo.Entries.First(e => e.PlayerOrTeamId == kvp.Key.ToString());
+                    var division = (byte)entry.Division;
+                    var tier = (Tier)Enum.Parse(typeof(Tier), solo.Tier.ToString(), true);
+                    return Tuple.Create(tier, division);
+                });
+        }
+
     }
 }

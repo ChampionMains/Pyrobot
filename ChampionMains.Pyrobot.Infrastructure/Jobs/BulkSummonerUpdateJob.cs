@@ -79,7 +79,7 @@ namespace ChampionMains.Pyrobot.Jobs
             if (summoner.Rank == null)
                 throw new InvalidOperationException("summoner.LeagueInfo is null");
 
-            var rank = await _riot.GetLeaguesAsync(summoner.Region, summoner.SummonerId);
+            var rank = await _riot.GetRank(summoner.Region, summoner.SummonerId);
 
             summoner.Rank.Tier = (byte) rank.Item1;
             summoner.Rank.Division = rank.Item2;

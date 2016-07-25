@@ -152,6 +152,10 @@
     <Compile Include="Migrations\201607042117407_ixregionsummonerid.Designer.cs">
       <DependentUpon>201607042117407_ixregionsummonerid.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201607220555343_updatetime.cs" />
+    <Compile Include="Migrations\201607220555343_updatetime.Designer.cs">
+      <DependentUpon>201607220555343_updatetime.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Champion.cs" />
     <Compile Include="Models\SubRedditUser.cs" />
@@ -226,6 +230,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201607042117407_ixregionsummonerid.resx">
       <DependentUpon>201607042117407_ixregionsummonerid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607220555343_updatetime.resx">
+      <DependentUpon>201607220555343_updatetime.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

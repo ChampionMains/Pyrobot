@@ -20,14 +20,14 @@ namespace ChampionMains.Pyrobot
             var s = ConfigurationManager.AppSettings;
 
             // MVC controllers
-            builder.RegisterControllers(typeof (MvcApplication).Assembly);
+            builder.RegisterControllers(typeof(MvcApplication).Assembly);
 
             // Web API
-            builder.RegisterApiControllers(typeof (MvcApplication).Assembly);
+            builder.RegisterApiControllers(typeof(MvcApplication).Assembly);
             builder.RegisterWebApiFilterProvider(GlobalConfiguration.Configuration);
 
             // DI model binders
-            builder.RegisterModelBinders(typeof (MvcApplication).Assembly);
+            builder.RegisterModelBinders(typeof(MvcApplication).Assembly);
             builder.RegisterModelBinderProvider();
 
             // Web abstractions

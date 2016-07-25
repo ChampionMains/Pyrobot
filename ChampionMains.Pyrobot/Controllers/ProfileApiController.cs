@@ -72,7 +72,7 @@ namespace ChampionMains.Pyrobot.Controllers
         {
             var user = await _users.GetUserAsync();
 
-            var summoners = user.Summoners.OrderByDescending(s => s.Rank.Tier).Select(s => new SummonerDataViewModel()
+            var summoners = user.Summoners.OrderByDescending(s => s.Rank.Tier).Select(s => new SummonerDataViewModel
             {
                 Id = s.Id,
                 Region = s.Region.ToUpperInvariant(),
@@ -89,9 +89,8 @@ namespace ChampionMains.Pyrobot.Controllers
             // TODO: encapsulate unit of work
             var champions = _unitOfWork.Champions.ToDictionary(c => c.Id, c =>
             {
-                var champion = masteries.Where(m => m.ChampionId == c.Id).Select(m => new ChampionMasteryDataViewModel()
+                var champion = masteries.Where(m => m.ChampionId == c.Id).Select(m => new ChampionMasteryDataViewModel
                 {
-
                     Points = m.Points,
                     Level = m.Level
                 }).DefaultIfEmpty(new ChampionMasteryDataViewModel()).Aggregate((a, b) =>
@@ -112,10 +111,11 @@ namespace ChampionMains.Pyrobot.Controllers
             var subreddits = (await _subreddit.GetAllAsync()).Where(r => !r.AdminOnly || user.IsAdmin).Select(r =>
             {
                 var subredditUserData = user.SubredditUserFlairs.FirstOrDefault(f => f.SubredditId == r.Id);
-                var flair = new SubredditUserDataViewModel()
+                var flair = new SubredditUserDataViewModel
                 {
                     SubredditId = r.Id,
                 };
+
                 if (subredditUserData != null)
                 {
                     flair.RankEnabled = subredditUserData.RankEnabled;

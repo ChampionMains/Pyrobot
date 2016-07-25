@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data;
+using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Data.Models;
 using ChampionMains.Pyrobot.Riot;
 using Summoner = ChampionMains.Pyrobot.Data.Models.Summoner;
@@ -12,14 +13,22 @@ namespace ChampionMains.Pyrobot.Services
 {
     public class SummonerService
     {
-        protected UnitOfWork UnitOfWork;
+        private readonly UnitOfWork _unitOfWork;
+        private readonly TimeSpan _staleTime;
 
-        public SummonerService(UnitOfWork unitOfWork)
+        public SummonerService(UnitOfWork unitOfWork, ApplicationConfiguration config)
         {
-            UnitOfWork = unitOfWork;
+            _unitOfWork = unitOfWork;
+            _staleTime = config.LeagueDataStaleTime;
         }
 
-        public async Task<Summoner> AddOrUpdateSummonerAsync(User user, long summonerId, string region, string name, int profileIconId)
+        public async Task<IList<Summoner>> GetSummonersForUpdateAsync()
+        {
+            var now = DateTimeOffset.Now;
+            return await _unitOfWork.Summoners.Where(s => now - s.LastUpdate > _staleTime).Include(x => x.User).ToListAsync();
+        }
+
+        public Summoner AddSummoner(User user, long summonerId, string region, string name, int profileIconId)
         {
             var summoner = user.Summoners.FirstOrDefault(s => s.Region == region && s.SummonerId == summonerId);
             if (summoner == null)
@@ -36,68 +45,29 @@ namespace ChampionMains.Pyrobot.Services
 
             summoner.Name = name;
             summoner.ProfileIconId = profileIconId;
-
-            try
-            {
-                await UnitOfWork.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
             return summoner;
         }
 
-        public Task<Summoner> FindAsync(int id)
+        public void UpdateSummoner(Summoner summoner, string region, string name, int profileIconId,
+            Tier? tier, byte? division, ICollection<ChampionMastery> championMastery)
         {
-            return UnitOfWork.Summoners.FirstOrDefaultAsync(summoner =>
-                summoner.Id == id);
-        }
+            summoner.Name = name;
+            summoner.ProfileIconId = profileIconId;
 
-        public Task<Summoner> FindAsync(string region, string summonerName)
-        {
-            return UnitOfWork.Summoners.FirstOrDefaultAsync(summoner =>
-                summoner.Region == region &&
-                summoner.Name == summonerName);
-        }
+            summoner.Rank.Division = division ?? 0;
+            summoner.Rank.Tier = (byte?) tier ?? 0;
 
-        public Task<bool> IsSummonerRegistered(string region, string summonerName)
-        {
-            return UnitOfWork.Summoners.AnyAsync(summoner =>
-                summoner.Region == region &&
-                summoner.Name == summonerName);
-        }
-
-        public async Task<bool> RemoveAsync(int summonerId)
-        {
-            var entity = await FindAsync(summonerId);
-            if (entity == null) return false;
-
-            UnitOfWork.Leagues.Remove(entity.Rank);
-            UnitOfWork.Summoners.Remove(entity);
-            return await UnitOfWork.SaveChangesAsync() > 0;
-        }
-
-        public void UpdateLeagueAsync(Summoner summoner, byte tier, byte division)
-        {
-            summoner.Rank.Division = division;
-            summoner.Rank.Tier = tier;
-            summoner.Rank.UpdatedTime = DateTimeOffset.Now;
-        }
-
-        public void UpdateChampionMasteriesAsync(ICollection<ChampionMastery> championMasteries, Summoner summoner)
-        {
-            foreach (var updated in championMasteries)
+            foreach (var updated in championMastery)
             {
                 var champMastery = summoner.ChampionMasteries.FirstOrDefault(x => x.ChampionId == updated.ChampionId);
 
                 if (champMastery == null)
                 {
                     //started playing a new champion
-                    var champion = UnitOfWork.Champions.Find((short)updated.ChampionId);
+                    var champion = _unitOfWork.Champions.Find((short) updated.ChampionId);
                     if (champion == null)
                         continue; // possibly a new champion has been added, and the database needs updating
-                    
+
                     champMastery = new SummonerChampionMastery()
                     {
                         Champion = champion
@@ -110,11 +80,51 @@ namespace ChampionMains.Pyrobot.Services
                 champMastery.Points = updated.ChampionPoints;
                 champMastery.UpdatedTime = DateTimeOffset.Now;
             }
+
+            summoner.Rank.UpdatedTime = DateTimeOffset.Now;
         }
 
-        public async Task SaveChanges()
+        public Task<Summoner> FindSummonerAsync(int id)
         {
-            await UnitOfWork.SaveChangesAsync();
+            return _unitOfWork.Summoners.FirstOrDefaultAsync(summoner =>
+                summoner.Id == id);
+        }
+
+        public Task<Summoner> FindSummonerAsync(string region, string summonerName)
+        {
+            return _unitOfWork.Summoners.FirstOrDefaultAsync(summoner =>
+                summoner.Region == region &&
+                summoner.Name == summonerName);
+        }
+
+        public Task<bool> IsSummonerRegisteredAsync(string region, string summonerName)
+        {
+            return _unitOfWork.Summoners.AnyAsync(summoner =>
+                summoner.Region == region &&
+                summoner.Name == summonerName);
+        }
+
+        public async Task<bool> RemoveAsync(int summonerId)
+        {
+            var entity = await FindSummonerAsync(summonerId);
+            if (entity == null) return false;
+
+            _unitOfWork.Leagues.Remove(entity.Rank);
+            _unitOfWork.Summoners.Remove(entity);
+            return await _unitOfWork.SaveChangesAsync() > 0;
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            try
+            {
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine(e);
+                throw e;
+            }
         }
     }
 }

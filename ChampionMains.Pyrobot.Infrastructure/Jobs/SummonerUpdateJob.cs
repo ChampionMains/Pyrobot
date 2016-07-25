@@ -26,22 +26,17 @@ namespace ChampionMains.Pyrobot.Jobs
 
         public async Task Execute([QueueTrigger(WebJobQueue.SummonerUpdate)] int id)
         {
-            var summoner = await _summoners.FindAsync(id);
+            var summoner = await _summoners.FindSummonerAsync(id);
             if (summoner == null)
                 return;
 
-            var summoner2 = await _riot.FindSummonerAsync(summoner.Region, summoner.SummonerId);
-            var rank = await _riot.GetLeaguesAsync(summoner.Region, summoner.SummonerId);
-            var championMasteries = await _riot.GetChampionMasteriesAsync(summoner.Region, summoner.SummonerId);
+            var summoner2 = await _riot.GetSummoner(summoner.Region, summoner.SummonerId);
+            var rank = await _riot.GetRank(summoner.Region, summoner.SummonerId);
+            var championMasteries = await _riot.GetChampionMastery(summoner.Region, summoner.SummonerId);
 
-            if (rank != null)
-                _summoners.UpdateLeagueAsync(summoner, (byte) rank.Item1, rank.Item2);
-            _summoners.UpdateChampionMasteriesAsync(championMasteries, summoner);
-            // calls savechanges
-            await _summoners.AddOrUpdateSummonerAsync(summoner.User, summoner.SummonerId, summoner.Region,
-                summoner2.Name, summoner2.ProfileIconId);
-
-            //await _summoners.SaveChanges();
+            _summoners.UpdateSummoner(summoner, summoner2.Region, summoner2.Name, summoner2.ProfileIconId,
+                rank?.Item1, rank?.Item2, championMasteries);
+            await _summoners.SaveChangesAsync();
         }
     }
 }

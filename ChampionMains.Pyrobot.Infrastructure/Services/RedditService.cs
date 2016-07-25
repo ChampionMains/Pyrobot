@@ -10,6 +10,9 @@ namespace ChampionMains.Pyrobot.Services
 {
     public class RedditService
     {
+        private const int MaxFlairGetSize = 1000;
+        private const int MaxFlairUpdateSize = 100;
+
         private const string BaseUri = "https://oauth.reddit.com";
         private readonly RedditWebRequester _requester;
 
@@ -22,25 +25,23 @@ namespace ChampionMains.Pyrobot.Services
         {
             var uri = $"{BaseUri}/subreddits/mine/{kind.ToString().ToLowerInvariant()}";
             var results = new List<string>();
-            var after = (string) null;
+            var nextToken = "";
 
-            while (true)
+            do
             {
-                var data = after == null
-                    ? null
-                    : new[]
-                    {
-                        new KeyValuePair<string, string>("after", after), 
-                    };
-                var listing = await _requester.GetAsync(uri, data);
-                var content = listing["data"];
-                after = (string) content["after"];
-                results.AddRange(from item in content["children"]
-                                 where (string) item["kind"] == "t5"
-                                 select (string) item["data"]["display_name"]);
+                var listing = await _requester.GetAsync(uri, new[]
+                {
+                    new KeyValuePair<string, string>("after", nextToken)
+                });
 
-                if (after == null) break;
-            }
+                var content = listing["data"];
+                nextToken = (string) content["after"];
+                results.AddRange(from item in content["children"]
+                    where (string) item["kind"] == "t5"
+                    select (string) item["data"]["display_name"]);
+                
+            } while (nextToken != null);
+
             return results;
         }
 
@@ -84,7 +85,7 @@ namespace ChampionMains.Pyrobot.Services
         public async Task<ICollection<UserFlairParameter>> GetFlairsAsync(string subreddit, string name = "")
         {
             var flairs = new List<UserFlairParameter>();
-            string nextToken = "";
+            var nextToken = "";
 
             var uri = $"{BaseUri}/r/{subreddit}/api/flairlist";
 
@@ -92,7 +93,7 @@ namespace ChampionMains.Pyrobot.Services
             {
                 var data = new[]
                 {
-                    new KeyValuePair<string, string>("limit", "5"), //TODO: make this "1000"
+                    new KeyValuePair<string, string>("limit", MaxFlairGetSize.ToString()),
                     new KeyValuePair<string, string>("after", nextToken),
                     new KeyValuePair<string, string>("name", name)
                 };
@@ -125,18 +126,19 @@ namespace ChampionMains.Pyrobot.Services
 
         public async Task<bool> SetFlairsAsync(string subreddit, ICollection<UserFlairParameter> flairs)
         {
-            if (flairs.Count > 100)
-            {
-                throw new InvalidOperationException(
-                    "The API does not support assigning more than 100 flairs in one operation");
-            }
-            var uri = $"{BaseUri}/r/{subreddit}/api/flaircsv";
-            var data = new[]
-            {
-                new KeyValuePair<string, string>("flair_csv", ResolveBulkFlairParameter(flairs))
-            };
-            var result = await _requester.PostAsync(uri, data);
-            return !result.Any(token => token["errors"].Any());
+            var errors = flairs.Select((flair, i) => new {flair, g = i / MaxFlairUpdateSize}).GroupBy(x => x.g)
+                .Select(async group =>
+                {
+                    var uri = $"{BaseUri}/r/{subreddit}/api/flaircsv";
+                    var data = new[]
+                    {
+                        new KeyValuePair<string, string>("flair_csv", ResolveBulkFlairParameter(flairs))
+                    };
+                    var result = await _requester.PostAsync(uri, data);
+                    return result.Any(token => token["errors"].Any());
+                }).ToList();
+            await Task.WhenAll(errors);
+            return errors.Any(x => x.Result);
         }
 
         private static string ResolveBulkFlairParameter(IEnumerable<UserFlairParameter> flairs)

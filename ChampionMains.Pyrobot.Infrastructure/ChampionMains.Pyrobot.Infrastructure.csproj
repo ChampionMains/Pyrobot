@@ -109,6 +109,7 @@
   <ItemGroup>
     <Compile Include="DbUtil.cs" />
     <Compile Include="Jobs\AsyncJobBase.cs" />
+    <Compile Include="Jobs\BulkUpdateJob.cs" />
     <Compile Include="Jobs\ConfirmFlairUpdatedMailJob.cs" />
     <Compile Include="Jobs\ConfirmRegistrationMailJob.cs" />
     <Compile Include="Jobs\BulkFlairUpdateJob.cs" />

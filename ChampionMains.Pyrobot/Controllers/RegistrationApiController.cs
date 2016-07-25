@@ -49,7 +49,7 @@ namespace ChampionMains.Pyrobot.Controllers
                     return Conflict("Summoner not found.");
 
                 // Summoner MUST NOT be registered.
-                if (await Summoners.IsSummonerRegistered(model.Region, model.SummonerName))
+                if (await Summoners.IsSummonerRegisteredAsync(model.Region, model.SummonerName))
                     return Conflict("Summoner is already registered.");
 
                 return Ok(new
@@ -82,23 +82,23 @@ namespace ChampionMains.Pyrobot.Controllers
                     return StatusCode(HttpStatusCode.Unauthorized);
 
                 // Summoner MUST exist.
-                var riotSummoner = await Riot.FindSummonerAsync(model.Region, model.SummonerName);
+                var riotSummoner = await Riot.GetSummoner(model.Region, model.SummonerName);
                 if (riotSummoner == null)
                     return Conflict("Summoner not found.");
 
                 // Summoner MUST NOT be registered.
-                if (await Summoners.IsSummonerRegistered(model.Region, model.SummonerName))
+                if (await Summoners.IsSummonerRegisteredAsync(model.Region, model.SummonerName))
                     return Conflict("Summoner is already registered.");
 
-                var runePages = await Riot.GetRunePagesAsync(model.Region, riotSummoner.Id);
+                var runePages = await Riot.GetRunePages(model.Region, riotSummoner.Id);
                 var code = await Validation.GenerateAsync(User.Identity.Name, riotSummoner.Id, model.Region, user.Name);
                 
                 if (!runePages.Any(page => string.Equals(page.Name, code, StringComparison.InvariantCultureIgnoreCase)))
                     return StatusCode(HttpStatusCode.ExpectationFailed);
 
                 // Create the data entity and associate it with the current user
-                var currentSummoner =
-                    await Summoners.AddOrUpdateSummonerAsync(user, riotSummoner.Id, model.Region, riotSummoner.Name, riotSummoner.ProfileIconId);
+                var currentSummoner = Summoners.AddSummoner(user, riotSummoner.Id, model.Region, riotSummoner.Name, riotSummoner.ProfileIconId);
+                await Summoners.SaveChangesAsync();
 
                 // Send confirmation mail.
                 //TODO
@@ -130,7 +130,7 @@ namespace ChampionMains.Pyrobot.Controllers
         private Task<Summoner> FindSummonerAsync(string region, string summonerName)
         {
             return CacheUtil.GetItemAsync($"{region}:{summonerName}".ToLowerInvariant(),
-                () => Riot.FindSummonerAsync(region, summonerName));
+                () => Riot.GetSummoner(region, summonerName));
         }
     }
 }

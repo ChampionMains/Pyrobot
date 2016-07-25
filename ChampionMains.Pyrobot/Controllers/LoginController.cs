@@ -52,7 +52,7 @@ namespace ChampionMains.Pyrobot.Controllers
             {
                 return RedirectToAction("index");
             }
-            var user = await _users.FindAsync(loginInfo.Login.ProviderKey)
+            var user = await _users.FindAsync((string) loginInfo.Login.ProviderKey)
                        ?? await _users.CreateAsync(loginInfo.Login.ProviderKey);
 
             await SignInAsync(loginInfo.ExternalIdentity, user);

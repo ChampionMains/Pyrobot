@@ -43,7 +43,7 @@ namespace ChampionMains.Pyrobot.Controllers
             }
 
             // Rule: Summoner must not be registered to a User.
-            if (await Summoners.IsSummonerRegistered(model.Region, model.SummonerName))
+            if (await Summoners.IsSummonerRegisteredAsync(model.Region, model.SummonerName))
             {
                 return Error("Summoner is already registered.");
             }
@@ -51,7 +51,7 @@ namespace ChampionMains.Pyrobot.Controllers
             // Rule: Summoner must exist.
             var cacheKey = string.Concat(model.Region, ":", model.SummonerName).ToLowerInvariant();
             var summoner = await CacheUtil.GetItemAsync(cacheKey,
-                () => Riot.FindSummonerAsync(model.Region, model.SummonerName));
+                () => Riot.GetSummoner(model.Region, model.SummonerName));
 
             if (summoner == null)
             {

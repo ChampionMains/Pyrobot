@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,6 +11,8 @@ namespace ChampionMains.Pyrobot.Data.Models
         [Key]
         [Required]
         public int Id { get; set; }
+
+        public DateTimeOffset? LastUpdate { get; set; }
 
         [StringLength(21)]
         [Required]

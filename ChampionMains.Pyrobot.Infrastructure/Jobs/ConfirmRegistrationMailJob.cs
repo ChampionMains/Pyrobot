@@ -86,7 +86,7 @@ namespace ChampionMains.Pyrobot.Jobs
 
         private async Task ExecuteAsync(int userId, int summonerId)
         {
-            var user = await _userService.FindAsync(userId);
+            var user = await _userService.FindSummonerAsync(userId);
             var summoner = user?.Summoners.FirstOrDefault(x => x.Id == summonerId);
 
             if (user == null) return;
