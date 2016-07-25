@@ -39,7 +39,7 @@ namespace ChampionMains.Pyrobot.Services
             var data = summonerIds.Select((id, i) => new {id, g = i/MaxSummonerRequestSize}).GroupBy(x => x.g)
                 .Select(async group =>
                 {
-                    var uri = SummonerBaseUri + group.Select(id => id.ToString()).Aggregate((a, b) => a + ',' + b);
+                    var uri = SummonerBaseUri + group.Aggregate("", (a, b) => a + ',' + b.id);
                     return GetSummonersFromResponse(await WebRequester.SendRequestAsync(region, uri));
                 }).ToList();
             await Task.WhenAll(data);
@@ -58,7 +58,7 @@ namespace ChampionMains.Pyrobot.Services
                 .Select(async group =>
                 {
                     var uri = LeagueBaseUri + "by-summoner/" +
-                          group.Select(id => id.ToString()).Aggregate((a, b) => a + ',' + b) + "/entry";
+                          group.Aggregate("", (a, b) => a + ',' + b.id) + "/entry";
                     return GetRanksFromResponse(await WebRequester.SendRequestAsync(region, uri));
                 }).ToList();
             await Task.WhenAll(data);

@@ -14,7 +14,7 @@ namespace ChampionMains.Pyrobot.Jobs
             }
             catch (AggregateException e)
             {
-                Exception inner = e.InnerException;
+                var inner = e.InnerException;
                 ExceptionDispatchInfo.Capture(inner).Throw();
             }
         }

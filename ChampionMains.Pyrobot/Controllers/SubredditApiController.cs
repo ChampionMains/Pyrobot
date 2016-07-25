@@ -10,17 +10,15 @@ namespace ChampionMains.Pyrobot.Controllers
     [WebApiAuthorize]
     public class SubredditApiController : ApiController
     {
-        private readonly SummonerService _summoners;
         private readonly UserService _users;
+        private readonly FlairService _flairs;
         private readonly WebJobService _webJob;
-        private readonly SubredditService _subreddits;
 
-        public SubredditApiController(UserService users, SummonerService summoners, WebJobService webJob, SubredditService subreddits)
+        public SubredditApiController(UserService users, FlairService flairs, WebJobService webJob)
         {
             _users = users;
-            _summoners = summoners;
+            _flairs = flairs;
             _webJob = webJob;
-            _subreddits = subreddits;
         }
 
         [HttpPost]
@@ -30,7 +28,7 @@ namespace ChampionMains.Pyrobot.Controllers
         {
             var user = await _users.GetUserAsync();
 
-            if (!await _subreddits.UpdateSubRedditUser(user.Id, model.SubredditId, model.RankEnabled,
+            if (!await _flairs.UpdateSubredditUserFlair(user.Id, model.SubredditId, model.RankEnabled,
                 model.ChampionMasteryEnabled, model.PrestigeEnabled, model.FlairText))
                 return BadRequest("Request did not match database");
 

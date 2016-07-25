@@ -20,7 +20,7 @@ namespace ChampionMains.Pyrobot.Services
 
         private static uint Hash(string s)
         {
-            return s.Aggregate<char, uint>(5381, (current, c) => ((current << 5) + current) + c);
+            return s.Aggregate<char, uint>(5381, (current, c) => (current << 5) + current + c);
         }
 
         private static string ToHexString(uint value)

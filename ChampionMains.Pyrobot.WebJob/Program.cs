@@ -42,7 +42,6 @@ namespace ChampionMains.Pyrobot.WebJob
             builder.RegisterType(typeof(SubredditService)).InstancePerDependency();
             builder.RegisterType(typeof(RedditService)).InstancePerLifetimeScope();
             builder.RegisterType(typeof(ValidationService)).SingleInstance();
-            builder.RegisterType(typeof(LeagueUpdateService)).InstancePerDependency();
             builder.Register(context => new RoleService(
                     ConfigurationManager.AppSettings["security.admins"].Split(',').Select(x => x.Trim()).ToList())
             ).SingleInstance();
