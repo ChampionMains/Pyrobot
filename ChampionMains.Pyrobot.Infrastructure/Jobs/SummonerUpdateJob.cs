@@ -1,12 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data.Enums;
-using ChampionMains.Pyrobot.Data.Models;
-using ChampionMains.Pyrobot.Riot;
 using ChampionMains.Pyrobot.Services;
 using Microsoft.Azure.WebJobs;
-using Summoner = ChampionMains.Pyrobot.Data.Models.Summoner;
 
 namespace ChampionMains.Pyrobot.Jobs
 {
