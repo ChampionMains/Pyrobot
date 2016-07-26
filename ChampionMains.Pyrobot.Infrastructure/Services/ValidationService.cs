@@ -15,7 +15,7 @@ namespace ChampionMains.Pyrobot.Services
         public async Task<bool> ValidateAsync(string principal, int summonerId, string region, string userName, string code)
         {
             return string.Equals(code, await GenerateAsync(principal, summonerId, region, userName),
-                StringComparison.InvariantCultureIgnoreCase);
+                StringComparison.OrdinalIgnoreCase);
         }
 
         private static uint Hash(string s)

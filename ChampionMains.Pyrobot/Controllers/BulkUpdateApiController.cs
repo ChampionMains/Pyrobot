@@ -7,22 +7,21 @@ using ChampionMains.Pyrobot.Services;
 
 namespace ChampionMains.Pyrobot.Controllers
 {
-    public class PeriodicUpdateApiController : ApiController
+    public class BulkUpdateApiController : ApiController
     {
         private readonly WebJobService _webJob;
 
-        public PeriodicUpdateApiController(WebJobService webJob)
+        public BulkUpdateApiController(WebJobService webJob)
         {
             _webJob = webJob;
         }
 
         [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("trigger-nightly")]
-        public async Task TriggerNightly()
+        [System.Web.Http.Route("trigger-bulk-update")]
+        public async Task<bool> TriggerBulkUpdate()
         {
-            await Task.Yield();
-            throw new NotImplementedException();
-            //await _webJob.QueueBulkUpdate();
+            await _webJob.QueueBulkUpdate();
+            return true;
         }
     }
 }

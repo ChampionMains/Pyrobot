@@ -28,7 +28,7 @@
                             $this[keys[j]] = data.result[keys[j]];
                     }
                     else
-                        $this.status = { error: 'Error loading summonersService' };
+                        $this.status = { error: 'Error loading summonerService' };
 
                     // delay either 5 seconds or an hour
                     var delay = (--i > 0) ? 5e3 : 3.6e6;

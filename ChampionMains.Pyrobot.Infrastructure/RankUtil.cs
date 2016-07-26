@@ -49,8 +49,7 @@ namespace ChampionMains.Pyrobot
         {
             var classes = new List<string>();
             if (oldFlair != null)
-                classes.AddRange(oldFlair.Split()
-                    .Where(c => !string.IsNullOrWhiteSpace(c) && !c.StartsWith(RankPrefix) && !c.StartsWith(MasteryPrefix)));
+                classes.AddRange(oldFlair.Split().Where(c => !string.IsNullOrWhiteSpace(c) && !c.StartsWith(RankPrefix) && !c.StartsWith(MasteryPrefix)));
 
             if (rankEnabled)
             {

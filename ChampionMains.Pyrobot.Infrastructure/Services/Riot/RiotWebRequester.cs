@@ -196,17 +196,19 @@ namespace ChampionMains.Pyrobot.Services.Riot
                             // 404 indicating the request was successful but the entity did not exist (invalid summoner id, for example)
                             return response;
 
+                        case 429:
                         case 500:
                         case 503:
+                            // 429 too many requests (rate limtied) ... but we can continue
                             // 500 and 503 indicate an error on Riot's API. If the attempts aren't depleted, we'll requeue and try again.
                             if (attempts > 0)
                             {
                                 await Task.Delay(RetryInterval);
                             }
                             break;
-                            // 429 too many requests (rate limtied)
-                            // 403 blacklisted (temp or permanent) -- shouldn't happen
+                            // 403 blacklisted (temp or permanent) -- shouldn't happen hopefully
                         default:
+                            await Console.Error.WriteLineAsync($"{requestUri} failed with status code {response.StatusCode}.");
                             throw new RiotHttpException(response.StatusCode, requestUri);
                     }
                 }

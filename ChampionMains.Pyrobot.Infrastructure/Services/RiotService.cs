@@ -25,25 +25,25 @@ namespace ChampionMains.Pyrobot.Services
         public async Task<Summoner> GetSummoner(string region, string summonerName)
         {
             var uri = SummonerBaseUri + "by-name/" + Uri.EscapeDataString(summonerName);
-            return GetSummonersFromResponse(await WebRequester.SendRequestAsync(region, uri)).First();
+            return GetSummonersFromResponse(await WebRequester.SendRequestAsync(region, uri)).Values.First();
         }
 
         public async Task<Summoner> GetSummoner(string region, long summonerId)
         {
             var uri = SummonerBaseUri + summonerId;
-            return GetSummonersFromResponse(await WebRequester.SendRequestAsync(region, uri)).First();
+            return GetSummonersFromResponse(await WebRequester.SendRequestAsync(region, uri)).Values.First();
         }
 
-        public async Task<IList<Summoner>> GetSummoners(string region, IEnumerable<long> summonerIds)
+        public async Task<IDictionary<long, Summoner>> GetSummoners(string region, IEnumerable<long> summonerIds)
         {
             var data = summonerIds.Select((id, i) => new {id, g = i/MaxSummonerRequestSize}).GroupBy(x => x.g)
                 .Select(async group =>
                 {
-                    var uri = SummonerBaseUri + group.Aggregate("", (a, b) => a + ',' + b.id);
+                    var uri = SummonerBaseUri + group.Select(x => x.id.ToString()).Aggregate((a, b) => a + ',' + b);
                     return GetSummonersFromResponse(await WebRequester.SendRequestAsync(region, uri));
                 }).ToList();
             await Task.WhenAll(data);
-            return data.SelectMany(d => d.Result).ToList();
+            return data.SelectMany(d => d.Result).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
 
         public async Task<Tuple<Tier, byte>> GetRank(string region, long summonerId)
@@ -58,7 +58,7 @@ namespace ChampionMains.Pyrobot.Services
                 .Select(async group =>
                 {
                     var uri = LeagueBaseUri + "by-summoner/" +
-                          group.Aggregate("", (a, b) => a + ',' + b.id) + "/entry";
+                          group.Select(x => x.id.ToString()).Aggregate((a, b) => a + ',' + b) + "/entry";
                     return GetRanksFromResponse(await WebRequester.SendRequestAsync(region, uri));
                 }).ToList();
             await Task.WhenAll(data);
@@ -89,10 +89,9 @@ namespace ChampionMains.Pyrobot.Services
             return json[summonerId.ToString()]?["pages"]?.ToObject<ICollection<RunePage>>();
         }
 
-        private static IList<Summoner> GetSummonersFromResponse(JToken json)
+        private static IDictionary<long, Summoner> GetSummonersFromResponse(JToken json)
         {
-            var results = json.ToObject<IDictionary<string, Summoner>>();
-            return results.Values.ToList();
+            return json.ToObject<IDictionary<long, Summoner>>();
         }
 
         private static IDictionary<long, Tuple<Tier, byte>> GetRanksFromResponse(JToken json)

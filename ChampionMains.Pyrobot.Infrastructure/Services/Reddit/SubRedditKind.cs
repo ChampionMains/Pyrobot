@@ -1,6 +1,6 @@
 ﻿namespace ChampionMains.Pyrobot.Services.Reddit
 {
-    public enum SubRedditKind
+    public enum SubredditKind
     {
         Subscriber,
         Contributor,

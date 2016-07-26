@@ -156,6 +156,10 @@
     <Compile Include="Migrations\201607220555343_updatetime.Designer.cs">
       <DependentUpon>201607220555343_updatetime.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201607260656263_flairupdatetime.cs" />
+    <Compile Include="Migrations\201607260656263_flairupdatetime.Designer.cs">
+      <DependentUpon>201607260656263_flairupdatetime.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Champion.cs" />
     <Compile Include="Models\SubredditUserFlair.cs" />
@@ -233,6 +237,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201607220555343_updatetime.resx">
       <DependentUpon>201607220555343_updatetime.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607260656263_flairupdatetime.resx">
+      <DependentUpon>201607260656263_flairupdatetime.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

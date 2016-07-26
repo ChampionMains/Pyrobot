@@ -44,15 +44,19 @@ namespace ChampionMains.Pyrobot
             builder.Register(context => new ApplicationConfiguration
             {
                 FlairBotVersion = s["bot.version"],
-                LeagueDataStaleTime = TimeSpan.Parse(s["website.leagueUpdateStaleTime"])
+                RiotUpdateMin = TimeSpan.Parse(s["website.riotUpdateMin"]),
+                RiotUpdateMax = TimeSpan.Parse(s["website.riotUpdateMax"]),
+                FlairUpdateMin = TimeSpan.Parse(s["website.flairUpdateMin"]),
+                FlairUpdateMax = TimeSpan.Parse(s["website.flairUpdateMax"])
             }).SingleInstance();
 
             // Services
-            builder.RegisterType(typeof(UserService)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof(SummonerService)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof(SubredditService)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof(RedditService)).InstancePerLifetimeScope();
+            builder.RegisterType(typeof(UserService)).SingleInstance();
+            builder.RegisterType(typeof(SummonerService)).SingleInstance();
+            builder.RegisterType(typeof(SubredditService)).SingleInstance();
+            builder.RegisterType(typeof(RedditService)).SingleInstance();
             builder.RegisterType(typeof(ValidationService)).SingleInstance();
+            builder.RegisterType(typeof(FlairService)).SingleInstance();
             builder.Register(context => new RoleService(
                     ConfigurationManager.AppSettings["security.admins"].Split(',').Select(x => x.Trim()).ToList())
             ).SingleInstance();
@@ -87,7 +91,7 @@ namespace ChampionMains.Pyrobot
             //builder.RegisterType(typeof (ConfirmFlairUpdatedMailJob)).InstancePerLifetimeScope();
 
             // Data persistance
-            builder.RegisterType(typeof(UnitOfWork)).InstancePerLifetimeScope();
+            builder.RegisterType(typeof(UnitOfWork)).InstancePerDependency();
 
             Configure(builder.Build());
         }

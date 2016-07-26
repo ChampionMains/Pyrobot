@@ -27,7 +27,7 @@ namespace ChampionMains.Pyrobot.Areas.AdminPanel.Controllers
         {
             try
             {
-                return Ok(await _reddit.GetSubRedditsAsync(SubRedditKind.Moderator));
+                return Ok(await _reddit.GetSubredditsAsync(SubredditKind.Moderator));
             }
             catch (HttpRequestException)
             {
@@ -56,7 +56,7 @@ namespace ChampionMains.Pyrobot.Areas.AdminPanel.Controllers
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var moderatorSubs = await _reddit.GetSubRedditsAsync(SubRedditKind.Moderator);
+            var moderatorSubs = await _reddit.GetSubredditsAsync(SubredditKind.Moderator);
             var currentSubs = await _subreddits.GetAllAsync();
 
             if (!moderatorSubs.Contains(model.Name, StringComparer.InvariantCultureIgnoreCase))
@@ -64,14 +64,14 @@ namespace ChampionMains.Pyrobot.Areas.AdminPanel.Controllers
                 return Conflict("Moderator trait is required.");
             }
 
-            if (currentSubs.Any(s => s.Name.Equals(model.Name, StringComparison.InvariantCultureIgnoreCase)))
+            if (currentSubs.Any(s => s.Name.Equals(model.Name, StringComparison.OrdinalIgnoreCase)))
             {
-                return Conflict("That Sub Reddit is already linked.");
+                return Conflict("That Subreddit is already linked.");
             }
 
             if (!await _subreddits.AddAsync(model.Name))
             {
-                return Conflict("Error linking Sub Reddit.");
+                return Conflict("Error linking Subreddit.");
             }
 
             return Ok();

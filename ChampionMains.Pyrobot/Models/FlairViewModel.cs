@@ -7,7 +7,7 @@ namespace ChampionMains.Pyrobot.Models
     {
         [Required]
         [JsonProperty(PropertyName = "subreddit")]
-        public string SubReddit { get; set; }
+        public string Subreddit { get; set; }
 
         [Required]
         [JsonProperty(PropertyName = "rankEnabled")]

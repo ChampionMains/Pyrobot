@@ -32,16 +32,19 @@ namespace ChampionMains.Pyrobot.WebJob
             builder.Register(context => new ApplicationConfiguration
             {
                 FlairBotVersion = s["bot.version"],
-                LeagueDataStaleTime = TimeSpan.Parse(s["website.leagueUpdateStaleTime"]),
-                FlairStaleTime = TimeSpan.Parse(s["website.flairStaleTime"])
+                RiotUpdateMin = TimeSpan.Parse(s["website.riotUpdateMin"]),
+                RiotUpdateMax = TimeSpan.Parse(s["website.riotUpdateMax"]),
+                FlairUpdateMin = TimeSpan.Parse(s["website.flairUpdateMin"]),
+                FlairUpdateMax = TimeSpan.Parse(s["website.flairUpdateMax"])
             }).SingleInstance();
 
             // Services
-            builder.RegisterType(typeof(UserService)).InstancePerDependency();
-            builder.RegisterType(typeof(SummonerService)).InstancePerDependency();
-            builder.RegisterType(typeof(SubredditService)).InstancePerDependency();
-            builder.RegisterType(typeof(RedditService)).InstancePerLifetimeScope();
+            builder.RegisterType(typeof(UserService)).SingleInstance();
+            builder.RegisterType(typeof(SummonerService)).SingleInstance();
+            builder.RegisterType(typeof(SubredditService)).SingleInstance();
+            builder.RegisterType(typeof(RedditService)).SingleInstance();
             builder.RegisterType(typeof(ValidationService)).SingleInstance();
+            builder.RegisterType(typeof(FlairService)).SingleInstance();
             builder.Register(context => new RoleService(
                     ConfigurationManager.AppSettings["security.admins"].Split(',').Select(x => x.Trim()).ToList())
             ).SingleInstance();
@@ -77,6 +80,7 @@ namespace ChampionMains.Pyrobot.WebJob
             // Jobs
             builder.RegisterType(typeof(SummonerUpdateJob)).InstancePerDependency();
             builder.RegisterType(typeof(FlairUpdateJob)).InstancePerDependency();
+            builder.RegisterType(typeof(BulkUpdateJob)).InstancePerDependency();
 
             // Configure JobHost
             var config = new JobHostConfiguration

@@ -19,13 +19,13 @@ namespace ChampionMains.Pyrobot.Services
         public SummonerService(UnitOfWork unitOfWork, ApplicationConfiguration config)
         {
             _unitOfWork = unitOfWork;
-            _staleTime = config.LeagueDataStaleTime;
+            _staleTime = config.RiotUpdateMax;
         }
 
         public async Task<IList<Summoner>> GetSummonersForUpdateAsync()
         {
             var staleAfter = DateTimeOffset.Now - _staleTime;
-            return await _unitOfWork.Summoners.Where(s => s.LastUpdate < staleAfter).Include(x => x.User).ToListAsync();
+            return await _unitOfWork.Summoners.Where(s => s.LastUpdate == null || s.LastUpdate < staleAfter).Include(x => x.User).ToListAsync();
         }
 
         public Summoner AddSummoner(User user, long summonerId, string region, string name, int profileIconId)
@@ -114,9 +114,9 @@ namespace ChampionMains.Pyrobot.Services
             return await _unitOfWork.SaveChangesAsync() > 0;
         }
 
-        public async Task SaveChangesAsync()
+        public async Task<int> SaveChangesAsync()
         {
-            await _unitOfWork.SaveChangesAsync();
+            return await _unitOfWork.SaveChangesAsync();
         }
     }
 }

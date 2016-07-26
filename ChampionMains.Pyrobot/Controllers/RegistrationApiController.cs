@@ -93,7 +93,7 @@ namespace ChampionMains.Pyrobot.Controllers
                 var runePages = await Riot.GetRunePages(model.Region, riotSummoner.Id);
                 var code = await Validation.GenerateAsync(User.Identity.Name, riotSummoner.Id, model.Region, user.Name);
                 
-                if (!runePages.Any(page => string.Equals(page.Name, code, StringComparison.InvariantCultureIgnoreCase)))
+                if (!runePages.Any(page => string.Equals(page.Name, code, StringComparison.OrdinalIgnoreCase)))
                     return StatusCode(HttpStatusCode.ExpectationFailed);
 
                 // Create the data entity and associate it with the current user

@@ -24,18 +24,17 @@ namespace ChampionMains.Pyrobot.Controllers
         [HttpPost]
         [ValidateModel]
         [Route("profile/api/subreddit/update")]
-        public async Task<IHttpActionResult> UpdateSubReddit(SubredditUserDataViewModel model)
+        public async Task<IHttpActionResult> UpdateSubreddit(SubredditUserDataViewModel model)
         {
             var user = await _users.GetUserAsync();
 
-            if (!await _flairs.UpdateSubredditUserFlair(user.Id, model.SubredditId, model.RankEnabled,
-                model.ChampionMasteryEnabled, model.PrestigeEnabled, model.FlairText))
-                return BadRequest("Request did not match database");
+            await _flairs.UpdateSubredditUserFlair(user.Id, model.SubredditId, model.RankEnabled,
+                model.ChampionMasteryEnabled, model.PrestigeEnabled, model.FlairText);
 
             await _webJob.QueueFlairUpdate(new FlairUpdateMessage()
             {
                 UserId = user.Id,
-                SubRedditId = model.SubredditId,
+                SubredditId = model.SubredditId,
                 RankEnabled = model.RankEnabled,
                 ChampionMasteryEnabled = model.ChampionMasteryEnabled,
                 PrestigeEnabled = model.PrestigeEnabled,

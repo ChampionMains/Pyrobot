@@ -16,14 +16,16 @@ namespace ChampionMains.Pyrobot.Services
         public FlairService(UnitOfWork context, ApplicationConfiguration config)
         {
             _context = context;
-            _staleTime = config.FlairStaleTime;
+            _staleTime = config.FlairUpdateMax;
         }
 
         public async Task<ICollection<SubredditUserFlair>> GetFlairsForUpdateAsync()
         {
             var staleAfter = DateTimeOffset.Now - _staleTime;
-            return await _context.SubredditUserFlairs.Where(s => s.LastUpdate < staleAfter)
-                    .Include(x => x.User).Include(x => x.Subreddit).ToListAsync();
+            return await _context.SubredditUserFlairs.Where(s => s.LastUpdate == null || s.LastUpdate < staleAfter)
+                    .Include(x => x.User.Summoners.Select(s => s.ChampionMasteries))
+                    .Include(x => x.User.Summoners.Select(s => s.Rank))
+                    .Include(x => x.Subreddit).ToListAsync();
         }
 
 

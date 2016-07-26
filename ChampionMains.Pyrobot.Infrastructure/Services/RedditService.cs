@@ -21,7 +21,7 @@ namespace ChampionMains.Pyrobot.Services
             _requester = requester;
         }
 
-        public async Task<ICollection<string>> GetSubRedditsAsync(SubRedditKind kind)
+        public async Task<ICollection<string>> GetSubredditsAsync(SubredditKind kind)
         {
             var uri = $"{BaseUri}/subreddits/mine/{kind.ToString().ToLowerInvariant()}";
             var results = new List<string>();
