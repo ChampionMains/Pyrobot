@@ -1,6 +1,5 @@
 namespace ChampionMains.Pyrobot.Data.Migrations
 {
-    using System;
     using System.Data.Entity.Migrations;
     
     public partial class subredditsettings : DbMigration

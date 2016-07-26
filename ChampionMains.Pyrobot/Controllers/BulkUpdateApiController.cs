@@ -1,8 +1,5 @@
-﻿using System;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.Mvc;
 using ChampionMains.Pyrobot.Services;
 
 namespace ChampionMains.Pyrobot.Controllers
@@ -16,8 +13,8 @@ namespace ChampionMains.Pyrobot.Controllers
             _webJob = webJob;
         }
 
-        [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("trigger-bulk-update")]
+        [HttpPost]
+        [Route("trigger-bulk-update")]
         public async Task<bool> TriggerBulkUpdate()
         {
             await _webJob.QueueBulkUpdate();
