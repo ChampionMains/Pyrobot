@@ -62,9 +62,10 @@ namespace ChampionMains.Pyrobot.Jobs
                 foreach (var summoner in summonersByRegion)
                 {
                     var data = summonerData[summoner.SummonerId];
-                    var rank = summonerRanks[summoner.SummonerId];
+                    Tuple<Tier, byte> rank;
+                    summonerRanks.TryGetValue(summoner.SummonerId, out rank);
                     var mastery = summonerMasteries[summoner.SummonerId];
-                    _summonerService.UpdateSummoner(summoner, region, data.Name, data.ProfileIconId, rank.Item1, rank.Item2, mastery);
+                    _summonerService.UpdateSummoner(summoner, region, data.Name, data.ProfileIconId, rank?.Item1, rank?.Item2, mastery);
                 }
             }
 
@@ -107,7 +108,7 @@ namespace ChampionMains.Pyrobot.Jobs
                 Task.Run(async () =>
                 {
                     var dbUpdates = await _summonerService.SaveChangesAsync(); // calls savechanges
-                    await Console.Out.WriteLineAsync($"Updated {flairs.Count} flairs; pulled {dbUpdates} changed flair texts");
+                    await Console.Out.WriteLineAsync($"Updating {flairs.Count} flairs; pulled {dbUpdates} changed flair texts");
                 }));
         }
     }

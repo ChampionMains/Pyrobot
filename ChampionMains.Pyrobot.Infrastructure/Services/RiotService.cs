@@ -6,7 +6,7 @@ using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Riot;
 using ChampionMains.Pyrobot.Services.Riot;
 using Newtonsoft.Json.Linq;
-using Summoner = ChampionMains.Pyrobot.Data.Models.Summoner;
+using Summoner = ChampionMains.Pyrobot.Riot.Summoner;
 
 namespace ChampionMains.Pyrobot.Services
 {
@@ -25,13 +25,13 @@ namespace ChampionMains.Pyrobot.Services
         public async Task<Summoner> GetSummoner(string region, string summonerName)
         {
             var uri = SummonerBaseUri + "by-name/" + Uri.EscapeDataString(summonerName);
-            return GetSummonersFromResponse(await WebRequester.SendRequestAsync(region, uri)).Values.First();
+            return GetSummonersFromResponse(await WebRequester.SendRequestAsync(region, uri)).First();
         }
 
         public async Task<Summoner> GetSummoner(string region, long summonerId)
         {
             var uri = SummonerBaseUri + summonerId;
-            return GetSummonersFromResponse(await WebRequester.SendRequestAsync(region, uri)).Values.First();
+            return GetSummonersFromResponse(await WebRequester.SendRequestAsync(region, uri)).First();
         }
 
         public async Task<IDictionary<long, Summoner>> GetSummoners(string region, IEnumerable<long> summonerIds)
@@ -43,13 +43,13 @@ namespace ChampionMains.Pyrobot.Services
                     return GetSummonersFromResponse(await WebRequester.SendRequestAsync(region, uri));
                 }).ToList();
             await Task.WhenAll(data);
-            return data.SelectMany(d => d.Result).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            return data.SelectMany(d => d.Result).ToDictionary(s => s.Id, s => s);
         }
 
         public async Task<Tuple<Tier, byte>> GetRank(string region, long summonerId)
         {
             var uri = LeagueBaseUri + "by-summoner/" + summonerId + "/entry";
-            return GetRanksFromResponse(await WebRequester.SendRequestAsync(region, uri)).First().Value;
+            return GetRanksFromResponse(await WebRequester.SendRequestAsync(region, uri))?.First().Value;
         }
 
         public async Task<IDictionary<long, Tuple<Tier, byte>>> GetRanks(string region, IEnumerable<long> summonerIds)
@@ -89,16 +89,16 @@ namespace ChampionMains.Pyrobot.Services
             return json[summonerId.ToString()]?["pages"]?.ToObject<ICollection<RunePage>>();
         }
 
-        private static IDictionary<long, Summoner> GetSummonersFromResponse(JToken json)
+        private static IList<Summoner> GetSummonersFromResponse(JToken json)
         {
-            return json.ToObject<IDictionary<long, Summoner>>();
+            return json.ToObject<IDictionary<string, Summoner>>().Values.ToList();
         }
 
         private static IDictionary<long, Tuple<Tier, byte>> GetRanksFromResponse(JToken json)
         {
-            var data = json.ToObject<IDictionary<long, ICollection<League>>>();
+            var data = json?.ToObject<IDictionary<long, ICollection<League>>>();
 
-            return data.ToDictionary(kvp => kvp.Key,
+            return data?.ToDictionary(kvp => kvp.Key,
                 kvp =>
                 {
                     var solo = kvp.Value.FirstOrDefault(l => l.Queue == QueueType.RANKED_SOLO_5x5);

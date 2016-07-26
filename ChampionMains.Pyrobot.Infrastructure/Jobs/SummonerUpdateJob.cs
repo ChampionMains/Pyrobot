@@ -29,7 +29,7 @@ namespace ChampionMains.Pyrobot.Jobs
             var rank = await _riot.GetRank(summoner.Region, summoner.SummonerId);
             var championMasteries = await _riot.GetChampionMastery(summoner.Region, summoner.SummonerId);
 
-            _summoners.UpdateSummoner(summoner, summoner2.Region, summoner2.Name, summoner2.ProfileIconId,
+            _summoners.UpdateSummoner(summoner, summoner.Region, summoner.Name, summoner2.ProfileIconId,
                 rank?.Item1, rank?.Item2, championMasteries);
             await _summoners.SaveChangesAsync();
         }
