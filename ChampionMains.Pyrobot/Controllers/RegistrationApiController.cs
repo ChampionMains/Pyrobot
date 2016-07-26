@@ -5,8 +5,8 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using ChampionMains.Pyrobot.Attributes;
-using ChampionMains.Pyrobot.Data.Models;
 using ChampionMains.Pyrobot.Models;
+using ChampionMains.Pyrobot.Riot;
 using ChampionMains.Pyrobot.Services;
 using ChampionMains.Pyrobot.Services.Riot;
 
@@ -98,7 +98,7 @@ namespace ChampionMains.Pyrobot.Controllers
 
                 // Create the data entity and associate it with the current user
                 var currentSummoner = Summoners.AddSummoner(user, riotSummoner.Id, model.Region, riotSummoner.Name, riotSummoner.ProfileIconId);
-                await Summoners.SaveChangesAsync();
+                var changes = await Summoners.SaveChangesAsync();
 
                 // Send confirmation mail.
                 //TODO
