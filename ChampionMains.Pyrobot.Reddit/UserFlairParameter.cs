@@ -7,6 +7,7 @@ namespace ChampionMains.Pyrobot.Reddit
         [JsonProperty("flair_css_class")]
         public string CssClass { get; set; }
 
+        [JsonProperty("user")]
         public string Name { get; set; }
 
         [JsonProperty("flair_text")]
