@@ -388,7 +388,7 @@
     <Copy SourceFiles="Web.template.config" DestinationFiles="Web.config" />
     <Copy SourceFiles="..\ChampionMains.Pyrobot.WebJob\App.template.config"
           DestinationFiles="..\ChampionMains.Pyrobot.WebJob\App.config"
-          Condition="..\ChampionMains.Pyrobot.WebJob\Exists('App.template.config')" />
+          Condition="Exists('..\ChampionMains.Pyrobot.WebJob\App.template.config')" />
   </Target>
   <Target Name="UpdateWebConfigBeforeRun" AfterTargets="CopyWebTemplateConfig" Condition="Exists('Web.Local.Config')">
     <Message Text="Configuration: $(Configuration): Web.Local.config" Importance="high" />
