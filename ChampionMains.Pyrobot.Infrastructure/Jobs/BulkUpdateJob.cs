@@ -61,20 +61,11 @@ namespace ChampionMains.Pyrobot.Jobs
 
                 foreach (var summoner in summonersByRegion)
                 {
-                    Console.Out.WriteLine(1);
                     var data = summonerData[summoner.SummonerId];
-
-
-                    Console.Out.WriteLine(2);
                     Tuple<Tier, byte> rank;
                     summonerRanks.TryGetValue(summoner.SummonerId, out rank);
-
-
-                    Console.Out.WriteLine(3);
                     var mastery = summonerMasteries[summoner.SummonerId];
 
-
-                    Console.Out.WriteLine(4);
                     _summonerService.UpdateSummoner(summoner, region, data.Name, data.ProfileIconId, rank?.Item1, rank?.Item2, mastery);
                 }
             }
