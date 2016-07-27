@@ -75,9 +75,9 @@ namespace ChampionMains.Pyrobot.Services
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<int> SaveChangesAsync()
+        public Task<int> SaveChangesAsync()
         {
-            return await _context.SaveChangesAsync();
+            return _context.SaveChangesAsync();
         }
     }
 }

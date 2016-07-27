@@ -68,7 +68,7 @@ namespace ChampionMains.Pyrobot.Services
                     if (champion == null)
                         continue; // possibly a new champion has been added, and the database needs updating
 
-                    champMastery = new SummonerChampionMastery()
+                    champMastery = new SummonerChampionMastery
                     {
                         Champion = champion
                     };
@@ -114,9 +114,9 @@ namespace ChampionMains.Pyrobot.Services
             return await _unitOfWork.SaveChangesAsync() > 0;
         }
 
-        public async Task<int> SaveChangesAsync()
+        public Task<int> SaveChangesAsync()
         {
-            return await _unitOfWork.SaveChangesAsync();
+            return _unitOfWork.SaveChangesAsync();
         }
     }
 }

@@ -31,9 +31,9 @@ namespace ChampionMains.Pyrobot.Data.Models
         public long SummonerId { get; set; }
 
         [ForeignKey("User")]
+        [Required]
         public int UserId { get; set; }
 
-        [Required]
         public virtual User User { get; set; }
 
         public virtual SummonerRank Rank { get; set; }
