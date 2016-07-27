@@ -1,4 +1,4 @@
-# /r/ChampionMains Ranked Flairs
+# /r/ChampionMains Flairs
 
 The official repository for [the site](http://championmains-pyrobot.azurewebsites.net/) used by the [/r/ChampionMains](https://championmains.reddit.com/) subreddit network
 to add flairs for champion mastery and summoner rank.
@@ -10,7 +10,7 @@ Forked from [RedditRankedFlairs](https://github.com/jessehallam/RedditRankedFlai
 
 ## Technical documentation
 
-**Configuration**
+### Configuration
 
 All configuration is performed using the Web.Config and App.config (for the Azure WebJob). For security reasons, the actual Web.Config is not included. *Don't forget to update your Machine Key.*
 
@@ -22,7 +22,7 @@ If you need help configuring this, just submit an issue.
 [Configuring OAuth](https://www.reddit.com/prefs/apps/): Add a 'web app' and a 'personal use script'.
 
 
-## How it works
+### How it works
 
 Reddit users visit the site and are prompted to sign in using their Reddit account. Reddit's OAuth 2.0 protocol allows the site to verify that 
 their Reddit account is authentic.
@@ -37,7 +37,7 @@ Once these steps have been completed, the user is considered registered. From ti
 a flair is composed and sent using Reddit's OAuth 2.0 API.
 
 
-## Technical Info
+### Technical Info
 
 The solution was made using **Microsoft Visual Studio Community 2015** and targets **.NET Framework 4.5.2**. 
 
@@ -50,7 +50,7 @@ by **Microsoft SQL Server**.
 The website is hosted on the cloud using **Microsoft Azure App Services**.
 
 
-## Contributions
+### Contributions
 
 The following NuGet packages are included:
 
@@ -60,6 +60,6 @@ The following NuGet packages are included:
 
 * **[OWIN OAuth Providers](https://github.com/RockstarLabs/OwinOAuthProviders)** - for Reddit OAuth
 
-## License
+### License
 
 GPLv2
