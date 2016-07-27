@@ -46,7 +46,7 @@ namespace ChampionMains.Pyrobot.WebJob
             builder.RegisterType(typeof(RedditService)).SingleInstance();
             builder.RegisterType(typeof(ValidationService)).SingleInstance();
             builder.Register(context => new RoleService(
-                    ConfigurationManager.AppSettings["security.admins"].Split(',').Select(x => x.Trim()).ToList())
+                    s["security.admins"].Split(',').Select(x => x.Trim()).ToList())
             ).SingleInstance();
             builder.Register(context => new RiotService
             {
