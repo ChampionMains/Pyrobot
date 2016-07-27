@@ -218,6 +218,31 @@
     <Content Include="Content\bootstrap\js\bootstrap.js" />
     <Content Include="Content\bootstrap\js\bootstrap.min.js" />
     <Content Include="Content\css\cyborg.css" />
+    <Content Include="Content\icons\android-icon-144x144.png" />
+    <Content Include="Content\icons\android-icon-192x192.png" />
+    <Content Include="Content\icons\android-icon-36x36.png" />
+    <Content Include="Content\icons\android-icon-48x48.png" />
+    <Content Include="Content\icons\android-icon-72x72.png" />
+    <Content Include="Content\icons\android-icon-96x96.png" />
+    <Content Include="Content\icons\apple-icon-114x114.png" />
+    <Content Include="Content\icons\apple-icon-120x120.png" />
+    <Content Include="Content\icons\apple-icon-144x144.png" />
+    <Content Include="Content\icons\apple-icon-152x152.png" />
+    <Content Include="Content\icons\apple-icon-180x180.png" />
+    <Content Include="Content\icons\apple-icon-57x57.png" />
+    <Content Include="Content\icons\apple-icon-60x60.png" />
+    <Content Include="Content\icons\apple-icon-72x72.png" />
+    <Content Include="Content\icons\apple-icon-76x76.png" />
+    <Content Include="Content\icons\apple-icon-precomposed.png" />
+    <Content Include="Content\icons\apple-icon.png" />
+    <Content Include="browserconfig.xml" />
+    <Content Include="Content\icons\favicon-16x16.png" />
+    <Content Include="Content\icons\favicon-32x32.png" />
+    <Content Include="Content\icons\favicon-96x96.png" />
+    <Content Include="Content\icons\ms-icon-144x144.png" />
+    <Content Include="Content\icons\ms-icon-150x150.png" />
+    <Content Include="Content\icons\ms-icon-310x310.png" />
+    <Content Include="Content\icons\ms-icon-70x70.png" />
     <Content Include="Content\img\masteries.png" />
     <Content Include="Content\img\ranks.png" />
     <Content Include="Content\js\angular-services.js" />
@@ -226,6 +251,7 @@
     <Content Include="Content\js\ga.js" />
     <Content Include="Content\js\jquery.min.js" />
     <Content Include="Content\js\profile.js" />
+    <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
   </ItemGroup>
   <ItemGroup>
@@ -279,6 +305,7 @@
     <None Include="Content\css\about.scss" />
     <Content Include="Content\css\profile.scss" />
     <Content Include="Content\css\site.scss" />
+    <Content Include="manifest.json" />
     <None Include="Properties\PublishProfiles\championmains-pyrobot - Web Deploy.pubxml" />
     <Content Include="Properties\webjobs-list.json" />
     <Content Include="Views\Web.config" />
