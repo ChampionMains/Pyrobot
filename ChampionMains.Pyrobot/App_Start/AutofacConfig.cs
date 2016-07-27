@@ -51,14 +51,15 @@ namespace ChampionMains.Pyrobot
             }).SingleInstance();
 
             // Services
-            builder.RegisterType(typeof(UserService)).SingleInstance();
-            builder.RegisterType(typeof(SummonerService)).SingleInstance();
-            builder.RegisterType(typeof(SubredditService)).SingleInstance();
+            builder.RegisterType(typeof(UserService)).InstancePerLifetimeScope();
+            builder.RegisterType(typeof(SummonerService)).InstancePerLifetimeScope();
+            builder.RegisterType(typeof(SubredditService)).InstancePerLifetimeScope();
+            builder.RegisterType(typeof(FlairService)).InstancePerLifetimeScope();
+            // above use db, below do not
             builder.RegisterType(typeof(RedditService)).SingleInstance();
             builder.RegisterType(typeof(ValidationService)).SingleInstance();
-            builder.RegisterType(typeof(FlairService)).SingleInstance();
             builder.Register(context => new RoleService(
-                    ConfigurationManager.AppSettings["security.admins"].Split(',').Select(x => x.Trim()).ToList())
+                    s["security.admins"].Split(',').Select(x => x.Trim()).ToList())
             ).SingleInstance();
             builder.Register(context => new RiotService
             {
@@ -91,7 +92,7 @@ namespace ChampionMains.Pyrobot
             //builder.RegisterType(typeof (ConfirmFlairUpdatedMailJob)).InstancePerLifetimeScope();
 
             // Data persistance
-            builder.RegisterType(typeof(UnitOfWork)).InstancePerDependency();
+            builder.RegisterType(typeof(UnitOfWork)).InstancePerLifetimeScope();
 
             Configure(builder.Build());
         }

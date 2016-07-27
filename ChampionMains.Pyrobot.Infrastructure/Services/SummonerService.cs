@@ -33,14 +33,14 @@ namespace ChampionMains.Pyrobot.Services
             var summoner = user.Summoners.FirstOrDefault(s => s.Region == region && s.SummonerId == summonerId);
             if (summoner == null)
             {
-                summoner = new Summoner()
+                summoner = new Summoner
                 {
                     Rank = new SummonerRank(),
                     User = user,
                     Region = region,
                     SummonerId = summonerId
                 };
-                user.Summoners.Add(summoner);
+                _unitOfWork.Summoners.Add(summoner);
             }
 
             summoner.Name = name;
@@ -81,7 +81,7 @@ namespace ChampionMains.Pyrobot.Services
                 champMastery.UpdatedTime = DateTimeOffset.Now;
             }
 
-            summoner.Rank.UpdatedTime = DateTimeOffset.Now;
+            summoner.LastUpdate = DateTimeOffset.Now;
         }
 
         public Task<Summoner> FindSummonerAsync(int id)

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -17,8 +16,6 @@ namespace ChampionMains.Pyrobot.Data.Models
 
         [Required]
         public byte Tier { get; set; }
-        
-        public DateTimeOffset? UpdatedTime { get; set; }
         
         public virtual Summoner Summoner { get; set; }
     }

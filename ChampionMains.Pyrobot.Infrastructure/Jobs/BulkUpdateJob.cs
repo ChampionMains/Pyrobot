@@ -61,14 +61,26 @@ namespace ChampionMains.Pyrobot.Jobs
 
                 foreach (var summoner in summonersByRegion)
                 {
+                    Console.Out.WriteLine(1);
                     var data = summonerData[summoner.SummonerId];
-                    var rank = summonerRanks[summoner.SummonerId];
+
+
+                    Console.Out.WriteLine(2);
+                    Tuple<Tier, byte> rank;
+                    summonerRanks.TryGetValue(summoner.SummonerId, out rank);
+
+
+                    Console.Out.WriteLine(3);
                     var mastery = summonerMasteries[summoner.SummonerId];
-                    _summonerService.UpdateSummoner(summoner, region, data.Name, data.ProfileIconId, rank.Item1, rank.Item2, mastery);
+
+
+                    Console.Out.WriteLine(4);
+                    _summonerService.UpdateSummoner(summoner, region, data.Name, data.ProfileIconId, rank?.Item1, rank?.Item2, mastery);
                 }
             }
 
-            await _summonerService.SaveChangesAsync();
+            var summonerUpdates = await _summonerService.SaveChangesAsync();
+            await Console.Out.WriteLineAsync($"Updating {summoners.Count} summoners; {summonerUpdates} rows affected");
 
 
             // update flairs
@@ -92,6 +104,7 @@ namespace ChampionMains.Pyrobot.Jobs
 
                     // update database flair text from subreddit (different from individual flair update service)
                     flair.FlairText = existingFlair.Text;
+                    flair.LastUpdate = DateTimeOffset.Now;
 
                     var classes = RankUtil.GenerateFlairCss(flair.User, subreddit.ChampionId, subreddit.RankEnabled && flair.RankEnabled,
                         subreddit.ChampionMasteryEnabled && flair.ChampionMasteryEnabled, existingFlair.CssClass);
@@ -102,13 +115,10 @@ namespace ChampionMains.Pyrobot.Jobs
                 return await _redditService.SetFlairsAsync(subreddit.Name, updatedFlairs);
             }).ToList();
 
-            await Task.WhenAll(
-                Task.WhenAll(flairTasks),
-                Task.Run(async () =>
-                {
-                    var dbUpdates = await _summonerService.SaveChangesAsync(); // calls savechanges
-                    await Console.Out.WriteLineAsync($"Updated {flairs.Count} flairs; pulled {dbUpdates} changed flair texts");
-                }));
+            await Task.WhenAll(flairTasks);
+
+            var flairUpdates = await _flairService.SaveChangesAsync();
+            await Console.Out.WriteLineAsync($"Updating {flairs.Count} flairs; {flairUpdates} rows affected");
         }
     }
 }

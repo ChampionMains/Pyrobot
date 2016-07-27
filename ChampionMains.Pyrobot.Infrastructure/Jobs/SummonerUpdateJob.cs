@@ -1,12 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data.Enums;
-using ChampionMains.Pyrobot.Data.Models;
-using ChampionMains.Pyrobot.Riot;
 using ChampionMains.Pyrobot.Services;
 using Microsoft.Azure.WebJobs;
-using Summoner = ChampionMains.Pyrobot.Data.Models.Summoner;
 
 namespace ChampionMains.Pyrobot.Jobs
 {
@@ -30,11 +25,11 @@ namespace ChampionMains.Pyrobot.Jobs
             if (summoner == null)
                 return;
 
-            var summoner2 = await _riot.GetSummoner(summoner.Region, summoner.SummonerId);
+            var summonerData = await _riot.GetSummoner(summoner.Region, summoner.SummonerId);
             var rank = await _riot.GetRank(summoner.Region, summoner.SummonerId);
             var championMasteries = await _riot.GetChampionMastery(summoner.Region, summoner.SummonerId);
 
-            _summoners.UpdateSummoner(summoner, summoner2.Region, summoner2.Name, summoner2.ProfileIconId,
+            _summoners.UpdateSummoner(summoner, summoner.Region, summonerData.Name, summonerData.ProfileIconId,
                 rank?.Item1, rank?.Item2, championMasteries);
             await _summoners.SaveChangesAsync();
         }

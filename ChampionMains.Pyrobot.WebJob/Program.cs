@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
@@ -39,14 +38,15 @@ namespace ChampionMains.Pyrobot.WebJob
             }).SingleInstance();
 
             // Services
-            builder.RegisterType(typeof(UserService)).SingleInstance();
-            builder.RegisterType(typeof(SummonerService)).SingleInstance();
-            builder.RegisterType(typeof(SubredditService)).SingleInstance();
+            builder.RegisterType(typeof(UserService)).InstancePerDependency();
+            builder.RegisterType(typeof(SummonerService)).InstancePerDependency();
+            builder.RegisterType(typeof(SubredditService)).InstancePerDependency();
+            builder.RegisterType(typeof(FlairService)).InstancePerDependency();
+            // above use db, below do not
             builder.RegisterType(typeof(RedditService)).SingleInstance();
             builder.RegisterType(typeof(ValidationService)).SingleInstance();
-            builder.RegisterType(typeof(FlairService)).SingleInstance();
             builder.Register(context => new RoleService(
-                    ConfigurationManager.AppSettings["security.admins"].Split(',').Select(x => x.Trim()).ToList())
+                    s["security.admins"].Split(',').Select(x => x.Trim()).ToList())
             ).SingleInstance();
             builder.Register(context => new RiotService
             {

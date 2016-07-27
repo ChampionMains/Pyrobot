@@ -2,16 +2,16 @@ namespace ChampionMains.Pyrobot.Data.Migrations
 {
     using System.Data.Entity.Migrations;
     
-    public partial class ixregionsummonerid : DbMigration
+    public partial class removerankupdatetime : DbMigration
     {
         public override void Up()
         {
-            CreateIndex("dbo.Summoner", new[] { "Region", "SummonerId" }, unique: true);
+            DropColumn("dbo.SummonerRank", "UpdatedTime");
         }
         
         public override void Down()
         {
-            DropIndex("dbo.Summoner", new[] { "Region", "SummonerId" });
+            AddColumn("dbo.SummonerRank", "UpdatedTime", c => c.DateTimeOffset(precision: 7));
         }
     }
 }
