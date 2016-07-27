@@ -174,6 +174,7 @@
     <None Include="Properties\PublishProfiles\championmains-pyrobot - Web Deploy.pubxml">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Properties\webjobs.props" />
     <None Include="Properties\webjob-publish-settings.json" />
   </ItemGroup>
   <ItemGroup>
