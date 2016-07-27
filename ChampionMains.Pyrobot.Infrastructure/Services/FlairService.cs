@@ -40,28 +40,44 @@ namespace ChampionMains.Pyrobot.Services
             var subredditUserFlair =
                 _context.SubredditUserFlairs.FirstOrDefault(u => u.UserId == userId && u.SubredditId == subredditId);
 
-            if (subredditUserFlair == null)
+            // if nothing is enabled, remove the flair
+            if (!rankEnabled && !championMasteryEnaabled && !prestigeEnabled && string.IsNullOrWhiteSpace(flairText))
             {
-                var subreddit = _context.Subreddits.Find(subredditId);
-                if (subreddit == null)
-                    return false;
-
-                subredditUserFlair = new SubredditUserFlair
+                if (subredditUserFlair != null)
+                    _context.SubredditUserFlairs.Remove(subredditUserFlair);
+                else
+                    return true;
+            }
+            else
+            {
+                if (subredditUserFlair == null)
                 {
-                    UserId = userId,
-                    SubredditId = subredditId
-                };
-                _context.SubredditUserFlairs.Add(subredditUserFlair);
+                    var subreddit = _context.Subreddits.Find(subredditId);
+                    if (subreddit == null)
+                        return false;
+
+                    subredditUserFlair = new SubredditUserFlair
+                    {
+                        UserId = userId,
+                        SubredditId = subredditId
+                    };
+                    _context.SubredditUserFlairs.Add(subredditUserFlair);
+                }
+
+                subredditUserFlair.RankEnabled = rankEnabled;
+                subredditUserFlair.ChampionMasteryEnabled = championMasteryEnaabled;
+                subredditUserFlair.PrestigeEnabled = prestigeEnabled;
+                subredditUserFlair.FlairText = flairText;
+
+                subredditUserFlair.LastUpdate = DateTimeOffset.Now;
             }
 
-            subredditUserFlair.RankEnabled = rankEnabled;
-            subredditUserFlair.ChampionMasteryEnabled = championMasteryEnaabled;
-            subredditUserFlair.PrestigeEnabled = prestigeEnabled;
-            subredditUserFlair.FlairText = flairText;
-
-            subredditUserFlair.LastUpdate = DateTimeOffset.Now;
-
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<int> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync();
         }
     }
 }

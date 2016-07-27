@@ -69,7 +69,8 @@ namespace ChampionMains.Pyrobot.Jobs
                 }
             }
 
-            await _summonerService.SaveChangesAsync();
+            var summonerUpdates = await _summonerService.SaveChangesAsync();
+            await Console.Out.WriteLineAsync($"Updating {summoners.Count} summoners; {summonerUpdates} rows affected");
 
 
             // update flairs
@@ -93,6 +94,7 @@ namespace ChampionMains.Pyrobot.Jobs
 
                     // update database flair text from subreddit (different from individual flair update service)
                     flair.FlairText = existingFlair.Text;
+                    flair.LastUpdate = DateTimeOffset.Now;
 
                     var classes = RankUtil.GenerateFlairCss(flair.User, subreddit.ChampionId, subreddit.RankEnabled && flair.RankEnabled,
                         subreddit.ChampionMasteryEnabled && flair.ChampionMasteryEnabled, existingFlair.CssClass);
@@ -103,13 +105,10 @@ namespace ChampionMains.Pyrobot.Jobs
                 return await _redditService.SetFlairsAsync(subreddit.Name, updatedFlairs);
             }).ToList();
 
-            await Task.WhenAll(
-                Task.WhenAll(flairTasks),
-                Task.Run(async () =>
-                {
-                    var dbUpdates = await _summonerService.SaveChangesAsync(); // calls savechanges
-                    await Console.Out.WriteLineAsync($"Updating {flairs.Count} flairs; pulled {dbUpdates} changed flair texts");
-                }));
+            await Task.WhenAll(flairTasks);
+
+            var flairUpdates = await _flairService.SaveChangesAsync();
+            await Console.Out.WriteLineAsync($"Updating {flairs.Count} flairs; {flairUpdates} rows affected");
         }
     }
 }

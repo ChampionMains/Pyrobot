@@ -8,15 +8,16 @@ namespace ChampionMains.Pyrobot
 {
     public static class RankUtil
     {
-        private static readonly string[] DivisionNames = new[]
-        {
+        private static readonly string[] DivisionNames = {
             "I", "II", "III", "IV", "V"
         };
 
         public static string Stringify(SummonerRank rank)
         {
+            // not used
+
             if (rank == null) return "";
-            if (rank.UpdatedTime.HasValue == false) return "";
+            //if (rank.UpdatedTime.HasValue == false) return "";
             if (!Enum.IsDefined(typeof(Tier), rank.Tier)) return "";
             var tier = (Tier) rank.Tier;
             if (tier == Tier.Unranked) return tier.ToString();
