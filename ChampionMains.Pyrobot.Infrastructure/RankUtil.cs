@@ -45,11 +45,11 @@ namespace ChampionMains.Pyrobot
         private const string RankPrefix = "rank-";
         private const string MasteryPrefix = "mastery-";
 
-        public static string GenerateFlairCss(User user, int championId, bool rankEnabled, bool masteryEnabled, string oldFlair)
+        public static string GenerateFlairCss(User user, int championId, bool rankEnabled, bool masteryEnabled, string oldCss)
         {
             var classes = new List<string>();
-            if (oldFlair != null)
-                classes.AddRange(oldFlair.Split().Where(c => !string.IsNullOrWhiteSpace(c) && !c.StartsWith(RankPrefix) && !c.StartsWith(MasteryPrefix)));
+            if (oldCss != null)
+                classes.AddRange(oldCss.Split().Where(c => !string.IsNullOrWhiteSpace(c) && !c.StartsWith(RankPrefix) && !c.StartsWith(MasteryPrefix)));
 
             if (rankEnabled)
             {
