@@ -386,6 +386,7 @@
   -->
   <Target Name="CopyWebTemplateConfig" BeforeTargets="Build">
     <Copy SourceFiles="Web.template.config" DestinationFiles="Web.config" />
+    <Copy SourceFiles="App.template.config" DestinationFiles="App.config" Condition="Exists('App.template.config')" />
   </Target>
   <Target Name="UpdateWebConfigBeforeRun" AfterTargets="CopyWebTemplateConfig" Condition="Exists('Web.Local.Config')">
     <Message Text="Configuration: $(Configuration): Web.Local.config" Importance="high" />
