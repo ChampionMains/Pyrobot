@@ -81,7 +81,7 @@ namespace ChampionMains.Pyrobot.Services
                 champMastery.UpdatedTime = DateTimeOffset.Now;
             }
 
-            summoner.Rank.UpdatedTime = DateTimeOffset.Now;
+            summoner.LastUpdate = DateTimeOffset.Now;
         }
 
         public Task<Summoner> FindSummonerAsync(int id)

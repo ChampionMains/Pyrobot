@@ -26,7 +26,10 @@ namespace ChampionMains.Pyrobot.Services
 
         public async Task<User> CreateAsync(string name)
         {
-            var user = new User {Name = name};
+            var user = new User
+            {
+                Name = name
+            };
 
             if (await Roles.IsAdminAsync(name))
             {
@@ -34,6 +37,7 @@ namespace ChampionMains.Pyrobot.Services
             }
 
             UnitOfWork.Users.Add(user);
+
             if (await UnitOfWork.SaveChangesAsync() == 0)
             {
                 throw new InvalidOperationException("Error saving user to data store.");
@@ -79,7 +83,10 @@ namespace ChampionMains.Pyrobot.Services
 
         public Task<bool> RemoveAsync(int userId)
         {
-            var entity = new User {Id = userId};
+            var entity = new User
+            {
+                Id = userId
+            };
             UnitOfWork.Users.Attach(entity);
             UnitOfWork.Users.Remove(entity);
             return UnitOfWork.SaveChangesAsync().ContinueWith(x => x.Result > 0);

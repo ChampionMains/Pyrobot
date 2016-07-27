@@ -77,7 +77,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Consts.cs" />
     <Compile Include="Enums\Region.cs" />
     <Compile Include="Enums\WebJobQueue.cs" />
     <Compile Include="Migrations\201606260449096_subreddit-settings.cs" />
@@ -160,6 +159,10 @@
     <Compile Include="Migrations\201607260656263_flairupdatetime.Designer.cs">
       <DependentUpon>201607260656263_flairupdatetime.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201607270150211_removerankupdatetime.cs" />
+    <Compile Include="Migrations\201607270150211_removerankupdatetime.Designer.cs">
+      <DependentUpon>201607270150211_removerankupdatetime.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Champion.cs" />
     <Compile Include="Models\SubredditUserFlair.cs" />
@@ -240,6 +243,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201607260656263_flairupdatetime.resx">
       <DependentUpon>201607260656263_flairupdatetime.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607270150211_removerankupdatetime.resx">
+      <DependentUpon>201607270150211_removerankupdatetime.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
