@@ -58,7 +58,7 @@
         </tr>
     </thead>    
     <tbody>
-        <tr ng-repeat="subreddit in api.subreddits | orderBy:'api.champions[subreddit.championId].points':true track by subreddit.id">
+        <tr ng-repeat="subreddit in api.subreddits | orderBy:subredditSorter:true track by subreddit.id">
             <td>
                 <form ng-init="flairData = subreddit.flair" ng-submit="updateSubredditFormSubmit(flairData, subreddit)" class="flair-toggles input-group input-group-sm">
                     <span class="input-group-btn">

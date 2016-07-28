@@ -75,12 +75,16 @@
         var modalDelete = modal('#modal-confirm-delete');
         var modalRegister = modal('#modal-register');
 
+        $scope.subredditSorter = function(subreddit) {
+            return $scope.api.champions[subreddit.championId].points;
+        };
+
         $scope.refreshSummoner = function(summoner) {
             ajax.post('/profile/api/summoner/refresh', summoner, function(ok, data) {
                 $scope.api.poll();
             });
             return false;
-        }
+        };
 
         $scope.deleteSummoner = function(summoner) {
             modalDelete.data = summoner;
