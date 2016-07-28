@@ -55,8 +55,9 @@ The site creates a way to recognize high-achieving members of ChampionMains subr
 ## Will my flair update when I change change rank/mastery?
 {:id="automation" name="automation"}
 
-Yes. The bot updates everyone's flairs every 24 hours at around 10 AM UTC. If you don't want to
-wait, you can log-in and click the update buttons next to each summoner and subreddit.
+Yes. Every hour, the bot runs a job that looks for flairs that haven't been updated in six hours,
+and updates them. If you don't want to wait, you can log-in and click the update buttons next to
+each summoner and subreddit.
 
 
 ## What is a [/r/ChampionMains](https://ChampionMains.reddit.com/) subreddit?
