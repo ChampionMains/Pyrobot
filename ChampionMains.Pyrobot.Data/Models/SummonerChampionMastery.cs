@@ -17,10 +17,12 @@ namespace ChampionMains.Pyrobot.Data.Models
         [Required]
         public byte Level { get; set; }
 
+        [Index("IX_Champion_Summoner", 1, IsUnique = true)]
         [ForeignKey("Champion")]
         [Required]
         public short ChampionId { get; set; }
 
+        [Index("IX_Champion_Summoner", 2, IsUnique = true)]
         [ForeignKey("Summoner")]
         [Required]
         public int SummonerId { get; set; }
