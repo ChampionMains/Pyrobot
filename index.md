@@ -128,9 +128,8 @@ Note that subreddit moderators have the option to require both to be required if
 {:id="security" name="security"}
 
 Yes. This site only stores your Reddit username, League of Legends rank and champion mastery info,
-and subreddit flair settings. Linkage to Reddit and Riot occur through official, secure,
-methods---the same ones used by Reddit bots (like AutoModerator) and League fansites (like
-LolKing).
+and subreddit flair settings. Linkage to Reddit and Riot occur through official, secure, methods,
+which only reveal publicly available information.
 
 The source is available [at GitHub](https://github.com/championmains/Pyrobot). If you find any
 issues or have a suggestion, submit it to the
