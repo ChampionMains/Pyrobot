@@ -78,7 +78,9 @@ namespace ChampionMains.Pyrobot.Services
             var flair = (await GetFlairsAsync(subreddit, name)).FirstOrDefault();
             // If flair doesn't exist, UserFlairParameter will parse,
             // but flair_css_class and flair_text will be null.
-            // Flair should never be null
+            // Flair will never be null
+            //
+            // Note this only applies then the "name" parameter is set
             return flair?.CssClass == null ? null : flair;
         }
 
@@ -98,7 +100,12 @@ namespace ChampionMains.Pyrobot.Services
                     new KeyValuePair<string, string>("name", name)
                 };
                 var result = await _requester.GetAsync(uri, data);
-                flairs.AddRange(result["users"].ToObject<ICollection<UserFlairParameter>>());
+                flairs.AddRange(result["users"].ToObject<ICollection<UserFlairParameter>>()
+                    .Select(f =>
+                    {
+                        f.Text = System.Net.WebUtility.HtmlDecode(f.Text);
+                        return f;
+                    }));
                 nextToken = result["next"]?.ToString();
 
             } while (nextToken != null);
