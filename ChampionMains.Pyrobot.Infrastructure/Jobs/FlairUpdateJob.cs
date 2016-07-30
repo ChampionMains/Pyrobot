@@ -32,7 +32,8 @@ namespace ChampionMains.Pyrobot.Jobs
 
             var existingFlair = await _reddit.GetFlairAsync(subreddit.Name, user.Name);
             var classes = RankUtil.GenerateFlairCss(user, subreddit.ChampionId, subreddit.RankEnabled && data.RankEnabled,
-                subreddit.ChampionMasteryEnabled && data.ChampionMasteryEnabled, existingFlair?.CssClass);
+                subreddit.ChampionMasteryEnabled && data.ChampionMasteryEnabled,
+                subreddit.PrestigeEnabled && data.PrestigeEnabled, existingFlair?.CssClass);
             await _reddit.SetFlairAsync(subreddit.Name, user.Name, data.FlairText ?? existingFlair?.Text, classes);
         }
     }

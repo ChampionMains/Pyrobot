@@ -98,7 +98,8 @@ namespace ChampionMains.Pyrobot.Jobs
                     flair.LastUpdate = DateTimeOffset.Now;
 
                     var classes = RankUtil.GenerateFlairCss(flair.User, subreddit.ChampionId, subreddit.RankEnabled && flair.RankEnabled,
-                        subreddit.ChampionMasteryEnabled && flair.ChampionMasteryEnabled, existingFlair.CssClass);
+                        subreddit.ChampionMasteryEnabled && flair.ChampionMasteryEnabled,
+                        subreddit.PrestigeEnabled && flair.PrestigeEnabled, existingFlair.CssClass);
                     existingFlair.CssClass = classes;
                     return existingFlair;
                 }).ToList();
