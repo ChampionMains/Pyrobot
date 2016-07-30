@@ -150,7 +150,25 @@ namespace ChampionMains.Pyrobot.Services
 
         private static string ResolveBulkFlairParameter(IEnumerable<UserFlairParameter> flairs)
         {
-            return string.Join("\n", flairs.Select(f => $"{f.Name},{f.Text ?? ""},{f.CssClass ?? ""}"));
+            return string.Join("\n", flairs.Select(f => EscapeCSV(new[] {f.Name, f.Text ?? "", f.CssClass ?? ""})));
+        }
+
+        private static string EscapeCSV(IEnumerable<string> values)
+        {
+            const string quote = "\"";
+            const string quoteEscaped = "\"\"";
+            char[] needsQuotes = { ',', '"', '\n' };
+
+            return string.Join(",", values.Select(s =>
+            {
+                if (s.Contains(quote))
+                    s = s.Replace(quote, quoteEscaped);
+
+                if (s.IndexOfAny(needsQuotes) >= 0)
+                    s = quote + s + quote;
+
+                return s;
+            }));
         }
     }
 }
