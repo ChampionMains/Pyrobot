@@ -167,6 +167,10 @@
     <Compile Include="Migrations\201607282116207_mastery-champion-summoner-index.Designer.cs">
       <DependentUpon>201607282116207_mastery-champion-summoner-index.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201607312215527_remove-summonerchampionmastery-updatedtime.cs" />
+    <Compile Include="Migrations\201607312215527_remove-summonerchampionmastery-updatedtime.Designer.cs">
+      <DependentUpon>201607312215527_remove-summonerchampionmastery-updatedtime.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Champion.cs" />
     <Compile Include="Models\SubredditUserFlair.cs" />
@@ -253,6 +257,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201607282116207_mastery-champion-summoner-index.resx">
       <DependentUpon>201607282116207_mastery-champion-summoner-index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607312215527_remove-summonerchampionmastery-updatedtime.resx">
+      <DependentUpon>201607312215527_remove-summonerchampionmastery-updatedtime.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

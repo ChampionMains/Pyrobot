@@ -78,7 +78,6 @@ namespace ChampionMains.Pyrobot.Services
 
                 champMastery.Level = (byte) updated.ChampionLevel;
                 champMastery.Points = updated.ChampionPoints;
-                champMastery.UpdatedTime = DateTimeOffset.Now;
             }
 
             summoner.LastUpdate = DateTimeOffset.Now;
