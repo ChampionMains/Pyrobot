@@ -57,9 +57,8 @@ namespace ChampionMains.Pyrobot.Services
             var data = summonerIds.Select((id, i) => new {id, g = i/MaxLeagueRequestSize}).GroupBy(x => x.g)
                 .Select(async group =>
                 {
-                    var uri = LeagueBaseUri + "by-summoner/" +
-                          group.Select(x => x.id.ToString()).Aggregate((a, b) => a + ',' + b) + "/entry";
-                    return GetRanksFromResponse(await WebRequester.SendRequestAsync(region, uri));
+                    var uri = LeagueBaseUri + "by-summoner/" + group.Select(x => x.id.ToString()).Aggregate((a, b) => a + ',' + b) + "/entry";
+                    return GetRanksFromResponse(await WebRequester.SendRequestAsync(region, uri)) ?? new Dictionary<long, Tuple<Tier, byte>>();
                 }).ToList();
             await Task.WhenAll(data);
             return data.SelectMany(d => d.Result).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
