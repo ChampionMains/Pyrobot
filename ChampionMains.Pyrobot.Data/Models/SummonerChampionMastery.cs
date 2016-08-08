@@ -23,6 +23,7 @@ namespace ChampionMains.Pyrobot.Data.Models
         public short ChampionId { get; set; }
 
         [Index("IX_Champion_Summoner", 2, IsUnique = true)]
+        [Index("IX_Summoner")]
         [ForeignKey("Summoner")]
         [Required]
         public int SummonerId { get; set; }
