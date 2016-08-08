@@ -42,7 +42,7 @@ version of [this service](https://summonerschool.reddit.com/comments/3z0bzu/) ma
 [/u/Kivinkujata](https://www.reddit.com/u/Kivinkujata).
 
 
-## Do we really this?
+## Do we really need this?
 {:id="need" name="need"}
 
 > No
