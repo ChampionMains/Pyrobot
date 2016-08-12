@@ -23,7 +23,7 @@ namespace ChampionMains.Pyrobot.Services
         {
             var staleAfter = DateTimeOffset.Now - _staleTime;
             return await _context.SubredditUserFlairs.Where(s => s.LastUpdate == null || s.LastUpdate < staleAfter)
-                    .Include(x => x.User.Summoners.Select(s => s.ChampionMasteries))
+                    //.Include(x => x.User.Summoners.Select(s => s.ChampionMasteries))
                     .Include(x => x.User.Summoners.Select(s => s.Rank))
                     .Include(x => x.Subreddit).ToListAsync();
         }
