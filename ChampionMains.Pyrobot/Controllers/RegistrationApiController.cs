@@ -97,7 +97,7 @@ namespace ChampionMains.Pyrobot.Controllers
                     return StatusCode(HttpStatusCode.ExpectationFailed);
 
                 // Create the data entity and associate it with the current user
-                var currentSummoner = Summoners.AddSummoner(user, riotSummoner.Id, model.Region, riotSummoner.Name, riotSummoner.ProfileIconId);
+                var currentSummoner = Summoners.AddSummoner(user.Id, riotSummoner.Id, model.Region, riotSummoner.Name, riotSummoner.ProfileIconId);
                 var changes = await Summoners.SaveChangesAsync();
 
                 // Send confirmation mail.

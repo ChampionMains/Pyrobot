@@ -53,7 +53,6 @@ namespace ChampionMains.Pyrobot
             // Services
             builder.RegisterType(typeof(UserService)).InstancePerLifetimeScope();
             builder.RegisterType(typeof(SummonerService)).InstancePerLifetimeScope();
-            builder.RegisterType(typeof(SubredditService)).InstancePerLifetimeScope();
             builder.RegisterType(typeof(FlairService)).InstancePerLifetimeScope();
             // above use db, below do not
             builder.RegisterType(typeof(RedditService)).SingleInstance();

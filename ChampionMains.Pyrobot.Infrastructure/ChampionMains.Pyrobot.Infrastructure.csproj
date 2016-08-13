@@ -127,7 +127,6 @@
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\SummonerService.cs" />
     <Compile Include="Services\UserService.cs" />
-    <Compile Include="Services\SubredditService.cs" />
     <Compile Include="Services\ValidationService.cs" />
     <Compile Include="Services\WebJobService.cs" />
   </ItemGroup>

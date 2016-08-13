@@ -14,8 +14,15 @@ namespace ChampionMains.Pyrobot.Data
         public IDbSet<User> Users { get; set; }
         public IDbSet<Champion> Champions { get; set; }
 
-        public UnitOfWork() { }
-        public UnitOfWork(string nameOrConnectionString) : base(nameOrConnectionString) { }
+        public UnitOfWork()
+        {
+            Configuration.LazyLoadingEnabled = false;
+        }
+
+        public UnitOfWork(string nameOrConnectionString) : base(nameOrConnectionString)
+        {
+            Configuration.LazyLoadingEnabled = false;
+        }
 
         public override async Task<int> SaveChangesAsync()
         {

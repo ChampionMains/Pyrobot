@@ -40,7 +40,6 @@ namespace ChampionMains.Pyrobot.WebJob
             // Services
             builder.RegisterType(typeof(UserService)).InstancePerDependency();
             builder.RegisterType(typeof(SummonerService)).InstancePerDependency();
-            builder.RegisterType(typeof(SubredditService)).InstancePerDependency();
             builder.RegisterType(typeof(FlairService)).InstancePerDependency();
             // above use db, below do not
             builder.RegisterType(typeof(RedditService)).SingleInstance();

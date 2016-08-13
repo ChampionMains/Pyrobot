@@ -25,18 +25,19 @@ namespace ChampionMains.Pyrobot.Services
         public async Task<IList<Summoner>> GetSummonersForUpdateAsync()
         {
             var staleAfter = DateTimeOffset.Now - _staleTime;
-            return await _unitOfWork.Summoners.Where(s => s.LastUpdate == null || s.LastUpdate < staleAfter).Include(x => x.User).ToListAsync();
+            return await _unitOfWork.Summoners.Where(s => s.LastUpdate == null || s.LastUpdate < staleAfter).Include(x => x.User)
+                .Include(s => s.Rank).Include(s => s.ChampionMasteries).ToListAsync();
         }
 
-        public Summoner AddSummoner(User user, long summonerId, string region, string name, int profileIconId)
+        public Summoner AddSummoner(int userId, long summonerId, string region, string name, int profileIconId)
         {
-            var summoner = user.Summoners.FirstOrDefault(s => s.Region == region && s.SummonerId == summonerId);
+            var summoner = _unitOfWork.Summoners.FirstOrDefault(s => s.UserId == userId && s.Region == region && s.SummonerId == summonerId);
             if (summoner == null)
             {
                 summoner = new Summoner
                 {
                     Rank = new SummonerRank(),
-                    User = user,
+                    UserId = userId,
                     Region = region,
                     SummonerId = summonerId
                 };
@@ -51,9 +52,12 @@ namespace ChampionMains.Pyrobot.Services
         public void UpdateSummoner(Summoner summoner, string region, string name, int profileIconId,
             Tier? tier, byte? division, ICollection<ChampionMastery> championMastery)
         {
+            _unitOfWork.Entry(summoner).Reference(s => s.Rank).Load();
+            _unitOfWork.Entry(summoner).Collection(s => s.ChampionMasteries).Load();
+
             summoner.Name = name;
             summoner.ProfileIconId = profileIconId;
-
+            
             summoner.Rank.Division = division ?? 0;
             summoner.Rank.Tier = (byte?) tier ?? 0;
 
@@ -83,10 +87,9 @@ namespace ChampionMains.Pyrobot.Services
             summoner.LastUpdate = DateTimeOffset.Now;
         }
 
-        public Task<Summoner> FindSummonerAsync(int id)
+        public Summoner FindSummoner(int id)
         {
-            return _unitOfWork.Summoners.FirstOrDefaultAsync(summoner =>
-                summoner.Id == id);
+            return _unitOfWork.Summoners.Find(id);
         }
 
         public Task<Summoner> FindSummonerAsync(string region, string summonerName)
@@ -105,7 +108,9 @@ namespace ChampionMains.Pyrobot.Services
 
         public async Task<bool> RemoveAsync(int summonerId)
         {
-            var entity = await FindSummonerAsync(summonerId);
+            var entity = await _unitOfWork.Summoners
+                .Include(s => s.Rank)
+                .FirstOrDefaultAsync(s => s.Id == summonerId);
             if (entity == null) return false;
 
             _unitOfWork.Leagues.Remove(entity.Rank);

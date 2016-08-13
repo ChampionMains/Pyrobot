@@ -21,7 +21,7 @@ namespace ChampionMains.Pyrobot.Jobs
 
         public async Task Execute([QueueTrigger(WebJobQueue.SummonerUpdate)] int id)
         {
-            var summoner = await _summoners.FindSummonerAsync(id);
+            var summoner = _summoners.FindSummoner(id);
             if (summoner == null)
                 return;
 

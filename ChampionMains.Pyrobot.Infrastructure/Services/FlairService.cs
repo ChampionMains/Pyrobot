@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data;
+using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Data.Models;
 
 namespace ChampionMains.Pyrobot.Services
@@ -24,7 +25,8 @@ namespace ChampionMains.Pyrobot.Services
             var staleAfter = DateTimeOffset.Now - _staleTime;
             return await _context.SubredditUserFlairs.Where(s => s.LastUpdate == null || s.LastUpdate < staleAfter)
                     //.Include(x => x.User.Summoners.Select(s => s.ChampionMasteries))
-                    .Include(x => x.User.Summoners.Select(s => s.Rank))
+                    //.Include(x => x.User.Summoners.Select(s => s.Rank))
+                    .Include(x => x.User)
                     .Include(x => x.Subreddit).ToListAsync();
         }
 
@@ -73,6 +75,52 @@ namespace ChampionMains.Pyrobot.Services
             }
 
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public string GenerateFlairCSS(int userId, short championId, bool rankEnabled, bool masteryEnabled, bool prestigeEnabled, string oldCss)
+        {
+            const string rankPrefix = "rank-";
+            const string masteryPrefix = "mastery-";
+            const string prestigePrefix = "prestige-";
+
+            var summonersQuery = _context.Summoners.Where(s => s.UserId == userId);
+            if (rankEnabled)
+                summonersQuery = summonersQuery.Include(s => s.Rank);
+            if (masteryEnabled || prestigeEnabled)
+                summonersQuery = summonersQuery.Include(s => s.ChampionMasteries);
+            var summoners = summonersQuery.ToList();
+
+            var classes = new List<string>();
+            if (oldCss != null)
+                classes.AddRange(oldCss.Split().Where(c => !string.IsNullOrWhiteSpace(c)
+                    && !c.StartsWith(rankPrefix) && !c.StartsWith(masteryPrefix) && !c.StartsWith(prestigePrefix)));
+
+            if (rankEnabled)
+            {
+                var tier = (Tier) summoners.Select(s => s.Rank.Tier).DefaultIfEmpty().Max();
+                classes.Add((rankPrefix + tier).ToLower());
+            }
+
+            if (masteryEnabled || prestigeEnabled)
+            {
+                var masteryLevel = summoners
+                    .Select(s => s.ChampionMasteries.FirstOrDefault(m => m.ChampionId == championId)?.Level ?? 0)
+                    .DefaultIfEmpty().Aggregate((a, b) => a > b ? a : b);
+
+                if (masteryEnabled && masteryLevel > 0)
+                    classes.Add(masteryPrefix + masteryLevel);
+
+                var masteryPoints = summoners
+                    .Select(s => s.ChampionMasteries.FirstOrDefault(m => m.ChampionId == championId)?.Points ?? 0)
+                    .DefaultIfEmpty().Aggregate((a, b) => a + b);
+
+                var prestige = RankUtil.GetPrestigeLevel(masteryPoints) / 1000;
+
+                if (prestige > 0)
+                    classes.Add(prestigePrefix + prestige);
+            }
+
+            return string.Join(" ", classes);
         }
 
         public Task<int> SaveChangesAsync()

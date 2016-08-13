@@ -217,7 +217,7 @@ namespace ChampionMains.Pyrobot.Services.Riot
                     throttler.Lock.Release();
                 }
             }
-            throw new InvalidOperationException();
+            throw new RiotHttpException("Failed to communicate with Riot API");
         }
     }
 }

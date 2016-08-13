@@ -39,44 +39,5 @@ namespace ChampionMains.Pyrobot
         {
             return PrestigeLevels.FirstOrDefault(p => p > points);
         }
-
-        private const string RankPrefix = "rank-";
-        private const string MasteryPrefix = "mastery-";
-        private const string PrestigePrefix = "prestige-";
-
-        public static string GenerateFlairCss(User user, int championId, bool rankEnabled,
-            bool masteryEnabled, bool prestigeEnabled, string oldCss)
-        {
-            var classes = new List<string>();
-            if (oldCss != null)
-                classes.AddRange(oldCss.Split().Where(c => !string.IsNullOrWhiteSpace(c)
-                    && !c.StartsWith(RankPrefix) && !c.StartsWith(MasteryPrefix) && !c.StartsWith(PrestigePrefix)));
-
-            if (rankEnabled)
-            {
-                var tier = (Tier) user.Summoners.Select(s => s.Rank.Tier).DefaultIfEmpty().Max();
-                classes.Add((RankPrefix + tier).ToLower());
-            }
-
-            if (masteryEnabled || prestigeEnabled)
-            {
-                var masteryLevel = user.Summoners
-                    .Select(s => s.ChampionMasteries.FirstOrDefault(m => m.ChampionId == championId)?.Level ?? 0)
-                    .DefaultIfEmpty().Aggregate((a, b) => a > b ? a : b);
-
-                if (masteryEnabled && masteryLevel > 0)
-                    classes.Add(MasteryPrefix + masteryLevel);
-
-                var masteryPoints = user.Summoners
-                    .Select(s => s.ChampionMasteries.FirstOrDefault(m => m.ChampionId == championId)?.Points ?? 0)
-                    .DefaultIfEmpty().Aggregate((a, b) => a + b);
-                var prestige = GetPrestigeLevel(masteryPoints) / 1000;
-
-                if (prestige > 0)
-                    classes.Add(PrestigePrefix + prestige);
-            }
-
-            return string.Join(" ", classes);
-        }
     }
 }
