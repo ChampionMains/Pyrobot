@@ -2,98 +2,72 @@
 using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
-using Autofac;
 using ChampionMains.Pyrobot.Data;
 using ChampionMains.Pyrobot.Jobs;
 using ChampionMains.Pyrobot.Services;
 using ChampionMains.Pyrobot.Services.Reddit;
 using ChampionMains.Pyrobot.Services.Riot;
+using ChampionMains.Pyrobot.Startup;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Host;
+using SimpleInjector;
+using SimpleInjector.Extensions.ExecutionContextScoping;
 
 namespace ChampionMains.Pyrobot.WebJob
 {
     // To learn more about Microsoft Azure WebJobs SDK, please see http://go.microsoft.com/fwlink/?LinkID=320976
-    class Program
+    internal class Program
     {
         // Please set the following connection strings in app.config for this WebJob to run:
         // AzureWebJobsDashboard and AzureWebJobsStorage
-        static void Main()
+        private static void Main()
         {
             // do database migrations
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<UnitOfWork, Data.Migrations.Configuration>());
 
-            // dependency injection
-            var builder = new ContainerBuilder();
-
-            // Config
             var s = ConfigurationManager.AppSettings;
 
-            builder.Register(context => new ApplicationConfiguration
-            {
-                FlairBotVersion = s["bot.version"],
-                RiotUpdateMin = TimeSpan.Parse(s["website.riotUpdateMin"]),
-                RiotUpdateMax = TimeSpan.Parse(s["website.riotUpdateMax"]),
-                FlairUpdateMin = TimeSpan.Parse(s["website.flairUpdateMin"]),
-                FlairUpdateMax = TimeSpan.Parse(s["website.flairUpdateMax"])
-            }).SingleInstance();
-
-            // Services
-            builder.RegisterType(typeof(UserService)).InstancePerDependency();
-            builder.RegisterType(typeof(SummonerService)).InstancePerDependency();
-            builder.RegisterType(typeof(FlairService)).InstancePerDependency();
-            // above use db, below do not
-            builder.RegisterType(typeof(RedditService)).SingleInstance();
-            builder.RegisterType(typeof(ValidationService)).SingleInstance();
-            builder.Register(context => new RoleService(
-                    s["security.admins"].Split(',').Select(x => x.Trim()).ToList())
-            ).SingleInstance();
-            builder.Register(context => new RiotService
-            {
-                WebRequester = new RiotWebRequester(s["riot.rateLimit"])
-                {
-                    ApiKey = s["riot.apiKey"],
-                    MaxAttempts = int.Parse(s["riot.maxAttempts"]),
-                    RetryInterval = TimeSpan.Parse(s["riot.retryInterval"])
-                }
-            }).SingleInstance();
-
-            // Reddit WebRequester
-            builder.Register(context => new RedditWebRequester(
-                    s["reddit.script.clientId"],
-                    s["reddit.script.clientSecret"],
-                    s["reddit.modUserName"],
-                    s["reddit.modPassword"],
-                    s["userAgent"])).SingleInstance();
-
-            //// Jobs
-            //builder.RegisterType(typeof(SummonerUpdateJob)).InstancePerLifetimeScope();
-            //builder.RegisterType(typeof(BulkFlairUpdateJob)).InstancePerLifetimeScope();
-            //builder.RegisterType(typeof(FlairUpdateJob)).InstancePerLifetimeScope();
-            //builder.RegisterType(typeof(BulkLeagueUpdateJob)).InstancePerLifetimeScope();
-            //builder.RegisterType(typeof(ConfirmRegistrationMailJob)).InstancePerLifetimeScope();
-            //builder.RegisterType(typeof(ConfirmFlairUpdatedMailJob)).InstancePerLifetimeScope();
-
-            // Data persistance
-            builder.RegisterType(typeof(UnitOfWork)).InstancePerDependency();
+            // dependency injection
+            var container = new Container();
+            container.Options.DefaultScopedLifestyle = new ExecutionContextScopeLifestyle();
 
             // Jobs
-            builder.RegisterType(typeof(SummonerUpdateJob)).InstancePerDependency();
-            builder.RegisterType(typeof(FlairUpdateJob)).InstancePerDependency();
-            builder.RegisterType(typeof(BulkUpdateJob)).InstancePerDependency();
+            container.Register<SummonerUpdateJob>();
+            container.Register<FlairUpdateJob>();
+            container.Register<BulkUpdateJob>();
+
+            SharedSimpleInjectorConfig.Configure(container, s);
 
             // Configure JobHost
-            var config = new JobHostConfiguration
+            var jobHostConfiguration = new JobHostConfiguration
             {
-                JobActivator = new JobActivator(builder.Build()),
+                JobActivator = new SimpleInjectorJobActivator(container),
                 Queues =
                 {
                     MaxDequeueCount = int.Parse(s["webjob.maxAttempts"]),
-                    MaxPollingInterval = TimeSpan.Parse(s["webjob.pollingInterval"])
+                    MaxPollingInterval = TimeSpan.Parse(s["webjob.pollingInterval"]),
+                    QueueProcessorFactory = new ScopedQueueProcessorFactory(container)
                 }
             };
-            var host = new JobHost(config);
+            var host = new JobHost(jobHostConfiguration);
+
             // The following code ensures that the WebJob will be running continuously
             host.RunAndBlock();
+        }
+
+        public class SimpleInjectorJobActivator : IJobActivator
+        {
+            private readonly Container _container;
+
+            public SimpleInjectorJobActivator(Container container)
+            {
+                _container = container;
+            }
+
+            public T CreateInstance<T>()
+            {
+                return (T) _container.GetInstance(typeof(T));
+            }
         }
     }
 }

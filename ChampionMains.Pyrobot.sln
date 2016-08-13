@@ -1,9 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChampionMains.Pyrobot", "ChampionMains.Pyrobot\ChampionMains.Pyrobot.csproj", "{602234B1-6BEB-4520-A26E-35EB0C5B635D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{55C0978C-F23E-43E6-80B3-4FEC1993C5C9} = {55C0978C-F23E-43E6-80B3-4FEC1993C5C9}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChampionMains.Pyrobot.Data", "ChampionMains.Pyrobot.Data\ChampionMains.Pyrobot.Data.csproj", "{0684E3EC-DE9D-409B-8CCD-C3566763A2A7}"
 EndProject
@@ -20,6 +23,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChampionMains.Pyrobot.Reddit", "ChampionMains.Pyrobot.Reddit\ChampionMains.Pyrobot.Reddit.csproj", "{23F0DE13-732D-4CDC-9BF2-EAFCA93814E8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChampionMains.Pyrobot.WebJob", "ChampionMains.Pyrobot.WebJob\ChampionMains.Pyrobot.WebJob.csproj", "{F1A01025-246D-4F58-95C5-FA4024ECA5C4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{55C0978C-F23E-43E6-80B3-4FEC1993C5C9} = {55C0978C-F23E-43E6-80B3-4FEC1993C5C9}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChampionMains.Pyrobot.Startup", "ChampionMains.Pyrobot.Startup\ChampionMains.Pyrobot.Startup.csproj", "{55C0978C-F23E-43E6-80B3-4FEC1993C5C9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9357D4E8-FC65-469E-9EBA-12B82BABD7E8} = {9357D4E8-FC65-469E-9EBA-12B82BABD7E8}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +62,10 @@ Global
 		{F1A01025-246D-4F58-95C5-FA4024ECA5C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1A01025-246D-4F58-95C5-FA4024ECA5C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1A01025-246D-4F58-95C5-FA4024ECA5C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55C0978C-F23E-43E6-80B3-4FEC1993C5C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55C0978C-F23E-43E6-80B3-4FEC1993C5C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55C0978C-F23E-43E6-80B3-4FEC1993C5C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55C0978C-F23E-43E6-80B3-4FEC1993C5C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,5 +77,6 @@ Global
 		{83196BCD-E758-40B7-9534-C176C86983AA} = {7F40DA89-D651-4A91-B2E2-D3B526276E11}
 		{23F0DE13-732D-4CDC-9BF2-EAFCA93814E8} = {7F40DA89-D651-4A91-B2E2-D3B526276E11}
 		{F1A01025-246D-4F58-95C5-FA4024ECA5C4} = {7F40DA89-D651-4A91-B2E2-D3B526276E11}
+		{55C0978C-F23E-43E6-80B3-4FEC1993C5C9} = {7F40DA89-D651-4A91-B2E2-D3B526276E11}
 	EndGlobalSection
 EndGlobal

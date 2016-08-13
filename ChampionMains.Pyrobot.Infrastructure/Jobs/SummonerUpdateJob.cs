@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Autofac;
 using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Services;
 using Microsoft.Azure.WebJobs;

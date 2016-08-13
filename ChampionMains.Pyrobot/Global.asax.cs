@@ -8,13 +8,13 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
-using Autofac;
 using ChampionMains.Pyrobot.Data;
+using SimpleInjector;
 using GlobalConfiguration = System.Web.Http.GlobalConfiguration;
 
 namespace ChampionMains.Pyrobot
 {
-    public class MvcApplication : System.Web.HttpApplication
+    public class MvcApplication : HttpApplication
     {
         private static readonly Dictionary<Type, Action<Exception, StringWriter>> ExceptionFormatterDictionary = new Dictionary<Type, Action<Exception, StringWriter>>();
         private static readonly List<Func<Exception, bool>> ExceptionFilters = new List<Func<Exception, bool>>(); 
@@ -57,7 +57,7 @@ namespace ChampionMains.Pyrobot
             GlobalConfiguration.Configure(WebApiConfig.Register);
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-            AutofacConfig.Register(new ContainerBuilder());
+            SimpleInjectorConfig.Register(new Container());
         }
 
         protected void Application_Error()

@@ -49,17 +49,6 @@ by **Microsoft SQL Server**.
 
 The website is hosted on the cloud using **Microsoft Azure App Services**.
 
-
-### Contributions
-
-The following NuGet packages are included:
-
-* **[Autofac](http://autofac.org/)** - IoC container and dependency injection.
-
-* **[JSON.NET](http://www.newtonsoft.com/json)** - JSON framework for .NET.
-
-* **[OWIN OAuth Providers](https://github.com/RockstarLabs/OwinOAuthProviders)** - for Reddit OAuth
-
 ### License
 
 GPLv2

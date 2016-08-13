@@ -19,10 +19,10 @@ namespace ChampionMains.Pyrobot.Data
             Configuration.LazyLoadingEnabled = false;
         }
 
-        public UnitOfWork(string nameOrConnectionString) : base(nameOrConnectionString)
-        {
-            Configuration.LazyLoadingEnabled = false;
-        }
+        //public UnitOfWork(string nameOrConnectionString) : base(nameOrConnectionString)
+        //{
+        //    Configuration.LazyLoadingEnabled = false;
+        //}
 
         public override async Task<int> SaveChangesAsync()
         {
