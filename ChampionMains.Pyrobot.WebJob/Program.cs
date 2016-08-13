@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Configuration;
 using System.Data.Entity;
-using System.Linq;
 using ChampionMains.Pyrobot.Data;
 using ChampionMains.Pyrobot.Jobs;
-using ChampionMains.Pyrobot.Services;
-using ChampionMains.Pyrobot.Services.Reddit;
-using ChampionMains.Pyrobot.Services.Riot;
 using ChampionMains.Pyrobot.Startup;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;

@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs.Host.Executors;
 using Microsoft.Azure.WebJobs.Host.Queues;
@@ -33,6 +34,7 @@ namespace ChampionMains.Pyrobot.WebJob
 
             public override Task<bool> BeginProcessingMessageAsync(CloudQueueMessage message, CancellationToken cancellationToken)
             {
+                Console.Out.WriteLine($"begin scope {message.Id}");
                 _container.BeginExecutionContextScope();
                 return base.BeginProcessingMessageAsync(message, cancellationToken);
             }
@@ -40,6 +42,7 @@ namespace ChampionMains.Pyrobot.WebJob
             public override Task CompleteProcessingMessageAsync(CloudQueueMessage message, FunctionResult result,
                 CancellationToken cancellationToken)
             {
+                Console.Out.WriteLine($"end scope   {message.Id}");
                 _container.GetCurrentExecutionContextScope()?.Dispose();
                 return base.CompleteProcessingMessageAsync(message, result, cancellationToken);
             }
