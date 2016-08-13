@@ -14,7 +14,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
     /// </summary>
     public class BulkUpdateJob
     {
-        private static readonly TimeSpan Timeout = TimeSpan.FromHours(1);//TimeSpan.FromMinutes(2);
+        private static readonly TimeSpan Timeout = TimeSpan.FromMinutes(2);
 
         private static readonly SemaphoreSlim Lock = new SemaphoreSlim(1, 1);
 
