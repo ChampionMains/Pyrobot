@@ -2,8 +2,8 @@
 using System.Configuration;
 using System.Data.Entity;
 using ChampionMains.Pyrobot.Data;
-using ChampionMains.Pyrobot.Jobs;
 using ChampionMains.Pyrobot.Startup;
+using ChampionMains.Pyrobot.WebJob.Jobs;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using SimpleInjector;

@@ -158,6 +158,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Jobs\BulkUpdateJob.cs" />
+    <Compile Include="Jobs\FlairUpdateJob.cs" />
+    <Compile Include="Jobs\SummonerUpdateJob.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScopedQueueProcessFactory.cs" />

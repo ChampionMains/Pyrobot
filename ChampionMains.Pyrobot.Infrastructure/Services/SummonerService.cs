@@ -25,8 +25,10 @@ namespace ChampionMains.Pyrobot.Services
         public async Task<IList<Summoner>> GetSummonersForUpdateAsync()
         {
             var staleAfter = DateTimeOffset.Now - _staleTime;
-            return await _unitOfWork.Summoners.Where(s => s.LastUpdate == null || s.LastUpdate < staleAfter).Include(x => x.User)
-                .Include(s => s.Rank).Include(s => s.ChampionMasteries).ToListAsync();
+            return await _unitOfWork.Summoners.Where(s => s.LastUpdate == null || s.LastUpdate < staleAfter)
+                .Include(s => s.User)
+                .Include(s => s.Rank)
+                .Include(s => s.ChampionMasteries).ToListAsync();
         }
 
         public Summoner AddSummoner(int userId, long summonerId, string region, string name, int profileIconId)
@@ -52,8 +54,8 @@ namespace ChampionMains.Pyrobot.Services
         public void UpdateSummoner(Summoner summoner, string region, string name, int profileIconId,
             Tier? tier, byte? division, ICollection<ChampionMastery> championMastery)
         {
-            _unitOfWork.Entry(summoner).Reference(s => s.Rank).Load();
-            _unitOfWork.Entry(summoner).Collection(s => s.ChampionMasteries).Load();
+            //_unitOfWork.Entry(summoner).Reference(s => s.Rank).Load();
+            //_unitOfWork.Entry(summoner).Collection(s => s.ChampionMasteries).Load();
 
             summoner.Name = name;
             summoner.ProfileIconId = profileIconId;
@@ -87,17 +89,20 @@ namespace ChampionMains.Pyrobot.Services
             summoner.LastUpdate = DateTimeOffset.Now;
         }
 
-        public Summoner FindSummoner(int id)
+        public Summoner FindSummonerIncludeRankAndChampionMasteries(int id)
         {
-            return _unitOfWork.Summoners.Find(id);
+            return _unitOfWork.Summoners
+                .Include(s => s.Rank)
+                .Include(s => s.ChampionMasteries)
+                .FirstOrDefault(s => s.Id == id);
         }
 
-        public Task<Summoner> FindSummonerAsync(string region, string summonerName)
-        {
-            return _unitOfWork.Summoners.FirstOrDefaultAsync(summoner =>
-                summoner.Region == region &&
-                summoner.Name == summonerName);
-        }
+        //public Task<Summoner> FindSummonerAsync(string region, string summonerName)
+        //{
+        //    return _unitOfWork.Summoners.FirstOrDefaultAsync(summoner =>
+        //        summoner.Region == region &&
+        //        summoner.Name == summonerName);
+        //}
 
         public Task<bool> IsSummonerRegisteredAsync(string region, string summonerName)
         {

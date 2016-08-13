@@ -1,5 +1,4 @@
-﻿using System.Data.Entity;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data;
 using ChampionMains.Pyrobot.Data.Enums;
@@ -7,7 +6,7 @@ using ChampionMains.Pyrobot.Data.WebJob;
 using ChampionMains.Pyrobot.Services;
 using Microsoft.Azure.WebJobs;
 
-namespace ChampionMains.Pyrobot.Jobs
+namespace ChampionMains.Pyrobot.WebJob.Jobs
 {
     public class FlairUpdateJob
     {

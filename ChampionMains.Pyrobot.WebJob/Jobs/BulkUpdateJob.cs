@@ -7,14 +7,14 @@ using ChampionMains.Pyrobot.Reddit;
 using ChampionMains.Pyrobot.Services;
 using Microsoft.Azure.WebJobs;
 
-namespace ChampionMains.Pyrobot.Jobs
+namespace ChampionMains.Pyrobot.WebJob.Jobs
 {
     /// <summary>
     ///     Updates the league standing for a summoner.
     /// </summary>
     public class BulkUpdateJob
     {
-        private static readonly TimeSpan Timeout = TimeSpan.FromMinutes(2);
+        private static readonly TimeSpan Timeout = TimeSpan.FromHours(1);//TimeSpan.FromMinutes(2);
 
         private static readonly SemaphoreSlim Lock = new SemaphoreSlim(1, 1);
 
@@ -56,7 +56,7 @@ namespace ChampionMains.Pyrobot.Jobs
         {
             // update summoners
             var summoners = await _summonerService.GetSummonersForUpdateAsync();
-            await Console.Out.WriteLineAsync($"Updating {summoners.Count} summoners.");
+            await Console.Out.WriteLineAsync($"Updating {summoners.Count} summoners...");
 
             foreach (var summonersByRegion in summoners.GroupBy(s => s.Region, s => s))
             {
@@ -83,7 +83,7 @@ namespace ChampionMains.Pyrobot.Jobs
 
             // update flairs
             var flairs = await _flairService.GetFlairsForUpdateAsync();
-            await Console.Out.WriteLineAsync($"Updating {flairs.Count} flairs.");
+            await Console.Out.WriteLineAsync($"Updating {flairs.Count} flairs...");
 
             var flairTasks = flairs.GroupBy(f => f.SubredditId, f => f).Select(async flairsBySubreddit =>
             {

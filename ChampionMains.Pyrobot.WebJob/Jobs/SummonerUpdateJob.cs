@@ -1,10 +1,9 @@
 ﻿using System.Threading.Tasks;
-using Autofac;
 using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Services;
 using Microsoft.Azure.WebJobs;
 
-namespace ChampionMains.Pyrobot.Jobs
+namespace ChampionMains.Pyrobot.WebJob.Jobs
 {
     /// <summary>
     ///     Updates the league standing for a summoner.
@@ -22,7 +21,7 @@ namespace ChampionMains.Pyrobot.Jobs
 
         public async Task Execute([QueueTrigger(WebJobQueue.SummonerUpdate)] int id)
         {
-            var summoner = _summoners.FindSummoner(id);
+            var summoner = _summoners.FindSummonerIncludeRankAndChampionMasteries(id);
             if (summoner == null)
                 return;
 
