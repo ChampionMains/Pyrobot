@@ -14,6 +14,8 @@ namespace ChampionMains.Pyrobot.Jobs
     /// </summary>
     public class BulkUpdateJob
     {
+        private static readonly TimeSpan Timeout = TimeSpan.FromMinutes(2);
+
         private static readonly SemaphoreSlim Lock = new SemaphoreSlim(1, 1);
 
         private readonly RiotService _riotService;
@@ -38,7 +40,11 @@ namespace ChampionMains.Pyrobot.Jobs
 
             try
             {
-                await ExecuteInternal();
+                var task = ExecuteInternal();
+                if (await Task.WhenAny(task, Task.Delay(Timeout)) != task)
+                {
+                    throw new TimeoutException($"{nameof(BulkUpdateJob)} timed out ({Timeout})");
+                }
             }
             finally
             {

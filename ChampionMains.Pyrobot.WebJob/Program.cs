@@ -34,6 +34,10 @@ namespace ChampionMains.Pyrobot.WebJob
 
             SharedSimpleInjectorConfig.Configure(container, s);
 
+            // begin default scope (webjobs calls will have own scope per-request)
+            // for calling from scm
+            container.BeginExecutionContextScope();
+
             // Configure JobHost
             var jobHostConfiguration = new JobHostConfiguration
             {
