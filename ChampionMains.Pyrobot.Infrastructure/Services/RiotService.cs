@@ -19,8 +19,6 @@ namespace ChampionMains.Pyrobot.Services
         private const string SummonerBaseUri = "v1.4/summoner/";
 
         public RiotWebRequester WebRequester { get; set; }
-        
-
 
         public async Task<Summoner> GetSummoner(string region, string summonerName)
         {

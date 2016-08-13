@@ -46,9 +46,9 @@ namespace ChampionMains.Pyrobot.Services
             await Queue(WebJobQueue.FlairUpdate, Json.Encode(data));
         }
 
-        public async Task QueueBulkUpdate()
+        public async Task QueueBulkUpdate(string tag = "")
         {
-            await Queue(WebJobQueue.BulkUpdate, "");
+            await Queue(WebJobQueue.BulkUpdate, tag);
         }
 
         private async Task Queue(string containerName, string message)

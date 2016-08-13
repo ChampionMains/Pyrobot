@@ -17,7 +17,7 @@ namespace ChampionMains.Pyrobot.Controllers
         [Route("trigger-bulk-update")]
         public async Task<bool> TriggerBulkUpdate()
         {
-            await _webJob.QueueBulkUpdate();
+            await _webJob.QueueBulkUpdate(Request.Headers.UserAgent.ToString());
             return true;
         }
     }

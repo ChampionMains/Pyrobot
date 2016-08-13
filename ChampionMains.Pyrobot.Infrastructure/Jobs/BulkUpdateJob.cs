@@ -56,6 +56,7 @@ namespace ChampionMains.Pyrobot.Jobs
         {
             // update summoners
             var summoners = await _summonerService.GetSummonersForUpdateAsync();
+            await Console.Out.WriteLineAsync($"Updating {summoners.Count} summoners.");
 
             foreach (var summonersByRegion in summoners.GroupBy(s => s.Region, s => s))
             {
@@ -77,11 +78,12 @@ namespace ChampionMains.Pyrobot.Jobs
             }
 
             var summonerUpdates = await _summonerService.SaveChangesAsync();
-            await Console.Out.WriteLineAsync($"Updating {summoners.Count} summoners; {summonerUpdates} rows affected");
+            await Console.Out.WriteLineAsync($"{summonerUpdates} rows affected.");
 
 
             // update flairs
             var flairs = await _flairService.GetFlairsForUpdateAsync();
+            await Console.Out.WriteLineAsync($"Updating {flairs.Count} flairs.");
 
             var flairTasks = flairs.GroupBy(f => f.SubredditId, f => f).Select(async flairsBySubreddit =>
             {
@@ -116,7 +118,7 @@ namespace ChampionMains.Pyrobot.Jobs
             await Task.WhenAll(flairTasks);
 
             var flairUpdates = await _flairService.SaveChangesAsync();
-            await Console.Out.WriteLineAsync($"Updating {flairs.Count} flairs; {flairUpdates} rows affected");
+            await Console.Out.WriteLineAsync($"{flairUpdates} rows affected.");
         }
     }
 }

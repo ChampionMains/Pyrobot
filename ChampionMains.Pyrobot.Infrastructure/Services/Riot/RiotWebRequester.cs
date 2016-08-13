@@ -102,7 +102,10 @@ namespace ChampionMains.Pyrobot.Services.Riot
                     waitTime = retryAfterTime;
 
                 if (waitTime > TimeSpan.Zero)
+                {
+                    await Console.Out.WriteLineAsync($"RiotWebRequester rate-limit hit, delaying for {waitTime}");
                     await Task.Delay(waitTime);
+                }
             }
         }
 
