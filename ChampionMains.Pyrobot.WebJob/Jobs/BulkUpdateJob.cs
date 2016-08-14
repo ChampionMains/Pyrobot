@@ -14,8 +14,6 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
     /// </summary>
     public class BulkUpdateJob
     {
-        private static readonly TimeSpan Timeout = TimeSpan.FromMinutes(4);
-
         private static readonly SemaphoreSlim Lock = new SemaphoreSlim(1, 1);
 
         private readonly RiotService _riotService;
@@ -24,13 +22,16 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
         private readonly RedditService _redditService;
         private readonly FlairService _flairService;
 
+        private readonly TimeSpan _timeout;
+
         public BulkUpdateJob(RiotService riotService, SummonerService summonerService,
-            RedditService redditService, FlairService flairService)
+            RedditService redditService, FlairService flairService, WebJobConfiguration config)
         {
             _riotService = riotService;
             _summonerService = summonerService;
             _redditService = redditService;
             _flairService = flairService;
+            _timeout = config.TimeoutBulkUpdate;
         }
 
         public async Task Execute([QueueTrigger(WebJobQueue.BulkUpdate)] string args)
@@ -41,9 +42,9 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             try
             {
                 var task = ExecuteInternal();
-                if (await Task.WhenAny(task, Task.Delay(Timeout)) != task)
+                if (await Task.WhenAny(task, Task.Delay(_timeout)) != task)
                 {
-                    throw new TimeoutException($"{nameof(BulkUpdateJob)} timed out ({Timeout})");
+                    throw new TimeoutException($"{nameof(BulkUpdateJob)} timed out ({_timeout})");
                 }
             }
             finally

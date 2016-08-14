@@ -27,10 +27,15 @@ namespace ChampionMains.Pyrobot.WebJob
             var container = new Container();
             container.Options.DefaultScopedLifestyle = new ExecutionContextScopeLifestyle();
 
+            container.Register(() => new WebJobConfiguration
+            {
+                TimeoutBulkUpdate = TimeSpan.Parse(s["webjob.timeout.bulkUpdate"])
+            }, Lifestyle.Singleton);
+
             // Jobs
-            container.Register<SummonerUpdateJob>();
-            container.Register<FlairUpdateJob>();
-            container.Register<BulkUpdateJob>();
+            container.Register<SummonerUpdateJob>(Lifestyle.Transient);
+            container.Register<FlairUpdateJob>(Lifestyle.Transient);
+            container.Register<BulkUpdateJob>(Lifestyle.Transient);
 
             SharedSimpleInjectorConfig.Configure(container, s);
 
