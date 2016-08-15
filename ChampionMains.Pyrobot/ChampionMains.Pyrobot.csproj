@@ -277,7 +277,6 @@
     <Compile Include="CacheUtil.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\BulkUpdateApiController.cs" />
-    <Compile Include="Controllers\SubredditApiController.cs" />
     <Compile Include="Controllers\ProfileApiController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\RegistrationApiController.cs" />

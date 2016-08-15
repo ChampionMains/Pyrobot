@@ -12,8 +12,8 @@
 
             pollPromise: null,
             poll: function(i) {
-                // default: polls 4 times every 5 seconds (total ~15 seconds; fencepost counting)
-                i = i === undefined ? 4 : i;
+                // default: polls 5 times every 5 seconds (total ~20 seconds; fencepost counting)
+                i = i === undefined ? 5 : i;
                 var $this = this;
                 $timeout.cancel($this.pollPromise);
                 $this.loading = true;
@@ -58,6 +58,28 @@
                 });
             }
         }
+    }).filter('filterHidden', function() {
+        return function(items) {
+            var result = {};
+            angular.forEach(items, function(value, key) {
+                if (!value.hidden) {
+                    result[key] = value;
+                }
+            });
+            return result;
+        };
+    }).filter('orderObjectBy', function() {
+        return function(items, field, reverse) {
+            var filtered = [];
+            angular.forEach(items, function(item) {
+                filtered.push(item);
+            });
+            filtered.sort(function (a, b) {
+                return a[field] - b[field];
+            });
+            if(reverse) filtered.reverse();
+            return filtered;
+        };
     }).filter('prestige', function() {
         return function(num) {
             if (typeof num !== 'number')
@@ -75,13 +97,47 @@
         var modalDelete = modal('#modal-confirm-delete');
         var modalRegister = modal('#modal-register');
 
-        $scope.subredditSorter = function(subreddit) {
-            return $scope.api.champions[subreddit.championId].points;
+        $scope.orderSubreddits = function(subreddits) {
+            var filtered = [];
+            angular.forEach(subreddits, function(i) {
+                filtered.push(i);
+            });
+            filtered.sort(function(a, b) {
+                return $scope.api.champions[b.championId].points - $scope.api.champions[a.championId].points;
+            });
+            return filtered;
+            //return $scope.api.champions[subreddit.championId].points;
+        };
+
+        $scope.updatingSummoners = [];
+        $scope.isSummonerUpdating = function(summoner) {
+            if (!summoner.lastUpdate)
+                return true;
+            return $scope.updatingSummoners.indexOf(summoner.id) >= 0;
         };
 
         $scope.refreshSummoner = function(summoner) {
-            ajax.post('/profile/api/summoner/refresh', summoner, function(ok, data) {
-                $scope.api.poll();
+            $scope.updatingSummoners.push(summoner.id);
+            ajax.post('/profile/api/summoner/refresh', summoner, function(success, data) {
+                var complete = function() {
+                    var index = $scope.updatingSummoners.indexOf(summoner.id);
+                    $scope.updatingSummoners.splice(index, 1);
+                }
+
+                if (success) {
+                    var clearWatch = $scope.$watch('api.summoners[' + summoner.id + '].lastUpdate',
+                        function(newVal, oldVal) {
+                            if (newVal === oldVal)
+                                return;
+                            complete();
+                            clearWatch();
+                        });
+                    $scope.api.poll();
+                } else {
+                    $timeout(function() {
+                        complete();
+                    }, 5000);
+                }
             });
             return false;
         };
@@ -99,7 +155,9 @@
         $scope.updateSubredditFormSubmit = function(data, subreddit) {
             subreddit.busy = true;
             ajax.post('/profile/api/subreddit/update', data, function(ok, data) {
-                subreddit.busy = false;
+                $timeout(function() {
+                    subreddit.busy = false;
+                }, 5000);
             });
         };
     });
@@ -110,24 +168,18 @@
         $scope.dialog = dialog;
         $scope.confirm = function() {
             var data = dialog.data;
-            var i = $scope.api.summoners.length;
-            while (i > 0 && $scope.api.summoners[--i].id !== data.id);
-
-            $scope.api.summoners[i].hidden = true;
+            $scope.api.summoners[data.id].hidden = true;
 
             $scope.busy = true;
             ajax.post('/profile/api/summoner/delete', data, function(success, data) {
                 $scope.busy = false;
                 dialog.hide();
 
-                var i = $scope.api.summoners.length;
-                while(i > 0 && $scope.api.summoners[--i].id !== data.id);
-
-                if(success) {
-                    $scope.api.summoners.splice(i, 1);
-                } else
-                    $scope.api.summoners[i].hidden = false;
-            })
+                if (success)
+                    delete $scope.api.summoners[data.id];
+                else
+                    $scope.api.summoners[data.id].hidden = false;
+            });
         };
     });
 
@@ -148,7 +200,7 @@
                 summonerName: $scope.summonerName
             };
             ajax.post('/profile/api/summoner/validate', data, function(success, data, status) {
-                console.log(arguments);
+                //console.log(arguments);
 
                 if (status === 417) {
                     if (--validationAttempts) {

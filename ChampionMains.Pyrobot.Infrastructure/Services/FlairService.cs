@@ -12,17 +12,17 @@ namespace ChampionMains.Pyrobot.Services
     public class FlairService
     {
         private readonly UnitOfWork _context;
-        private readonly TimeSpan _staleTime;
+        private readonly TimeSpan _flairUpdateMaxStaleTime;
 
         public FlairService(UnitOfWork context, ApplicationConfiguration config)
         {
             _context = context;
-            _staleTime = config.FlairUpdateMax;
+            _flairUpdateMaxStaleTime = config.FlairUpdate;
         }
 
         public async Task<ICollection<SubredditUserFlair>> GetFlairsForUpdateAsync()
         {
-            var staleAfter = DateTimeOffset.Now - _staleTime;
+            var staleAfter = DateTimeOffset.Now - _flairUpdateMaxStaleTime;
             return await _context.SubredditUserFlairs.Where(s => s.LastUpdate == null || s.LastUpdate < staleAfter)
                     //.Include(x => x.User.Summoners.Select(s => s.ChampionMasteries))
                     //.Include(x => x.User.Summoners.Select(s => s.Rank))
@@ -39,8 +39,7 @@ namespace ChampionMains.Pyrobot.Services
         public async Task<bool> UpdateSubredditUserFlair(int userId, int subredditId, bool rankEnabled,
             bool championMasteryEnaabled, bool prestigeEnabled, string flairText)
         {
-            var subredditUserFlair =
-                _context.SubredditUserFlairs.FirstOrDefault(u => u.UserId == userId && u.SubredditId == subredditId);
+            var subredditUserFlair = _context.SubredditUserFlairs.FirstOrDefault(u => u.UserId == userId && u.SubredditId == subredditId);
 
             // if nothing is enabled, remove the flair
             if (!rankEnabled && !championMasteryEnaabled && !prestigeEnabled && string.IsNullOrWhiteSpace(flairText))
@@ -74,7 +73,8 @@ namespace ChampionMains.Pyrobot.Services
                 subredditUserFlair.LastUpdate = DateTimeOffset.Now;
             }
 
-            return await _context.SaveChangesAsync() > 0;
+            await _context.SaveChangesAsync();
+            return true; //await _context.SaveChangesAsync() > 0; // will always be true due to LastUpdate field
         }
 
         public string GenerateFlairCSS(int userId, short championId, bool rankEnabled, bool masteryEnabled, bool prestigeEnabled, string oldCss)

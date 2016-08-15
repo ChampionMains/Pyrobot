@@ -19,8 +19,7 @@ namespace ChampionMains.Pyrobot.Startup
                 FlairBotVersion = s["bot.version"],
                 RiotUpdateMin = TimeSpan.Parse(s["website.riotUpdateMin"]),
                 RiotUpdateMax = TimeSpan.Parse(s["website.riotUpdateMax"]),
-                FlairUpdateMin = TimeSpan.Parse(s["website.flairUpdateMin"]),
-                FlairUpdateMax = TimeSpan.Parse(s["website.flairUpdateMax"])
+                FlairUpdate = TimeSpan.Parse(s["website.flairUpdate"] ?? s["website.flairUpdateMax"]),
             }, Lifestyle.Singleton);
 
             // Services

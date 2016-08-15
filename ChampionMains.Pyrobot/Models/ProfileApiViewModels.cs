@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ChampionMains.Pyrobot.Models
 {
     public class ApiDataViewModel
     {
-        public IList<SummonerDataViewModel> Summoners;
-        public IDictionary<short, ChampionMasteryDataViewModel> Champions;
-        public IList<SubredditDataViewModel> Subreddits;
+        public IDictionary<int, SummonerDataViewModel> Summoners { get; set; }
+        public IDictionary<short, ChampionMasteryDataViewModel> Champions { get; set; }
+        public IDictionary<int, SubredditDataViewModel> Subreddits { get; set; }
     }
 
     public class SummonerDataViewModel
@@ -20,6 +21,7 @@ namespace ChampionMains.Pyrobot.Models
         public string TierString { get; set; }
         public byte Division { get; set; }
         public int TotalPoints { get; set; }
+        public DateTimeOffset? LastUpdate { get; set; }
     }
 
     public class ChampionMasteryDataViewModel

@@ -14,17 +14,17 @@ namespace ChampionMains.Pyrobot.Services
     public class SummonerService
     {
         private readonly UnitOfWork _unitOfWork;
-        private readonly TimeSpan _staleTime;
+        private readonly TimeSpan _riotUpdateMaxStaleTime;
 
         public SummonerService(UnitOfWork unitOfWork, ApplicationConfiguration config)
         {
             _unitOfWork = unitOfWork;
-            _staleTime = config.RiotUpdateMax;
+            _riotUpdateMaxStaleTime = config.RiotUpdateMax;
         }
 
         public async Task<IList<Summoner>> GetSummonersForUpdateAsync()
         {
-            var staleAfter = DateTimeOffset.Now - _staleTime;
+            var staleAfter = DateTimeOffset.Now - _riotUpdateMaxStaleTime;
             return await _unitOfWork.Summoners.Where(s => s.LastUpdate == null || s.LastUpdate < staleAfter)
                 .Include(s => s.User)
                 .Include(s => s.Rank)

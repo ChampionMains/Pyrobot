@@ -1,6 +1,6 @@
 ﻿@using ChampionMains.Pyrobot.Models
 
-<h1 class="text-center"><span class="rank" ng-class="'rank-' + api.summoners[0].tierString"></span> /u/@User.Identity.Name</h1>
+<h1 class="text-center"><span class="rank" ng-class="'rank-' + (api.summoners | orderObjectBy:'tier':true)[0].tierString"></span> /u/@User.Identity.Name</h1>
 
 <button type="button" class="btn btn-primary" ng-click="registerSummoner()">
     <i class="fa fa-plus"></i> Add Summoner
@@ -17,11 +17,15 @@
         </tr>
     </thead>
     <tbody>
-        <tr ng-repeat="summoner in filteredSummoners = (api.summoners | filter:'!hidden' | orderBy:'totalPoints':true) track by summoner.id">
+        <tr ng-repeat="(id, summoner) in filteredSummoners = (api.summoners | filterHidden | orderObjectBy:'totalPoints':true) track by id">
             <td>
                 <div class="btn-group btn-group-xs">
-                    <button class="btn btn-default" href="#" ng-click="refreshSummoner(summoner)"><span class="fa fa-refresh"></span></button>
-                    <button class="btn btn-danger" href="#" ng-click="deleteSummoner(summoner)"><span class="fa fa-times"></span></button>
+                    <button class="btn btn-default" href="#" ng-disabled="isSummonerUpdating(summoner)" ng-click="refreshSummoner(summoner)">
+                        <span class="fa fa-refresh" ng-class="{ 'fa-spin': isSummonerUpdating(summoner) }"></span>
+                    </button>
+                    <button class="btn btn-danger" href="#" ng-click="deleteSummoner(summoner)">
+                        <span class="fa fa-times"></span>
+                    </button>
                 </div>
             </td>
             <td ng-bind="summoner.region"></td>
@@ -58,13 +62,13 @@
         </tr>
     </thead>    
     <tbody>
-        <tr ng-repeat="subreddit in api.subreddits | orderBy:subredditSorter:true track by subreddit.id">
+        <tr ng-repeat="(id, subreddit) in orderSubreddits(api.subreddits) track by id">
             <td>
                 <form ng-init="flairData = subreddit.flair" ng-submit="updateSubredditFormSubmit(flairData, subreddit)" class="flair-toggles input-group input-group-sm">
                     <span class="input-group-btn">
                         <label class="btn btn-default" ng-class="{ 'disabled': !subreddit.rankEnabled }">
                             <input ng-model="flairData.rankEnabled" ng-disabled="!subreddit.rankEnabled || subreddit.busy" type="checkbox" autocomplete="off" />
-                            <span class="rank xs" ng-class="'rank-' + api.summoners[0].tierString"></span>
+                            <span class="rank xs" ng-class="'rank-' + (api.summoners | orderObjectBy:'tier':true)[0].tierString"></span>
                         </label>
                         <label class="btn btn-default" ng-class="{ 'disabled': !subreddit.championMasteryEnabled }">
                             <input ng-model="flairData.championMasteryEnabled" ng-disabled="!subreddit.championMasteryEnabled || subreddit.busy" type="checkbox" autocomplete="off" />
