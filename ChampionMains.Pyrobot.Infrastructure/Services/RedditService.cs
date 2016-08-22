@@ -84,7 +84,7 @@ namespace ChampionMains.Pyrobot.Services
             return flair?.CssClass == null ? null : flair;
         }
 
-        public async Task<ICollection<UserFlairParameter>> GetFlairsAsync(string subreddit, string name = "")
+        public async Task<IList<UserFlairParameter>> GetFlairsAsync(string subreddit, string name = "")
         {
             var flairs = new List<UserFlairParameter>();
             var nextToken = "";

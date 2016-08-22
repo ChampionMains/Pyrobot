@@ -57,15 +57,21 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
         {
             // update summoners
             var summoners = await _summonerService.GetSummonersForUpdateAsync();
-            await Console.Out.WriteLineAsync($"Updating {summoners.Count} summoners...");
+            Console.Out.WriteLine($"Updating {summoners.Count} summoners.");
 
             foreach (var summonersByRegion in summoners.GroupBy(s => s.Region, s => s))
             {
                 var region = summonersByRegion.Key;
                 var summonerIds = summonersByRegion.Select(s => s.SummonerId).ToList();
+
+                Console.Out.WriteLine($"Updating {summonerIds.Count} summoners from region {region}");
+
                 var summonerData = await _riotService.GetSummoners(region, summonerIds);
                 var summonerRanks = await _riotService.GetRanks(region, summonerIds);
                 var summonerMasteries = await _riotService.GetChampionMasteries(region, summonerIds);
+
+                Console.Out.WriteLine($"Pulled {summonerData.Count} summoner infos, {summonerRanks.Count}"
+                    + $"ranks, and {summonerMasteries.Count} mastery sets.");
 
                 foreach (var summoner in summonersByRegion)
                 {
@@ -76,21 +82,27 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
                     _summonerService.UpdateSummoner(summoner, region, data.Name, data.ProfileIconId, rank?.Item1, rank?.Item2, mastery);
                 }
+
+                Console.Out.WriteLine($"Completed updating {region}.");
             }
 
             var summonerUpdates = await _summonerService.SaveChangesAsync();
-            await Console.Out.WriteLineAsync($"{summonerUpdates} rows affected.");
+            Console.Out.WriteLine($"Updating summoners complete, {summonerUpdates} rows affected.");
 
 
             // update flairs
             var flairs = await _flairService.GetFlairsForUpdateAsync();
-            await Console.Out.WriteLineAsync($"Updating {flairs.Count} flairs...");
+            Console.Out.WriteLine($"Updating {flairs.Count} flairs.");
 
             var flairTasks = flairs.GroupBy(f => f.SubredditId, f => f).Select(async flairsBySubreddit =>
             {
                 var subreddit = flairsBySubreddit.First().Subreddit;
 
+                Console.Out.WriteLine($"Updating flairs from subreddit {subreddit}.");
+
                 var existingFlairs = await _redditService.GetFlairsAsync(subreddit.Name);
+
+                Console.Out.WriteLine($"Pulled {existingFlairs.Count} existing subreddit flairs.");
 
                 var updatedFlairs = flairsBySubreddit.Select(flair =>
                 {
@@ -119,7 +131,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             await Task.WhenAll(flairTasks);
 
             var flairUpdates = await _flairService.SaveChangesAsync();
-            await Console.Out.WriteLineAsync($"{flairUpdates} rows affected.");
+            Console.Out.WriteLine($"Updating flairs complete, {flairUpdates} rows affected.");
         }
     }
 }
