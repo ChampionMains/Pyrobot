@@ -70,8 +70,8 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 var summonerRanks = await _riotService.GetRanks(region, summonerIds);
                 var summonerMasteries = await _riotService.GetChampionMasteries(region, summonerIds);
 
-                Console.Out.WriteLine($"Pulled {summonerData.Count} summoner infos, {summonerRanks.Count}"
-                    + $"ranks, and {summonerMasteries.Count} mastery sets.");
+                Console.Out.WriteLine($"Pulled {summonerData.Count} summoner infos, {summonerRanks.Count} ranks, "
+                    + $"and {summonerMasteries.Count} mastery sets.");
 
                 foreach (var summoner in summonersByRegion)
                 {
@@ -81,6 +81,8 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                     var mastery = summonerMasteries[summoner.SummonerId];
 
                     _summonerService.UpdateSummoner(summoner, region, data.Name, data.ProfileIconId, rank?.Item1, rank?.Item2, mastery);
+
+                    Console.Out.WriteLine($"Updated {summoner.Name}.");
                 }
 
                 Console.Out.WriteLine($"Completed updating {region}.");
