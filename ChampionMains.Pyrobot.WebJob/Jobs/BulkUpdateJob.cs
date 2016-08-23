@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,10 +43,15 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             try
             {
                 var task = ExecuteInternal();
+#if DEBUG
+                await task;
+#endif
+#if !DEBUG
                 if (await Task.WhenAny(task, Task.Delay(_timeout)) != task)
                 {
                     throw new TimeoutException($"{nameof(BulkUpdateJob)} timed out ({_timeout})");
                 }
+#endif
             }
             finally
             {
@@ -81,8 +87,6 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                     var mastery = summonerMasteries[summoner.SummonerId];
 
                     _summonerService.UpdateSummoner(summoner, region, data.Name, data.ProfileIconId, rank?.Item1, rank?.Item2, mastery);
-
-                    Console.Out.WriteLine($"Updated {summoner.Name}.");
                 }
 
                 Console.Out.WriteLine($"Completed updating {region}.");

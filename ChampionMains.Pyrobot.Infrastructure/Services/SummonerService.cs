@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data;
@@ -51,15 +52,27 @@ namespace ChampionMains.Pyrobot.Services
             return summoner;
         }
 
+        private HashSet<short> _validChampions;
+        private DateTimeOffset _lastUpdate = DateTimeOffset.MinValue;
+        private HashSet<short> ValidChampions
+        {
+            get
+            {
+                if (_validChampions == null || DateTimeOffset.Now > _lastUpdate + TimeSpan.FromMinutes(1))
+                {
+                    _validChampions = new HashSet<short>(_unitOfWork.Champions.Select(c => c.Id));
+                    _lastUpdate = DateTimeOffset.Now;
+                }
+                return _validChampions;
+            }
+        }
+
         public void UpdateSummoner(Summoner summoner, string region, string name, int profileIconId,
             Tier? tier, byte? division, ICollection<ChampionMastery> championMastery)
         {
-            //_unitOfWork.Entry(summoner).Reference(s => s.Rank).Load();
-            //_unitOfWork.Entry(summoner).Collection(s => s.ChampionMasteries).Load();
-
             summoner.Name = name;
             summoner.ProfileIconId = profileIconId;
-            
+
             summoner.Rank.Division = division ?? 0;
             summoner.Rank.Tier = (byte?) tier ?? 0;
 
@@ -70,13 +83,12 @@ namespace ChampionMains.Pyrobot.Services
                 if (champMastery == null)
                 {
                     //started playing a new champion
-                    var champion = _unitOfWork.Champions.Find((short) updated.ChampionId);
-                    if (champion == null)
+                    if (!ValidChampions.Contains((short) updated.ChampionId))
                         continue; // possibly a new champion has been added, and the database needs updating
 
                     champMastery = new SummonerChampionMastery
                     {
-                        Champion = champion
+                        ChampionId = (short) updated.ChampionId
                     };
 
                     summoner.ChampionMasteries.Add(champMastery);
