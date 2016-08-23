@@ -104,7 +104,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             {
                 var subreddit = flairsBySubreddit.First().Subreddit;
 
-                Console.Out.WriteLine($"Updating flairs from subreddit {subreddit}.");
+                Console.Out.WriteLine($"Updating flairs from subreddit {subreddit.Name}.");
 
                 var existingFlairs = await _redditService.GetFlairsAsync(subreddit.Name);
 
