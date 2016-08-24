@@ -65,7 +65,8 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             var summoners = await _summonerService.GetSummonersForUpdateAsync();
             Console.Out.WriteLine($"Updating {summoners.Count} summoners.");
 
-            foreach (var summonersByRegion in summoners.GroupBy(s => s.Region, s => s))
+            // update each region asynchronously
+            var summonerTasks = summoners.GroupBy(s => s.Region, s => s).Select(async summonersByRegion =>
             {
                 var region = summonersByRegion.Key;
                 var summonerIds = summonersByRegion.Select(s => s.SummonerId).ToList();
@@ -77,7 +78,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 var summonerMasteries = await _riotService.GetChampionMasteries(region, summonerIds);
 
                 Console.Out.WriteLine($"Pulled {summonerData.Count} summoner infos, {summonerRanks.Count} ranks, "
-                    + $"and {summonerMasteries.Count} mastery sets.");
+                    + $"and {summonerMasteries.Count} mastery sets for region {region}.");
 
                 foreach (var summoner in summonersByRegion)
                 {
@@ -90,7 +91,8 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 }
 
                 Console.Out.WriteLine($"Completed updating {region}.");
-            }
+            });
+            await Task.WhenAll(summonerTasks);
 
             var summonerUpdates = await _summonerService.SaveChangesAsync();
             Console.Out.WriteLine($"Updating summoners complete, {summonerUpdates} rows affected.");
@@ -108,7 +110,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
                 var existingFlairs = await _redditService.GetFlairsAsync(subreddit.Name);
 
-                Console.Out.WriteLine($"Pulled {existingFlairs.Count} existing subreddit flairs.");
+                Console.Out.WriteLine($"Pulled {existingFlairs.Count} existing flairs from subreddit {subreddit.Name}.");
 
                 var updatedFlairs = flairsBySubreddit.Select(flair =>
                 {
