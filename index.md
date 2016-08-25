@@ -43,7 +43,7 @@ version of [this service](https://summonerschool.reddit.com/comments/3z0bzu/) ma
 [/u/Kivinkujata](https://www.reddit.com/u/Kivinkujata).
 
 
-## Do we really this?
+## Do we really need this?
 {:id="need" name="need"}
 
 > No
@@ -56,8 +56,9 @@ The site creates a way to recognize high-achieving members of ChampionMains subr
 ## Will my flair update when I change change rank/mastery?
 {:id="automation" name="automation"}
 
-Yes. The bot updates everyone's flairs every 24 hours at around 10 AM UTC. If you don't want to
-wait, you can log-in and click the update buttons next to each summoner and subreddit.
+Yes. Every hour, the bot runs a job that looks for flairs that haven't been updated in six hours,
+and updates them. If you don't want to wait, you can log-in and click the update buttons next to
+each summoner and subreddit.
 
 
 ## What is a [/r/ChampionMains](https://ChampionMains.reddit.com/) subreddit?
@@ -128,9 +129,8 @@ Note that subreddit moderators have the option to require both to be required if
 {:id="security" name="security"}
 
 Yes. This site only stores your Reddit username, League of Legends rank and champion mastery info,
-and subreddit flair settings. Linkage to Reddit and Riot occur through official, secure,
-methods---the same ones used by Reddit bots (like AutoModerator) and League fansites (like
-LolKing).
+and subreddit flair settings. Linkage to Reddit and Riot occur through official, secure, methods,
+which only reveal publicly available information.
 
 The source is available [at GitHub](https://github.com/championmains/Pyrobot). If you find any
 issues or have a suggestion, submit it to the
