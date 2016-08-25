@@ -27,8 +27,13 @@ namespace ChampionMains.Pyrobot.Data.Models
         [Required]
         public bool PrestigeEnabled { get; set; }
 
+        [Required]
+        public bool ChampionMasteryTextEnabled { get; set; }
+
         /// <summary>
         /// If true, users can only enable both or neither (rank, championmastery)
+        /// 
+        /// Note: not actually uesd
         /// </summary>
         [Required]
         public bool BindEnabled { get; set; }

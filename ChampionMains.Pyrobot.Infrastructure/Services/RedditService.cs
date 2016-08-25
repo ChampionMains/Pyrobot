@@ -133,7 +133,7 @@ namespace ChampionMains.Pyrobot.Services
 
         public async Task<bool> SetFlairsAsync(string subreddit, ICollection<UserFlairParameter> flairs)
         {
-            var errors = flairs.Select((flair, i) => new {flair, g = i / MaxFlairUpdateSize}).GroupBy(x => x.g)
+            var errorResultTasks = flairs.Select((flair, i) => new {flair, g = i / MaxFlairUpdateSize}).GroupBy(x => x.g)
                 .Select(async group =>
                 {
                     var uri = $"{BaseUri}/r/{subreddit}/api/flaircsv";
@@ -144,8 +144,8 @@ namespace ChampionMains.Pyrobot.Services
                     var result = await _requester.PostAsync(uri, data);
                     return result.Any(token => token["errors"].Any());
                 }).ToList();
-            await Task.WhenAll(errors);
-            return errors.Any(x => x.Result);
+            await Task.WhenAll(errorResultTasks);
+            return errorResultTasks.Any(x => x.Result);
         }
 
         private static string ResolveBulkFlairParameter(IEnumerable<UserFlairParameter> flairs)
