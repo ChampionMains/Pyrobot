@@ -146,7 +146,7 @@ namespace ChampionMains.Pyrobot.Controllers
             var subreddits = _unitOfWork.Subreddits.Where(r => !r.AdminOnly || user.IsAdmin)
                 .ToList().ToDictionary(r => r.Id, r =>
                 {
-                    var subredditUserData = _unitOfWork.SubredditUserFlairs.FirstOrDefault(f => f.SubredditId == r.Id);
+                    var subredditUserData = _unitOfWork.SubredditUserFlairs.FirstOrDefault(f => f.UserId == user.Id && f.SubredditId == r.Id);
                     var flair = new SubredditUserDataViewModel
                     {
                         SubredditId = r.Id,
