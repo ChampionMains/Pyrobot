@@ -187,6 +187,10 @@
     <Compile Include="Migrations\201608260346053_subreddituserflair-migrations.Designer.cs">
       <DependentUpon>201608260346053_subreddituserflair-migrations.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201608262031055_subreddit-minimumchampionmasterylevel.cs" />
+    <Compile Include="Migrations\201608262031055_subreddit-minimumchampionmasterylevel.Designer.cs">
+      <DependentUpon>201608262031055_subreddit-minimumchampionmasterylevel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Champion.cs" />
     <Compile Include="Models\SubredditUserFlair.cs" />
@@ -288,6 +292,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201608260346053_subreddituserflair-migrations.resx">
       <DependentUpon>201608260346053_subreddituserflair-migrations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608262031055_subreddit-minimumchampionmasterylevel.resx">
+      <DependentUpon>201608262031055_subreddit-minimumchampionmasterylevel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

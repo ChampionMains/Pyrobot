@@ -34,6 +34,9 @@ namespace ChampionMains.Pyrobot.Data.Models
         // TODO: not implement
         public bool TextDisabled { get; set; }
 
+        [Required]
+        public byte MinimumChampionMasteryLevel { get; set; }
+
         /// <summary>
         /// If true, users can only enable both or neither (rank, championmastery)
         /// 

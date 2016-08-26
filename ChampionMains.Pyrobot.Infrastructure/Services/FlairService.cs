@@ -82,15 +82,21 @@ namespace ChampionMains.Pyrobot.Services
             return true; //await _context.SaveChangesAsync() > 0; // will always be true due to LastUpdate field
         }
 
-        public UserFlairParameter GenerateFlair(User user, short championId, bool rankEnabled, bool masteryEnabled,
-            bool prestigeEnabled, bool subredditMasteryTextEnabled, bool userMasteryTextEnabled, string text, string oldCss)
+        public UserFlairParameter GenerateFlair(User user, Subreddit subreddit, bool userRankEnabled, bool userMasteryEnabled,
+            bool userPrestigeEnabled, bool userMasteryTextEnabled, string text, string oldCss)
         {
             const string rankPrefix = "rank-";
             const string masteryPrefix = "mastery-";
             const string prestigePrefix = "prestige-";
             const string masteryTextClass = "masteryText";
 
-            var masteryTextEnabled = subredditMasteryTextEnabled && userMasteryTextEnabled;
+            var championId = subreddit.ChampionId;
+
+            var rankEnabled = subreddit.RankEnabled && userRankEnabled;
+            var masteryEnabled = subreddit.ChampionMasteryEnabled && userMasteryEnabled;
+            var prestigeEnabled = subreddit.PrestigeEnabled && userPrestigeEnabled;
+            var masteryTextEnabled = subreddit.ChampionMasteryTextEnabled && userMasteryTextEnabled;
+
             // make sure text is non-null
             if (text == null)
                 text = "";
@@ -120,12 +126,12 @@ namespace ChampionMains.Pyrobot.Services
                     .Select(s => s.ChampionMasteries.FirstOrDefault(m => m.ChampionId == championId)?.Level ?? 0)
                     .DefaultIfEmpty().Aggregate((a, b) => a > b ? a : b);
 
-                if (masteryLevel > 0)
+                if (masteryLevel > subreddit.MinimumChampionMasteryLevel)
                     classes.Add(masteryPrefix + masteryLevel);
             }
 
             // if subreddit has mastery text enabled, sanitize it
-            if (subredditMasteryTextEnabled)
+            if (subreddit.ChampionMasteryTextEnabled)
             {
                 text = FlairUtil.SanitizeFlairTextLeadingMastery(text);
             }

@@ -37,9 +37,8 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
             var existingFlair = await _redditService.GetFlairAsync(subreddit.Name, user.Name);
 
-            var newFlair = _flairService.GenerateFlair(user, subreddit.ChampionId, subreddit.RankEnabled && data.RankEnabled,
-                subreddit.ChampionMasteryEnabled && data.ChampionMasteryEnabled, subreddit.PrestigeEnabled && data.PrestigeEnabled,
-                subreddit.ChampionMasteryTextEnabled, data.ChampionMasteryTextEnabled, data.FlairText, existingFlair?.CssClass);
+            var newFlair = _flairService.GenerateFlair(user, subreddit, data.RankEnabled, data.ChampionMasteryEnabled,
+                data.PrestigeEnabled, data.ChampionMasteryTextEnabled, data.FlairText, existingFlair?.CssClass);
 
             await _redditService.SetFlairAsync(subreddit.Name, user.Name, newFlair.Text, newFlair.CssClass);
         }

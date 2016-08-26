@@ -126,9 +126,8 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                     }
                     flair.LastUpdate = DateTimeOffset.Now;
 
-                    var newFlair = _flairService.GenerateFlair(flair.User, subreddit.ChampionId, subreddit.RankEnabled && flair.RankEnabled,
-                        subreddit.ChampionMasteryEnabled && flair.ChampionMasteryEnabled, subreddit.PrestigeEnabled && flair.PrestigeEnabled,
-                        subreddit.ChampionMasteryTextEnabled, flair.ChampionMasteryTextEnabled, existingFlair?.Text, existingFlair?.CssClass);
+                    var newFlair = _flairService.GenerateFlair(flair.User, subreddit, flair.RankEnabled, flair.ChampionMasteryEnabled,
+                        flair.PrestigeEnabled, flair.ChampionMasteryTextEnabled, existingFlair?.Text, existingFlair?.CssClass);
 
                     return newFlair;
                 }).ToList();
