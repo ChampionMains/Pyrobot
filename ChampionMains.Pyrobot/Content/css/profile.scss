@@ -112,7 +112,7 @@ $ranks: unranked bronze silver gold platinum diamond master challenger;
     .rank.rank-#{$rank}, .mastery.mastery-#{$i} { background-position: 0 (-100% * ($i - 1)); }
 }
 
-.rank.xs, .mastery, .prestige {
+.rank.xs, .mastery, .prestige, .masteryText {
     display: inline-block;
     width: 25px;
     height: 25px;
@@ -123,6 +123,10 @@ $ranks: unranked bronze silver gold platinum diamond master challenger;
 
     border-radius: 3px;
     background-color: rgba(#fff, 0.1) !important;
+}
+.masteryText {
+    width: auto;
+    padding: 0 3px;
 }
 
 .rank {
@@ -140,7 +144,10 @@ $ranks: unranked bronze silver gold platinum diamond master challenger;
 
 .mastery {
     background: url("~/Content/img/masteries.png") 999px 0 / 100% repeat-y;
-    &.mastery-0::after { content: '0'; }
+    &.mastery-0::after {
+        content: '0';
+        color: rgba(#fff, 0.5);
+    }
 }
 .prestige {
     color: #fd0;

@@ -221,16 +221,6 @@ namespace ChampionMains.Pyrobot.Data.Migrations
                 },
                 new Subreddit
                 {
-                    ChampionId = cd["Janna"],
-                    Name = "JannaMains",
-                    AdminOnly = true,
-                    RankEnabled = true,
-                    ChampionMasteryEnabled = true,
-                    PrestigeEnabled = false,
-                    BindEnabled = false
-                },
-                new Subreddit
-                {
                     ChampionId = cd["Sona"],
                     Name = "SonaMains",
                     AdminOnly = true,
@@ -243,6 +233,16 @@ namespace ChampionMains.Pyrobot.Data.Migrations
                 {
                     ChampionId = cd["Zyra"],
                     Name = "Umarrii",
+                    AdminOnly = true,
+                    RankEnabled = true,
+                    ChampionMasteryEnabled = true,
+                    PrestigeEnabled = true,
+                    BindEnabled = false
+                },
+                new Subreddit
+                {
+                    ChampionId = cd["Zyra"],
+                    Name = "LugnutsK",
                     AdminOnly = true,
                     RankEnabled = true,
                     ChampionMasteryEnabled = true,

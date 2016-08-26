@@ -80,18 +80,21 @@ namespace ChampionMains.Pyrobot.Controllers
             var user = await _userService.GetUserAsync();
 
             var changed = await _flairService.UpdateSubredditUserFlair(user.Id, model.SubredditId, model.RankEnabled,
-                model.ChampionMasteryEnabled, model.PrestigeEnabled, model.FlairText);
+                model.ChampionMasteryEnabled, model.PrestigeEnabled, model.ChampionMasteryTextEnabled, model.FlairText);
 
-            if (!changed)
+            if (!changed) // TODO: LastUpdate field always changes, so this doesn't actually do anything 
                 return Conflict($"Subreddit (id {model.SubredditId}) does not exist");
 
-            await _webJobService.QueueFlairUpdate(new FlairUpdateMessage()
+            await _webJobService.QueueFlairUpdate(new FlairUpdateMessage
             {
                 UserId = user.Id,
                 SubredditId = model.SubredditId,
+
                 RankEnabled = model.RankEnabled,
                 ChampionMasteryEnabled = model.ChampionMasteryEnabled,
                 PrestigeEnabled = model.PrestigeEnabled,
+                ChampionMasteryTextEnabled = model.ChampionMasteryTextEnabled,
+
                 FlairText = model.FlairText, // can be null
             });
 
@@ -143,10 +146,11 @@ namespace ChampionMains.Pyrobot.Controllers
                 return champion;
             });
 
+            _unitOfWork.Entry(user).Collection(u => u.SubredditUserFlairs).Load();
             var subreddits = _unitOfWork.Subreddits.Where(r => !r.AdminOnly || user.IsAdmin)
                 .ToList().ToDictionary(r => r.Id, r =>
                 {
-                    var subredditUserData = _unitOfWork.SubredditUserFlairs.FirstOrDefault(f => f.UserId == user.Id && f.SubredditId == r.Id);
+                    var subredditUserData = user.SubredditUserFlairs.FirstOrDefault(f => f.SubredditId == r.Id);
                     var flair = new SubredditUserDataViewModel
                     {
                         SubredditId = r.Id,
@@ -157,18 +161,23 @@ namespace ChampionMains.Pyrobot.Controllers
                         flair.RankEnabled = subredditUserData.RankEnabled;
                         flair.ChampionMasteryEnabled = subredditUserData.ChampionMasteryEnabled;
                         flair.PrestigeEnabled = subredditUserData.PrestigeEnabled;
+                        flair.ChampionMasteryTextEnabled = subredditUserData.ChampionMasteryTextEnabled;
+
                         flair.FlairText = subredditUserData.FlairText;
                     }
 
-                    return new SubredditDataViewModel()
+                    return new SubredditDataViewModel
                     {
                         Id = r.Id,
                         Name = r.Name,
                         ChampionId = r.ChampionId,
                         AdminOnly = r.AdminOnly,
+
                         RankEnabled = r.RankEnabled,
                         ChampionMasteryEnabled = r.ChampionMasteryEnabled,
                         PrestigeEnabled = r.PrestigeEnabled,
+                        ChampionMasteryTextEnabled = r.ChampionMasteryTextEnabled,
+
                         BindEnabled = r.BindEnabled,
                         Flair = flair
                     };

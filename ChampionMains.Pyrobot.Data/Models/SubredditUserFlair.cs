@@ -22,6 +22,9 @@ namespace ChampionMains.Pyrobot.Data.Models
         [Required]
         public bool PrestigeEnabled { get; set; }
 
+        [Required]
+        public bool ChampionMasteryTextEnabled { get; set; }
+
         [MaxLength(64)]
         public string FlairText { get; set; }
 

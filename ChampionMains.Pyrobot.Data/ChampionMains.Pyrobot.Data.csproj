@@ -179,6 +179,14 @@
     <Compile Include="Migrations\201608250410468_adding-subreddit-championmasterytextenabled.Designer.cs">
       <DependentUpon>201608250410468_adding-subreddit-championmasterytextenabled.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201608251822217_adding-subreddituserflair-championmasterytextenabled.cs" />
+    <Compile Include="Migrations\201608251822217_adding-subreddituserflair-championmasterytextenabled.Designer.cs">
+      <DependentUpon>201608251822217_adding-subreddituserflair-championmasterytextenabled.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608260346053_subreddituserflair-migrations.cs" />
+    <Compile Include="Migrations\201608260346053_subreddituserflair-migrations.Designer.cs">
+      <DependentUpon>201608260346053_subreddituserflair-migrations.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Champion.cs" />
     <Compile Include="Models\SubredditUserFlair.cs" />
@@ -274,6 +282,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201608250410468_adding-subreddit-championmasterytextenabled.resx">
       <DependentUpon>201608250410468_adding-subreddit-championmasterytextenabled.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608251822217_adding-subreddituserflair-championmasterytextenabled.resx">
+      <DependentUpon>201608251822217_adding-subreddituserflair-championmasterytextenabled.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608260346053_subreddituserflair-migrations.resx">
+      <DependentUpon>201608260346053_subreddituserflair-migrations.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

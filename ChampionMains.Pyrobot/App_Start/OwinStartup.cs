@@ -11,8 +11,6 @@ namespace ChampionMains.Pyrobot
 {
     public static class OwinStartup
     {
-        private const string FlairJobId = "$FlairJob";
-        private const string LeagueJobId = "$LeagueJob";
 
         public static void Configuration(IAppBuilder app)
         {
@@ -29,17 +27,6 @@ namespace ChampionMains.Pyrobot
 
             // Enable the Reddit authentication provider.
             app.UseRedditAuthentication(GetRedditOptions());
-
-            //TODO
-            //GlobalConfiguration.Configuration.UseSqlServerStorage("Hang-fire");
-            //app.UseHangfireDashboard("/Hangfire", new DashboardOptions
-            //{
-            //    AuthorizationFilters = new[] {new HangfireDashboardAuthorizationFilter(),}
-            //});
-            //app.UseHangfireServer();
-
-            //RecurringJob.AddOrUpdate<BulkFlairUpdateJob>(FlairJobId, job => job.Execute(), Cron.Minutely);
-            //RecurringJob.AddOrUpdate<BulkLeagueUpdateJob>(LeagueJobId, job => job.Execute(), Cron.Minutely);
         }
 
         private static RedditAuthenticationOptions GetRedditOptions()

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Reddit;
 using ChampionMains.Pyrobot.Services;
+using ChampionMains.Pyrobot.Util;
 using Microsoft.Azure.WebJobs;
 
 namespace ChampionMains.Pyrobot.WebJob.Jobs
@@ -115,22 +116,21 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 var updatedFlairs = flairsBySubreddit.Select(flair =>
                 {
                     var existingFlair = existingFlairs.FirstOrDefault(
-                        ef => string.Equals(ef.Name, flair.User.Name, StringComparison.OrdinalIgnoreCase)) ??
-                        new UserFlairParameter
-                        {
-                            Name = flair.User.Name,
-                            Text = flair.FlairText
-                        };
+                        ef => string.Equals(ef.Name, flair.User.Name, StringComparison.OrdinalIgnoreCase));
 
                     // update database flair text from subreddit (different from individual flair update service)
-                    flair.FlairText = existingFlair.Text;
+                    if (existingFlair != null)
+                    {
+                        flair.FlairText = subreddit.ChampionMasteryTextEnabled ?
+                            FlairUtil.SanitizeFlairTextLeadingMastery(existingFlair.Text) : existingFlair.Text;
+                    }
                     flair.LastUpdate = DateTimeOffset.Now;
 
-                    var classes = _flairService.GenerateFlairCSS(flair.UserId, subreddit.ChampionId, subreddit.RankEnabled && flair.RankEnabled,
-                        subreddit.ChampionMasteryEnabled && flair.ChampionMasteryEnabled,
-                        subreddit.PrestigeEnabled && flair.PrestigeEnabled, existingFlair.CssClass);
-                    existingFlair.CssClass = classes;
-                    return existingFlair;
+                    var newFlair = _flairService.GenerateFlair(flair.User, subreddit.ChampionId, subreddit.RankEnabled && flair.RankEnabled,
+                        subreddit.ChampionMasteryEnabled && flair.ChampionMasteryEnabled, subreddit.PrestigeEnabled && flair.PrestigeEnabled,
+                        subreddit.ChampionMasteryTextEnabled, flair.ChampionMasteryTextEnabled, existingFlair?.Text, existingFlair?.CssClass);
+
+                    return newFlair;
                 }).ToList();
 
                 return await _redditService.SetFlairsAsync(subreddit.Name, updatedFlairs);

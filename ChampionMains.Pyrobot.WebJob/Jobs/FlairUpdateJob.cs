@@ -1,9 +1,11 @@
 ﻿using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data;
 using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Data.WebJob;
 using ChampionMains.Pyrobot.Services;
+using ChampionMains.Pyrobot.Util;
 using Microsoft.Azure.WebJobs;
 
 namespace ChampionMains.Pyrobot.WebJob.Jobs
@@ -35,10 +37,11 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
             var existingFlair = await _redditService.GetFlairAsync(subreddit.Name, user.Name);
 
-            var classes = _flairService.GenerateFlairCSS(user.Id, subreddit.ChampionId, subreddit.RankEnabled && data.RankEnabled,
-                subreddit.ChampionMasteryEnabled && data.ChampionMasteryEnabled,
-                subreddit.PrestigeEnabled && data.PrestigeEnabled, existingFlair?.CssClass);
-            await _redditService.SetFlairAsync(subreddit.Name, user.Name, data.FlairText ?? existingFlair?.Text, classes);
+            var newFlair = _flairService.GenerateFlair(user, subreddit.ChampionId, subreddit.RankEnabled && data.RankEnabled,
+                subreddit.ChampionMasteryEnabled && data.ChampionMasteryEnabled, subreddit.PrestigeEnabled && data.PrestigeEnabled,
+                subreddit.ChampionMasteryTextEnabled, data.ChampionMasteryTextEnabled, data.FlairText, existingFlair?.CssClass);
+
+            await _redditService.SetFlairAsync(subreddit.Name, user.Name, newFlair.Text, newFlair.CssClass);
         }
     }
 }

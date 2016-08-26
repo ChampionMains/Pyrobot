@@ -56,7 +56,7 @@
 <table class="table table-pad">
     <thead>
         <tr>
-            <th style="width: 50%;">Flair (Rank/Mastery/Prestige/Text)</th>
+            <th style="width: 50%;">Flair Settings (hover for details)</th>
             <th>Subreddit</th>
             <th>Mastery</th>
         </tr>
@@ -66,17 +66,21 @@
             <td>
                 <form ng-init="flairData = subreddit.flair" ng-submit="updateSubredditFormSubmit(flairData, subreddit)" class="flair-toggles input-group input-group-sm">
                     <span class="input-group-btn">
-                        <label class="btn btn-default" ng-if="subreddit.rankEnabled">
+                        <label class="btn btn-default" title="Rank: your highest rank" ng-if="subreddit.rankEnabled">
                             <input ng-model="flairData.rankEnabled" ng-disabled="subreddit.busy" type="checkbox" autocomplete="off" />
                             <span class="rank xs" ng-class="'rank-' + (api.summoners | orderObjectBy:'tier':true)[0].tierString"></span>
                         </label>
-                        <label class="btn btn-default" ng-if="subreddit.championMasteryEnabled">
-                            <input ng-model="flairData.championMasteryEnabled" ng-disabled="!subreddit.championMasteryEnabled || subreddit.busy" type="checkbox" autocomplete="off" />
+                        <label class="btn btn-default" title="Mastery: your highest champion mastery level" ng-if="subreddit.championMasteryEnabled">
+                            <input ng-model="flairData.championMasteryEnabled" ng-disabled="subreddit.busy" type="checkbox" autocomplete="off" />
                             <span class="mastery" ng-class="'mastery-' + api.champions[subreddit.championId].level"></span>
                         </label>
-                        <label class="btn btn-default" ng-if="subreddit.prestigeEnabled">
-                            <input ng-model="flairData.prestigeEnabled" ng-disabled="!subreddit.prestigeEnabled || subreddit.busy" type="checkbox" autocomplete="off" />
+                        <label class="btn btn-default" title="Prestige: your total champion mastery points, starting at 250k" ng-if="subreddit.prestigeEnabled">
+                            <input ng-model="flairData.prestigeEnabled" ng-disabled="subreddit.busy" type="checkbox" autocomplete="off" />
                             <span class="prestige" ng-class="'prestige-' + (api.champions[subreddit.championId].prestige / 1000)"></span>
+                        </label>
+                        <label class="btn btn-default" title="Mastery points: your exact number of champion mastery points" ng-if="subreddit.championMasteryTextEnabled">
+                            <input ng-model="flairData.championMasteryTextEnabled" ng-disabled="subreddit.busy" type="checkbox" autocomplete="off" />
+                            <span class="masteryText" ng-bind="api.champions[subreddit.championId].points | number"></span>
                         </label>
                     </span>
                     <input type="text" ng-model="flairData.flairText" ng-disabled="subreddit.busy" class="form-control" placeholder="flair text"/>
@@ -92,9 +96,11 @@
             <td>
                 <span class="mastery" ng-class="'mastery-' + api.champions[subreddit.championId].level" title="Level {{ api.champions[subreddit.championId].level }}"></span>
                 <span class="prestige" ng-class="'prestige-' + (api.champions[subreddit.championId].prestige / 1000)"></span>
-
-                <span ng-bind="api.champions[subreddit.championId].points | number"></span> / 
-                <span ng-bind="api.champions[subreddit.championId].nextPrestige | prestige"></span>
+                
+                <span class="hint" ng-tooltip="right,Prestige progress">
+                    <span ng-bind="api.champions[subreddit.championId].points | number"></span> /
+                    <span ng-bind="api.champions[subreddit.championId].nextPrestige | prestige"></span>
+                </span>
             </td>
         </tr>
     </tbody>
