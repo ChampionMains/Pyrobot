@@ -121,7 +121,8 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                     // update database flair text from subreddit (different from individual flair update service)
                     if (existingFlair != null)
                     {
-                        flair.FlairText = subreddit.ChampionMasteryTextEnabled ?
+                        // sanitize if the flair has the mastery text class to extract just the text portion
+                        flair.FlairText = existingFlair.CssClass.Contains(FlairService.MasteryTextClass) ?
                             FlairUtil.SanitizeFlairTextLeadingMastery(existingFlair.Text) : existingFlair.Text;
                     }
                     flair.LastUpdate = DateTimeOffset.Now;
