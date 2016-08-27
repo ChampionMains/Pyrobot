@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data;
 using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Data.Models;
 using ChampionMains.Pyrobot.Reddit;
-using ChampionMains.Pyrobot.Util;
 
 namespace ChampionMains.Pyrobot.Services
 {
@@ -129,12 +127,6 @@ namespace ChampionMains.Pyrobot.Services
                 if (masteryLevel > subreddit.MinimumChampionMasteryLevel)
                     classes.Add(masteryPrefix + masteryLevel);
             }
-
-            // if subreddit has mastery text enabled, sanitize it
-            if (subreddit.ChampionMasteryTextEnabled)
-            {
-                text = FlairUtil.SanitizeFlairTextLeadingMastery(text);
-            }
                 
             if (prestigeEnabled || masteryTextEnabled)
             {
@@ -152,7 +144,6 @@ namespace ChampionMains.Pyrobot.Services
 
                 if (masteryTextEnabled)
                 {
-                    text = FlairUtil.PrependFlairTextLeadingMastery(text, masteryPoints);
                     classes.Add(masteryTextClass);
                 }
             }

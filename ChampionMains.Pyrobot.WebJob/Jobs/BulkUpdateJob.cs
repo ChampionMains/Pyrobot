@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data.Enums;
-using ChampionMains.Pyrobot.Reddit;
 using ChampionMains.Pyrobot.Services;
-using ChampionMains.Pyrobot.Util;
 using Microsoft.Azure.WebJobs;
 
 namespace ChampionMains.Pyrobot.WebJob.Jobs
@@ -118,12 +115,8 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                     var existingFlair = existingFlairs.FirstOrDefault(
                         ef => string.Equals(ef.Name, flair.User.Name, StringComparison.OrdinalIgnoreCase));
 
-                    // update database flair text from subreddit (different from individual flair update service)
                     if (existingFlair != null)
-                    {
-                        flair.FlairText = subreddit.ChampionMasteryTextEnabled ?
-                            FlairUtil.SanitizeFlairTextLeadingMastery(existingFlair.Text) : existingFlair.Text;
-                    }
+                        flair.FlairText = existingFlair.Text;
                     flair.LastUpdate = DateTimeOffset.Now;
 
                     var newFlair = _flairService.GenerateFlair(flair.User, subreddit, flair.RankEnabled, flair.ChampionMasteryEnabled,
