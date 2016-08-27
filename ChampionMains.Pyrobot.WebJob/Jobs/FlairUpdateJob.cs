@@ -1,11 +1,9 @@
 ﻿using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data;
 using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Data.WebJob;
 using ChampionMains.Pyrobot.Services;
-using ChampionMains.Pyrobot.Util;
 using Microsoft.Azure.WebJobs;
 
 namespace ChampionMains.Pyrobot.WebJob.Jobs
