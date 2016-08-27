@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Data.Models;
@@ -25,9 +24,8 @@ namespace ChampionMains.Pyrobot
         }
 
         // must be ascending order
-        public static readonly int[] PrestigeLevels = new[]
-        {
-            250000, 500000, 750000, 1000000, 2000000
+        public static readonly int[] PrestigeLevels = {
+            250000, 500000, 750000, 1000000, 2000000, 3000000, 4000000, 5000000
         };
 
         public static int GetPrestigeLevel(int points)
