@@ -99,7 +99,7 @@ table.table {
 
 /* Spritesheets */
 
-$prestiges: 0 250 500 750 1000;
+$prestiges: 0 250 500 750 1000 2000 3000 4000 5000;
 @each $prestige in $prestiges {
   .prestige.prestige-#{$prestige}::after {
     content: '' + if($prestige == 1000, '1M', $prestige);
