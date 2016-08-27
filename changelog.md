@@ -2,6 +2,10 @@
 layout: default
 title: Changelog
 changes:
+  2016-08-27:
+    - Added exact champion mastery text.
+    - Added prestiges up to 5 million (previous max was 2 million).
+    - Changed UI to hide buttons instead of greying them out.
   2016-08-25:
     - Added changelog to documentation site (this page).
     - Fixed bug causing website to display wrong user flair information after internal changes on 2016-08-12.
