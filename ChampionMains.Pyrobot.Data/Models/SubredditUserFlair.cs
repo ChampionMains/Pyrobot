@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ChampionMains.Pyrobot.Data.Models
 {
     [Table("SubredditUserFlair")]
-    public class SubredditUserFlair
+    public class SubredditUserFlair : CreatedModelBase
     {
         [Key]
         [Required]

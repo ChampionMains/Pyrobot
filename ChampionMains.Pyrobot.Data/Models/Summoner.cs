@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ChampionMains.Pyrobot.Data.Models
 {
     [Table("Summoner")]
-    public class Summoner
+    public class Summoner : CreatedModelBase
     {
         [Key]
         [Required]

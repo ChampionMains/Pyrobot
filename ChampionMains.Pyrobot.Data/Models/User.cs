@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ChampionMains.Pyrobot.Data.Models
 {
     [Table("User")]
-    public class User
+    public class User : CreatedModelBase
     {
         //[NotMapped]
         //public DateTimeOffset? FlairUpdateRequiredTime { get; set; }

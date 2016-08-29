@@ -191,8 +191,13 @@
     <Compile Include="Migrations\201608262031055_subreddit-minimumchampionmasterylevel.Designer.cs">
       <DependentUpon>201608262031055_subreddit-minimumchampionmasterylevel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201608290358477_created-recorddatetime.cs" />
+    <Compile Include="Migrations\201608290358477_created-recorddatetime.Designer.cs">
+      <DependentUpon>201608290358477_created-recorddatetime.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Champion.cs" />
+    <Compile Include="Models\CreatedModelBase.cs" />
     <Compile Include="Models\SubredditUserFlair.cs" />
     <Compile Include="Models\SummonerChampionMastery.cs" />
     <Compile Include="Models\SummonerRank.cs" />
@@ -295,6 +300,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201608262031055_subreddit-minimumchampionmasterylevel.resx">
       <DependentUpon>201608262031055_subreddit-minimumchampionmasterylevel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608290358477_created-recorddatetime.resx">
+      <DependentUpon>201608290358477_created-recorddatetime.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
