@@ -18,11 +18,6 @@ namespace ChampionMains.Pyrobot.Controllers
             _users = users;
         }
 
-        //public ActionResult About()
-        //{
-        //    return View();
-        //}
-
         public ActionResult Index(string subreddit)
         {
             if (subreddit != null)
@@ -59,6 +54,7 @@ namespace ChampionMains.Pyrobot.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Logout()
         {
             HttpContext.GetOwinContext().Authentication.SignOut();
@@ -72,7 +68,7 @@ namespace ChampionMains.Pyrobot.Controllers
             owin.Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
             var identity =
                 await _users.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie, externalIdentity);
-            await Task.Run(() => owin.Authentication.SignIn(new AuthenticationProperties {IsPersistent = true}, identity));
+            owin.Authentication.SignIn(new AuthenticationProperties {IsPersistent = true}, identity);
         }
 
         private class OAuthRedirectResult : ActionResult

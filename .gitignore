@@ -241,3 +241,6 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+
+# ignore bower
+/ChampionMains.Pyrobot/bower_components

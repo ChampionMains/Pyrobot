@@ -4,8 +4,10 @@ using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.IO;
 using System.Net.Mail;
+using System.Security.Claims;
 using System.Text;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Routing;
 using ChampionMains.Pyrobot.Data;
@@ -58,6 +60,7 @@ namespace ChampionMains.Pyrobot
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             SimpleInjectorConfig.Register(new Container());
+            AntiForgeryConfig.UniqueClaimTypeIdentifier = ClaimTypes.NameIdentifier;
         }
 
         protected void Application_Error()

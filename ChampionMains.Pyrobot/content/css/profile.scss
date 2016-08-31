@@ -1,0 +1,154 @@
+﻿
+h2 {
+    margin-bottom: 20px;
+    margin-top: -20px;
+    text-shadow: 2px 2px 0 #000;
+}
+
+.row + .row {
+    margin-top: 20px;
+}
+
+#modal-register .modal-body .modal-wizard {
+    height: 194px;
+    overflow-x: hidden;
+    white-space: nowrap;
+    width: 558px;
+}
+
+#modal-register .modal-body .modal-wizard-step {
+    display: inline-block;
+    margin-left: 0;
+    width: 558px;
+    vertical-align: top;
+}
+
+#modal-register .modal-body .modal-wizard-step.slide-left {
+    transition: margin-left .2s linear;
+    margin-left: -558px;
+}
+
+#modal-register p {
+   white-space: normal;
+}
+
+#modal-register em {
+    font-style: normal;
+    font-weight: bold;
+}
+
+
+
+table.table thead th {
+    font-weight: bold;
+}
+
+table.table.table-pad > tbody > tr > td {
+    padding: 16px 8px;
+}
+
+table.table {
+    margin-bottom: 100px;
+
+    thead:first-child > tr:first-child > th {
+        border-top: 0;
+    }
+    thead > tr > th {
+        border-bottom: 2px solid #777;
+        color: #375a7f;
+        line-height: 1.4285;
+        padding: 8px;
+        text-align: left;
+        vertical-align: middle;
+    }
+    tbody > tr > td,
+    tfoot > tr > td {
+        border-top: 1px solid #777;
+        font-size: 14px;
+        padding: 8px;
+        line-height: 1.4285;
+        vertical-align: middle;
+    }
+}
+
+.champion {
+    margin: -5px 0;
+    width: 35px;
+    height: auto;
+}
+
+.flair-toggles {
+    margin: -5px 0;
+    label.btn {
+        padding-left: 6px !important;
+        padding-right: 6px !important;
+        /*&:not(.active), &.disabled {
+            .on { display: none; }
+        }
+        &.active, &.disabled {
+            .off { display: none; }
+        }
+        &:not(.disabled) .dis {
+            display: none;
+        }*/
+        &.disabled {
+            opacity: 0.4;
+        }
+    }
+}
+
+/* Spritesheets */
+
+$prestiges: 0 250 500 750 1000 2000 3000 4000 5000;
+@each $prestige in $prestiges {
+  .prestige.prestige-#{$prestige}::after {
+    content: '' + if($prestige == 1000, '1M', $prestige);
+  }
+}
+
+$ranks: unranked bronze silver gold platinum diamond master challenger;
+@each $rank in $ranks {
+    $i: index($ranks, $rank);
+    .rank.rank-#{$rank}, .mastery.mastery-#{$i} { background-position: 0 (-100% * ($i - 1)); }
+}
+
+.rank.xs, .mastery, .prestige, .masteryText {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    margin: -3px 0;
+    vertical-align: top;
+    text-align: center;
+    line-height: 25px;
+
+    border-radius: 3px;
+    background-color: rgba(#fff, 0.1) !important;
+}
+.masteryText {
+    width: auto;
+    padding: 0 3px;
+}
+
+.rank {
+    background: url("~/Content/img/ranks.png") 0 0 / 100% repeat-y;
+    width: 70px;
+    height: 70px;
+    vertical-align: middle;
+    display: inline-block;
+}
+.rank.sm {
+    width: 35px;
+    height: 35px;
+    margin: -5px 0;
+}
+
+.mastery {
+    background: url("~/Content/img/masteries.png") 999px 0 / 100% repeat-y;
+    &.mastery-0::after {
+        content: '0';
+        color: rgba(#fff, 0.5);
+    }
+}
+.prestige {
+    color: #fd0;
+}

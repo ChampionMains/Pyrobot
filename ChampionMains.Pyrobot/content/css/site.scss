@@ -1,0 +1,169 @@
+﻿%clearfix {
+    content: ' ';
+    visibility: hidden;
+    display: block;
+    height: 0;
+    clear: both;
+}
+
+.alert {
+    margin-bottom: 0;
+}
+
+.hint {
+    border-bottom: 1px dotted #fff;
+    cursor: default;
+}
+
+button.close[disabled] {
+    cursor: not-allowed !important;
+    opacity: 0.4 !important;
+}
+
+label.control-label {
+    color: #375a7f;
+}
+
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700);
+/*@media (min-width: 992px) {
+    body > .container {
+        width: 780px;
+    }
+}*/
+
+h1, h2, h3, h4, h5 {
+    margin: 0;
+}
+
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+span.label {
+    font-weight: normal;
+}
+
+$header-height: 80px;
+
+header {
+    height: $header-height;
+    line-height: $header-height;
+    margin-bottom: 40px;
+    padding: 20px 0;
+
+    h1 {
+        font-size: 24px;
+        font-weight: 200;
+        height: $header-height;
+        line-height: $header-height;
+        text-shadow: 2px 2px 0 #000;
+    }
+
+    nav {
+        float: right;
+    }
+
+    nav ul:after { @extend %clearfix; }
+
+    nav li {
+        float: left;
+    }
+
+    nav li + li {
+        margin-left: 15px;
+    }
+
+    nav li {
+        a, button {
+            display: block;
+            font-size: 18px;
+            font-weight: 200;
+            height: $header-height;
+            line-height: $header-height;
+            text-shadow: 1px 1px 0 #000;
+            text-transform: uppercase;
+        }
+        button {
+            background: none;
+            border: none;
+        }
+
+        button:hover {
+            color: #527497;
+        }
+    }
+
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: 200;
+    margin-bottom: 40px;
+}
+
+@mixin transform($first) {
+    -webkit-transform: $first;
+    -moz-transform: $first;
+    -ms-transform: $first;
+    transform: $first;
+}
+
+/*@mixin transform($first, $second) {
+    -webkit-transform: $first $second;
+    -moz-transform: $first $second;
+    -ms-transform: $first $second;
+    transform: $first $second;
+}*/
+
+@mixin transition($rule) {
+    -webkit-transition: $rule;
+    -moz-transform: $rule;
+    transform: $rule;
+}
+
+.modal.pop-in {
+    @include transform(scale(0.7));
+    @include transition(all .3s);
+}
+
+.modal.pop-in.in {
+    @include transform(scale(1));
+}
+
+.spinning {
+    animation: spin 1s infinite linear;
+    -moz-animation: spin2 1s infinite linear;
+    -webkit-animation: spin3 1s infinite linear;
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg); }
+    to { transform: scale(1) rotate(360deg); }
+}
+@-moz-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+@-webkit-keyframes spin3 {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+
+.fade {
+    opacity: 1;
+    transition: opacity 300ms ease-in-out;
+    -moz-transition: opacity 300ms ease-in-out;
+    -webkit-transition: opacity 300ms ease-in-out;
+}
+.fade-out {
+    opacity: 0; 
+}
+
+.footer {
+    padding-top: 16px;
+    color: #777;
+    border-top: 1px solid #777;
+    margin-top: 100px;
+}
