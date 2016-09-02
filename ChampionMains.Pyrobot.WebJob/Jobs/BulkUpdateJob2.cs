@@ -12,7 +12,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
     /// <summary>
     ///     Updates the league standing for a summoner.
     /// </summary>
-    public class BulkUpdateJob
+    public class BulkUpdateJob2
     {
         private static readonly SemaphoreSlim Lock = new SemaphoreSlim(1, 1);
 
@@ -24,7 +24,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
         private readonly TimeSpan _timeout;
 
-        public BulkUpdateJob(RiotService riotService, SummonerService summonerService,
+        public BulkUpdateJob2(RiotService riotService, SummonerService summonerService,
             RedditService redditService, FlairService flairService, WebJobConfiguration config)
         {
             _riotService = riotService;
@@ -44,7 +44,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 var task = ExecuteInternal();
                 if (await Task.WhenAny(task, Task.Delay(_timeout)) != task)
                 {
-                    throw new TimeoutException($"{nameof(BulkUpdateJob)} timed out ({_timeout})");
+                    throw new TimeoutException($"{nameof(BulkUpdateJob2)} timed out ({_timeout})");
                 }
             }
             finally

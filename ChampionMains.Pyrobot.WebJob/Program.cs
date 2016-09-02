@@ -35,7 +35,7 @@ namespace ChampionMains.Pyrobot.WebJob
             // Jobs
             container.Register<SummonerUpdateJob>(Lifestyle.Transient);
             container.Register<FlairUpdateJob>(Lifestyle.Transient);
-            container.Register<BulkUpdateJob>(Lifestyle.Transient);
+            container.Register<BulkUpdateJob2>(Lifestyle.Transient);
 
             SharedSimpleInjectorConfig.Configure(container, s);
 
