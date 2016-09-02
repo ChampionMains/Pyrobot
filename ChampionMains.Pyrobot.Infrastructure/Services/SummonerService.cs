@@ -26,7 +26,7 @@ namespace ChampionMains.Pyrobot.Services
         {
             var staleAfter = DateTimeOffset.Now - _riotUpdateMaxStaleTime;
 
-            Console.Out.WriteLine("test 4 stale " + staleAfter);
+            Console.Out.WriteLine("test 5 stale " + staleAfter);
 
             try
             {
@@ -37,7 +37,7 @@ namespace ChampionMains.Pyrobot.Services
             }
             finally
             {
-                Console.Out.WriteLine("test 5");
+                Console.Out.WriteLine("test 6");
             }
         }
 
