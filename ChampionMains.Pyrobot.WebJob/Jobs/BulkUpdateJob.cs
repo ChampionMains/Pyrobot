@@ -43,7 +43,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
             try
             {
-
+#if DEBUG
                 Console.Out.WriteLine("test 3");
                 var task = ExecuteInternal();
 
@@ -51,6 +51,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 {
                     throw new TimeoutException($"{nameof(BulkUpdateJob)} timed out ({_timeout})");
                 }
+#endif
             }
             finally
             {
