@@ -43,12 +43,18 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
             try
             {
-                Console.Out.WriteLine("test 3");
+                Console.Out.WriteLine("test 3 timeout " + _timeout);
                 var task = ExecuteInternal();
 
-                if (await Task.WhenAny(task, Task.Delay(_timeout)) != task)
+                var result = await Task.WhenAny(task, Task.Delay(_timeout));
+                if (result != task)
                 {
                     throw new TimeoutException($"{nameof(BulkUpdateJob)} timed out ({_timeout})");
+                }
+                else
+                {
+                    var value = ((Task<int>) result).Result;
+                    Console.Out.WriteLine("result " + value);
                 }
             }
             finally
@@ -59,7 +65,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             Console.Out.WriteLine("test last");
         }
 
-        private async Task ExecuteInternal()
+        private async Task<int> ExecuteInternal()
         {
             Console.Out.WriteLine("test 4");
 
@@ -146,6 +152,8 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
             var flairUpdates = await _flairService.SaveChangesAsync();
             Console.Out.WriteLine($"Updating flairs complete, {flairUpdates} rows affected.");
+
+            return 1998;
         }
     }
 }
