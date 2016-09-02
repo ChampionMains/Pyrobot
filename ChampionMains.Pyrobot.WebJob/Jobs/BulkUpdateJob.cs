@@ -56,7 +56,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             }
         }
 
-        private async Task<int> ExecuteInternal()
+        private async Task ExecuteInternal()
         {
 
             // update summoners
@@ -145,8 +145,6 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
             var flairUpdates = await _flairService.SaveChangesAsync();
             Console.Out.WriteLine($"Updating flairs complete, {flairUpdates} rows affected.");
-
-            return 1998;
         }
     }
 }
