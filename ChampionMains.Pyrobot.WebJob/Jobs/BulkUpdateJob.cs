@@ -126,8 +126,9 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                     if (existingFlair != null)
                     {
                         // sanitize if the flair has the mastery text class to extract just the text portion
-                        flair.FlairText = existingFlair.CssClass.Contains(FlairService.MasteryTextClass) ?
-                            FlairUtil.SanitizeFlairTextLeadingMastery(existingFlair.Text) : existingFlair.Text;
+                        flair.FlairText = existingFlair.CssClass?.Contains(FlairService.MasteryTextClass) ?? false
+                            ? FlairUtil.SanitizeFlairTextLeadingMastery(existingFlair.Text)
+                            : existingFlair.Text;
                     }
                     flair.LastUpdate = DateTimeOffset.Now;
 
