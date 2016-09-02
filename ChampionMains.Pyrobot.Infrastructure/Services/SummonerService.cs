@@ -22,27 +22,14 @@ namespace ChampionMains.Pyrobot.Services
             _riotUpdateMaxStaleTime = config.RiotUpdateMax;
         }
 
-        public IList<Summoner> GetSummonersForUpdateAsync()
+        public async Task<IList<Summoner>> GetSummonersForUpdateAsync()
         {
             var staleAfter = DateTimeOffset.Now - _riotUpdateMaxStaleTime;
 
-            Console.Out.WriteLine("test 5 stale " + staleAfter);
-
-            var response = _unitOfWork.Summoners.Where(s => s.LastUpdate == null || s.LastUpdate < staleAfter)
+            return await _unitOfWork.Summoners.Where(s => s.LastUpdate == null || s.LastUpdate < staleAfter)
                     .Include(s => s.User)
                     .Include(s => s.Rank)
-                    .Include(s => s.ChampionMasteries).ToList();
-            
-            Console.Out.WriteLine("test 6 before return");
-
-            try
-            {
-                return response;
-            }
-            finally
-            {
-                Console.Out.WriteLine("test 6 summoners " + response);
-            }
+                    .Include(s => s.ChampionMasteries).ToListAsync();
         }
 
         public Summoner AddSummoner(int userId, long summonerId, string region, string name, int profileIconId)

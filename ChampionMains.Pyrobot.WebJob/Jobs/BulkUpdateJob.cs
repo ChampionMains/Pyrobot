@@ -36,45 +36,30 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
         public async Task Execute([QueueTrigger(WebJobQueue.BulkUpdate)] string args)
         {
-            Console.Out.WriteLine("test 1");
-
             if (!await Lock.WaitAsync(1000))
                 throw new InvalidOperationException("Lock is not available. Task is already be running.");
 
             try
             {
-                Console.Out.WriteLine("test 3 timeout " + _timeout);
                 var task = ExecuteInternal();
-
                 var result = await Task.WhenAny(task, Task.Delay(_timeout));
+
                 if (result != task)
-                {
                     throw new TimeoutException($"{nameof(BulkUpdateJob)} timed out ({_timeout})");
-                }
-                else
-                {
-                    var value = ((Task<int>) result).Result;
-                    Console.Out.WriteLine("result " + value);
-                }
+
+                if (result.Exception != null)
+                    throw result.Exception;
             }
             finally
             {
                 Lock.Release();
             }
-
-            Console.Out.WriteLine("test last");
         }
 
         private async Task<int> ExecuteInternal()
         {
-            Console.Out.WriteLine("test 4");
-
             // update summoners
-            var summoners = _summonerService.GetSummonersForUpdateAsync();
-
-            //throw new Exception("test 7 exception");
-
-            Console.Out.WriteLine("test 7");
+            var summoners = await _summonerService.GetSummonersForUpdateAsync();
 
             Console.Out.WriteLine($"Updating {summoners.Count} summoners.");
 
