@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data.Enums;
-using ChampionMains.Pyrobot.Reddit;
 using ChampionMains.Pyrobot.Services;
 using ChampionMains.Pyrobot.Util;
 using Microsoft.Azure.WebJobs;
