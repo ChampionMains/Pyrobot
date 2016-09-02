@@ -158,5 +158,10 @@ namespace ChampionMains.Pyrobot.Services
         {
             return _unitOfWork.SaveChangesAsync();
         }
+
+        public int SaveChanges()
+        {
+            return _unitOfWork.SaveChanges();
+        }
     }
 }

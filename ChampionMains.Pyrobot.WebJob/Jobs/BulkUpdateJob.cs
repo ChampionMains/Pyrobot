@@ -58,6 +58,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
         private async Task<int> ExecuteInternal()
         {
+
             // update summoners
             var summoners = await _summonerService.GetSummonersForUpdateAsync();
 
@@ -78,6 +79,8 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 Console.Out.WriteLine($"Pulled {summonerData.Count} summoner infos, {summonerRanks.Count} ranks, "
                     + $"and {summonerMasteries.Count} mastery sets for region {region}.");
 
+                // nothing async below here
+                
                 foreach (var summoner in summonersByRegion)
                 {
                     var data = summonerData[summoner.SummonerId];
@@ -89,10 +92,14 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 }
 
                 Console.Out.WriteLine($"Completed updating {region}.");
-            });
+
+                // save changes per region
+                return _summonerService.SaveChanges();
+            }).ToList();
+
             await Task.WhenAll(summonerTasks);
 
-            var summonerUpdates = await _summonerService.SaveChangesAsync();
+            var summonerUpdates = summonerTasks.Select(t => t.Result).Sum();
             Console.Out.WriteLine($"Updating summoners complete, {summonerUpdates} rows affected.");
 
 
