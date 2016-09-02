@@ -25,6 +25,9 @@ namespace ChampionMains.Pyrobot.Services
         public async Task<IList<Summoner>> GetSummonersForUpdateAsync()
         {
             var staleAfter = DateTimeOffset.Now - _riotUpdateMaxStaleTime;
+
+            Console.Out.WriteLine("Test stale " + staleAfter);
+
             return await _unitOfWork.Summoners.Where(s => s.LastUpdate == null || s.LastUpdate < staleAfter)
                 .Include(s => s.User)
                 .Include(s => s.Rank)

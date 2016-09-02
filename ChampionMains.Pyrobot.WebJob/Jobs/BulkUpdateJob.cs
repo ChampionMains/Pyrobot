@@ -67,7 +67,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             // update summoners
             var summoners = await _summonerService.GetSummonersForUpdateAsync();
 
-            Console.Out.WriteLine("test5");
+            Console.Out.WriteLine("test 5");
 
             Console.Out.WriteLine($"Updating {summoners.Count} summoners.");
 
