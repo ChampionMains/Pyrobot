@@ -22,7 +22,7 @@ namespace ChampionMains.Pyrobot.Services
             _riotUpdateMaxStaleTime = config.RiotUpdateMax;
         }
 
-        public async Task<IList<Summoner>> GetSummonersForUpdateAsync()
+        public IList<Summoner> GetSummonersForUpdateAsync()
         {
             var staleAfter = DateTimeOffset.Now - _riotUpdateMaxStaleTime;
 
@@ -30,10 +30,10 @@ namespace ChampionMains.Pyrobot.Services
 
             try
             {
-                return await _unitOfWork.Summoners.Where(s => s.LastUpdate == null || s.LastUpdate < staleAfter)
+                return _unitOfWork.Summoners.Where(s => s.LastUpdate == null || s.LastUpdate < staleAfter)
                     .Include(s => s.User)
                     .Include(s => s.Rank)
-                    .Include(s => s.ChampionMasteries).ToListAsync();
+                    .Include(s => s.ChampionMasteries).ToList();
             }
             finally
             {
