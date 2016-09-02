@@ -81,7 +81,7 @@ namespace ChampionMains.Pyrobot.Services
 
                 if (champMastery == null)
                 {
-                    //started playing a new champion
+                    // started playing a new champion
                     if (!ValidChampions.Contains((short) updated.ChampionId))
                         continue; // possibly a new champion has been added, and the database needs updating
 
