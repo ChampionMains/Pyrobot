@@ -158,6 +158,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Jobs\ConsoleTestJob.cs" />
     <Compile Include="WebJobConfiguration.cs" />
     <Compile Include="Jobs\BulkUpdateJob.cs" />
     <Compile Include="Jobs\FlairUpdateJob.cs" />

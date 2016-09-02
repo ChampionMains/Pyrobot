@@ -5,5 +5,6 @@
         public const string SummonerUpdate = "summoner-update";
         public const string FlairUpdate = "flair-update";
         public const string BulkUpdate = "bulk-update";
+        public const string ConsoleTest = "console-test";
     }
 }
