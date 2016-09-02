@@ -24,12 +24,31 @@ namespace ChampionMains.Pyrobot.Services
 
         public async Task<IList<Summoner>> GetSummonersForUpdateAsync()
         {
-            var staleAfter = DateTimeOffset.Now - _riotUpdateMaxStaleTime;
+            const int batchSize = 500;
 
-            return await _unitOfWork.Summoners.Where(s => s.LastUpdate == null || s.LastUpdate < staleAfter)
+            var staleAfter = DateTimeOffset.Now - _riotUpdateMaxStaleTime;
+            var result = new List<Summoner>();
+
+            var i = 0;
+            while(true)
+            {
+                var data = await _unitOfWork.Summoners
+                    .Where(s => s.LastUpdate == null || s.LastUpdate < staleAfter)
+                    .OrderBy(s => s.Region)
+                    .Skip(batchSize * i).Take(batchSize)
                     .Include(s => s.User)
                     .Include(s => s.Rank)
-                    .Include(s => s.ChampionMasteries).ToListAsync();
+                    .Include(s => s.ChampionMasteries)
+                    .ToListAsync();
+
+                if (data.Count <= 0)
+                    break;
+
+                result.AddRange(data);
+                i++;
+            }
+
+            return result;
         }
 
         public Summoner AddSummoner(int userId, long summonerId, string region, string name, int profileIconId)
