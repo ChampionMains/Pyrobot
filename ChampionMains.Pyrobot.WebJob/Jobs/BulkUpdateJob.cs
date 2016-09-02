@@ -42,15 +42,10 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             try
             {
                 var task = ExecuteInternal();
-#if DEBUG
-                await task;
-#endif
-#if !DEBUG
                 if (await Task.WhenAny(task, Task.Delay(_timeout)) != task)
                 {
                     throw new TimeoutException($"{nameof(BulkUpdateJob)} timed out ({_timeout})");
                 }
-#endif
             }
             finally
             {
