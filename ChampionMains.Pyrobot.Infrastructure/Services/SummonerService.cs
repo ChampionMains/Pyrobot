@@ -28,16 +28,20 @@ namespace ChampionMains.Pyrobot.Services
 
             Console.Out.WriteLine("test 5 stale " + staleAfter);
 
-            try
-            {
-                return _unitOfWork.Summoners.Where(s => s.LastUpdate == null || s.LastUpdate < staleAfter)
+            var response = _unitOfWork.Summoners.Where(s => s.LastUpdate == null || s.LastUpdate < staleAfter)
                     .Include(s => s.User)
                     .Include(s => s.Rank)
                     .Include(s => s.ChampionMasteries).ToList();
+            
+            Console.Out.WriteLine("test 6 before return");
+
+            try
+            {
+                return response;
             }
             finally
             {
-                Console.Out.WriteLine("test 6");
+                Console.Out.WriteLine("test 6 summoners " + response);
             }
         }
 
