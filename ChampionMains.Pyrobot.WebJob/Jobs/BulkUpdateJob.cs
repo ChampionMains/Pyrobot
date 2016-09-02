@@ -43,7 +43,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
             try
             {
-#if DEBUG
+#if !DEBUG
                 Console.Out.WriteLine("test 3");
                 var task = ExecuteInternal();
 
