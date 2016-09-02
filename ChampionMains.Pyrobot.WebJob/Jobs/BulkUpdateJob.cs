@@ -44,6 +44,9 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             try
             {
                 var task = ExecuteInternal();
+
+                Console.Out.WriteLine("test 3");
+
                 if (await Task.WhenAny(task, Task.Delay(_timeout)) != task)
                 {
                     throw new TimeoutException($"{nameof(BulkUpdateJob)} timed out ({_timeout})");
@@ -59,6 +62,8 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
         private async Task ExecuteInternal()
         {
+            Console.Out.WriteLine("test 4");
+
             // update summoners
             var summoners = await _summonerService.GetSummonersForUpdateAsync();
             Console.Out.WriteLine($"Updating {summoners.Count} summoners.");
