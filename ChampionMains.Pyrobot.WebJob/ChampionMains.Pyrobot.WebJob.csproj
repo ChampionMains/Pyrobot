@@ -160,7 +160,7 @@
   <ItemGroup>
     <Compile Include="Jobs\ConsoleTestJob.cs" />
     <Compile Include="WebJobConfiguration.cs" />
-    <Compile Include="Jobs\BulkUpdateJob2.cs" />
+    <Compile Include="Jobs\BulkUpdateJob.cs" />
     <Compile Include="Jobs\FlairUpdateJob.cs" />
     <Compile Include="Jobs\SummonerUpdateJob.cs" />
     <Compile Include="Program.cs" />

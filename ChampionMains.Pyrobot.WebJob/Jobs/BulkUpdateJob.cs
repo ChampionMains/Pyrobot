@@ -12,7 +12,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
     /// <summary>
     ///     Updates the league standing for a summoner.
     /// </summary>
-    public class BulkUpdateJob2
+    public class BulkUpdateJob
     {
         private static readonly SemaphoreSlim Lock = new SemaphoreSlim(1, 1);
 
@@ -24,7 +24,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
         private readonly TimeSpan _timeout;
 
-        public BulkUpdateJob2(RiotService riotService, SummonerService summonerService,
+        public BulkUpdateJob(RiotService riotService, SummonerService summonerService,
             RedditService redditService, FlairService flairService, WebJobConfiguration config)
         {
             _riotService = riotService;
@@ -36,6 +36,8 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
         public async Task Execute([QueueTrigger(WebJobQueue.BulkUpdate)] string args)
         {
+            Console.Out.WriteLine("test 1");
+
             if (!await Lock.WaitAsync(1000))
                 throw new InvalidOperationException("Lock is not available. Task is already be running.");
 
@@ -44,13 +46,15 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 var task = ExecuteInternal();
                 if (await Task.WhenAny(task, Task.Delay(_timeout)) != task)
                 {
-                    throw new TimeoutException($"{nameof(BulkUpdateJob2)} timed out ({_timeout})");
+                    throw new TimeoutException($"{nameof(BulkUpdateJob)} timed out ({_timeout})");
                 }
             }
             finally
             {
                 Lock.Release();
             }
+
+            Console.Out.WriteLine("test last");
         }
 
         private async Task ExecuteInternal()
