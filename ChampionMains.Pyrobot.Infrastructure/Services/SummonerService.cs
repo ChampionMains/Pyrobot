@@ -26,12 +26,19 @@ namespace ChampionMains.Pyrobot.Services
         {
             var staleAfter = DateTimeOffset.Now - _riotUpdateMaxStaleTime;
 
-            Console.Out.WriteLine("Test stale " + staleAfter);
+            Console.Out.WriteLine("test 4 stale " + staleAfter);
 
-            return await _unitOfWork.Summoners.Where(s => s.LastUpdate == null || s.LastUpdate < staleAfter)
-                .Include(s => s.User)
-                .Include(s => s.Rank)
-                .Include(s => s.ChampionMasteries).ToListAsync();
+            try
+            {
+                return await _unitOfWork.Summoners.Where(s => s.LastUpdate == null || s.LastUpdate < staleAfter)
+                    .Include(s => s.User)
+                    .Include(s => s.Rank)
+                    .Include(s => s.ChampionMasteries).ToListAsync();
+            }
+            finally
+            {
+                Console.Out.WriteLine("test 5");
+            }
         }
 
         public Summoner AddSummoner(int userId, long summonerId, string region, string name, int profileIconId)
