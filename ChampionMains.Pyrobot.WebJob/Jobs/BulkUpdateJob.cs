@@ -58,9 +58,6 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
         private async Task ExecuteInternal()
         {
-            Console.Out.WriteLine("Equal: " + (_summonerService._unitOfWork == _flairService._context));
-
-
             // update summoners
             var summoners = await _summonerService.GetSummonersForUpdateAsync();
 
