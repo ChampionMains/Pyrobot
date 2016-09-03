@@ -51,6 +51,13 @@ namespace ChampionMains.Pyrobot.Services
             return result;
         }
 
+        public IList<Summoner> GetSummonersIncludeDataByUserId(int userId)
+        {
+            return _unitOfWork.Summoners.Where(s => s.UserId == userId)
+                .Include(s => s.Rank)
+                .Include(s => s.ChampionMasteries).ToList();
+        }
+
         public Summoner AddSummoner(int userId, long summonerId, string region, string name, int profileIconId)
         {
             var summoner = _unitOfWork.Summoners.FirstOrDefault(s => s.UserId == userId && s.Region == region && s.SummonerId == summonerId);

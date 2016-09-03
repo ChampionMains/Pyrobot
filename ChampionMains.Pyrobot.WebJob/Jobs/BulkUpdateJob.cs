@@ -58,6 +58,8 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
         private async Task ExecuteInternal()
         {
+            Console.Out.WriteLine("Equal: " + (_summonerService._unitOfWork == _flairService._context));
+
 
             // update summoners
             var summoners = await _summonerService.GetSummonersForUpdateAsync();
@@ -77,10 +79,10 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 var summonerMasteries = await _riotService.GetChampionMasteries(region, summonerIds);
 
                 Console.Out.WriteLine($"Pulled {summonerData.Count} summoner infos, {summonerRanks.Count} ranks, "
-                    + $"and {summonerMasteries.Count} mastery sets for region {region}.");
+                                      + $"and {summonerMasteries.Count} mastery sets for region {region}.");
 
                 // nothing async below here
-                
+
                 foreach (var summoner in summonersByRegion)
                 {
                     var data = summonerData[summoner.SummonerId];
@@ -88,7 +90,8 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                     summonerRanks.TryGetValue(summoner.SummonerId, out rank);
                     var mastery = summonerMasteries[summoner.SummonerId];
 
-                    _summonerService.UpdateSummoner(summoner, region, data.Name, data.ProfileIconId, rank?.Item1, rank?.Item2, mastery);
+                    _summonerService.UpdateSummoner(summoner, region, data.Name, data.ProfileIconId, rank?.Item1,
+                        rank?.Item2, mastery);
                 }
 
                 Console.Out.WriteLine($"Completed updating {region}.");
@@ -102,20 +105,38 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             var summonerUpdates = summonerTasks.Select(t => t.Result).Sum();
             Console.Out.WriteLine($"Updating summoners complete, {summonerUpdates} rows affected.");
 
-
             // update flairs
             var flairs = await _flairService.GetFlairsForUpdateAsync();
             Console.Out.WriteLine($"Updating {flairs.Count} flairs.");
 
-            var flairTasks = flairs.GroupBy(f => f.SubredditId, f => f).Select(async flairsBySubreddit =>
+            // pull existing flairs
+            var getFlairTasks = flairs.GroupBy(f => f.SubredditId, f => f).Select(async flairsBySubreddit =>
             {
-                var subreddit = flairsBySubreddit.First().Subreddit;
+                var subreddit = _flairService.GetSubreddit(flairsBySubreddit.Key);
 
                 Console.Out.WriteLine($"Updating flairs from subreddit {subreddit.Name}.");
 
                 var existingFlairs = await _redditService.GetFlairsAsync(subreddit.Name);
-
+                
                 Console.Out.WriteLine($"Pulled {existingFlairs.Count} existing flairs from subreddit {subreddit.Name}.");
+
+                //return Tuple.Create(subreddit, flairsBySubreddit, existingFlairs);
+                return new
+                {
+                    subreddit,
+                    flairsBySubreddit,
+                    existingFlairs
+                };
+            }).ToList();
+
+            await Task.WhenAll(getFlairTasks);
+
+            // update flairs in database, generate new flairs to send to reddit
+            var setFlairTasks = getFlairTasks.Select(t => t.Result).Select(t =>
+            {
+                var subreddit = t.subreddit;
+                var flairsBySubreddit = t.flairsBySubreddit;
+                var existingFlairs = t.existingFlairs;
 
                 var updatedFlairs = flairsBySubreddit.Select(flair =>
                 {
@@ -126,22 +147,32 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                     if (existingFlair != null)
                     {
                         // sanitize if the flair has the mastery text class to extract just the text portion
-                        flair.FlairText = existingFlair.CssClass?.Contains(FlairService.MasteryTextClass) ?? false
+                        flair.FlairText = existingFlair.Text != null &&
+                                          (existingFlair.CssClass?.Contains(FlairService.MasteryTextClass) ?? false)
                             ? FlairUtil.SanitizeFlairTextLeadingMastery(existingFlair.Text)
                             : existingFlair.Text;
                     }
                     flair.LastUpdate = DateTimeOffset.Now;
 
-                    var newFlair = _flairService.GenerateFlair(flair.User, subreddit, flair.RankEnabled, flair.ChampionMasteryEnabled,
-                        flair.PrestigeEnabled, flair.ChampionMasteryTextEnabled, existingFlair?.Text, existingFlair?.CssClass);
+                    var userSummoners = _summonerService.GetSummonersIncludeDataByUserId(flair.UserId);
+
+                    var newFlair = _flairService.GenerateFlair(flair.User.Name, userSummoners, subreddit,
+                        flair.RankEnabled, flair.ChampionMasteryEnabled,
+                        flair.PrestigeEnabled, flair.ChampionMasteryTextEnabled, existingFlair?.Text,
+                        existingFlair?.CssClass);
 
                     return newFlair;
                 }).ToList();
 
-                return await _redditService.SetFlairsAsync(subreddit.Name, updatedFlairs);
-            }).ToList();
+                return new
+                {
+                    subreddit,
+                    updatedFlairs
+                };
 
-            await Task.WhenAll(flairTasks);
+            }).Select(async x => await _redditService.SetFlairsAsync(x.subreddit.Name, x.updatedFlairs));
+
+            await Task.WhenAll(setFlairTasks);
 
             var flairUpdates = await _flairService.SaveChangesAsync();
             Console.Out.WriteLine($"Updating flairs complete, {flairUpdates} rows affected.");
