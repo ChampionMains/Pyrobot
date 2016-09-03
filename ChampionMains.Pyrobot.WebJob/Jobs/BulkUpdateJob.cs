@@ -145,7 +145,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                     {
                         // sanitize if the flair has the mastery text class to extract just the text portion
                         flair.FlairText = existingFlair.Text != null &&
-                                          (existingFlair.CssClass?.Contains(FlairService.MasteryTextClass) ?? false)
+                            (existingFlair.CssClass?.Contains(FlairService.MasteryTextClass) ?? false)
                             ? FlairUtil.SanitizeFlairTextLeadingMastery(existingFlair.Text)
                             : existingFlair.Text;
                     }
@@ -155,7 +155,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
                     var newFlair = _flairService.GenerateFlair(flair.User.Name, userSummoners, subreddit,
                         flair.RankEnabled, flair.ChampionMasteryEnabled,
-                        flair.PrestigeEnabled, flair.ChampionMasteryTextEnabled, existingFlair?.Text,
+                        flair.PrestigeEnabled, flair.ChampionMasteryTextEnabled, flair.FlairText,
                         existingFlair?.CssClass);
 
                     return newFlair;
