@@ -2,6 +2,9 @@
 layout: default
 title: Changelog
 changes:
+  2016-09-02:
+    - Fixed several issues that were causing flairs to behave weirdly and/or not automatically update. Issues
+      have been occuring over the past week or so.
   2016-08-27:
     - Added exact champion mastery text.
     - Added prestiges up to 5 million (previous max was 2 million).
