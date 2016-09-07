@@ -58,6 +58,8 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
         private async Task ExecuteInternal()
         {
+            const int summonerSaveBatchSize = 400;
+
             // update summoners
             var summoners = await _summonerService.GetSummonersForUpdateAsync();
 
@@ -79,22 +81,29 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                                       + $"and {summonerMasteries.Count} mastery sets for region {region}.");
 
                 // nothing async below here
+                // save summoners in batches
+                var changes = summonersByRegion
+                    .Select((summoner, i) => new {summoner, g = i / summonerSaveBatchSize}).GroupBy(x => x.g, x => x.summoner)
+                    .Select(summonerBatch =>
+                    {
+                        foreach (var summoner in summonersByRegion)
+                        {
+                            var data = summonerData[summoner.SummonerId];
+                            Tuple<Tier, byte> rank;
+                            summonerRanks.TryGetValue(summoner.SummonerId, out rank);
+                            var mastery = summonerMasteries[summoner.SummonerId];
 
-                foreach (var summoner in summonersByRegion)
-                {
-                    var data = summonerData[summoner.SummonerId];
-                    Tuple<Tier, byte> rank;
-                    summonerRanks.TryGetValue(summoner.SummonerId, out rank);
-                    var mastery = summonerMasteries[summoner.SummonerId];
+                            _summonerService.UpdateSummoner(summoner, region, data.Name, data.ProfileIconId, rank?.Item1,
+                                rank?.Item2, mastery);
+                        }
 
-                    _summonerService.UpdateSummoner(summoner, region, data.Name, data.ProfileIconId, rank?.Item1,
-                        rank?.Item2, mastery);
-                }
+                        // save changes per batch/region
+                        return _summonerService.SaveChanges();
+                    }).Sum();
 
                 Console.Out.WriteLine($"Completed updating {region}.");
 
-                // save changes per region
-                return _summonerService.SaveChanges();
+                return changes;
             }).ToList();
 
             await Task.WhenAll(summonerTasks);
