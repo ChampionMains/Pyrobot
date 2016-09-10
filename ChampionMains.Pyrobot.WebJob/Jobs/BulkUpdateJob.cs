@@ -66,7 +66,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             Console.Out.WriteLine($"Updating {summoners.Count} summoners.");
 
             // update each region asynchronously
-            var summonerTasks = summoners.GroupBy(s => s.Region, s => s).Select(async summonersByRegion =>
+            var getSummonerTasks = summoners.GroupBy(s => s.Region, s => s).Select(async summonersByRegion =>
             {
                 var region = summonersByRegion.Key;
                 var summonerIds = summonersByRegion.Select(s => s.SummonerId).ToList();
@@ -80,36 +80,55 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 Console.Out.WriteLine($"Pulled {summonerData.Count} summoner infos, {summonerRanks.Count} ranks, "
                                       + $"and {summonerMasteries.Count} mastery sets for region {region}.");
 
-                // nothing async below here
-                // save summoners in batches
-                var changes = summonersByRegion
-                    .Select((summoner, i) => new {summoner, g = i / summonerSaveBatchSize}).GroupBy(x => x.g, x => x.summoner)
-                    .Select(summonerBatch =>
-                    {
-                        foreach (var summoner in summonersByRegion)
+                return new
+                {
+                    summonersByRegion,
+                    summonerData,
+                    summonerRanks,
+                    summonerMasteries
+                };
+            }).ToList();
+
+            await Task.WhenAll(getSummonerTasks);
+
+            var summonerUpdates = getSummonerTasks.Select(t => t.Result).Select(t =>
+            {
+                var summonersByRegion = t.summonersByRegion;
+                var region = summonersByRegion.Key;
+
+                var summonerData = t.summonerData;
+                var summonerRanks = t.summonerRanks;
+                var summonerMasteries = t.summonerMasteries;
+
+                var changes =
+                    summonersByRegion.Select((summoner, i) => new {summoner, g = i/summonerSaveBatchSize})
+                        .GroupBy(x => x.g, x => x.summoner)
+                        .Select(summonerBatch =>
                         {
-                            var data = summonerData[summoner.SummonerId];
-                            Tuple<Tier, byte> rank;
-                            summonerRanks.TryGetValue(summoner.SummonerId, out rank);
-                            var mastery = summonerMasteries[summoner.SummonerId];
+                            foreach (var summoner in summonersByRegion)
+                            {
+                                var data = summonerData[summoner.SummonerId];
+                                Tuple<Tier, byte> rank;
+                                summonerRanks.TryGetValue(summoner.SummonerId, out rank);
+                                var mastery = summonerMasteries[summoner.SummonerId];
 
-                            _summonerService.UpdateSummoner(summoner, region, data.Name, data.ProfileIconId, rank?.Item1,
-                                rank?.Item2, mastery);
-                        }
+                                _summonerService.UpdateSummoner(summoner, region, data.Name, data.ProfileIconId,
+                                    rank?.Item1,
+                                    rank?.Item2, mastery);
+                            }
 
-                        // save changes per batch/region
-                        return _summonerService.SaveChanges();
-                    }).Sum();
+                            // save changes per batch/region
+                            return _summonerService.SaveChanges();
+                        }).Sum();
 
                 Console.Out.WriteLine($"Completed updating {region}.");
 
                 return changes;
-            }).ToList();
+            }).Sum();
 
-            await Task.WhenAll(summonerTasks);
-
-            var summonerUpdates = summonerTasks.Select(t => t.Result).Sum();
             Console.Out.WriteLine($"Updating summoners complete, {summonerUpdates} rows affected.");
+
+
 
             // update flairs
             var flairs = await _flairService.GetFlairsForUpdateAsync();
@@ -126,7 +145,6 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 
                 Console.Out.WriteLine($"Pulled {existingFlairs.Count} existing flairs from subreddit {subreddit.Name}.");
 
-                //return Tuple.Create(subreddit, flairsBySubreddit, existingFlairs);
                 return new
                 {
                     subreddit,
