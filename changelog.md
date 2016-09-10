@@ -2,8 +2,10 @@
 layout: default
 title: Changelog
 changes:
+  2016-09-10:
+    - Fixed an issue cuasing hourly update job to sometimes fail.
   2016-09-07:
-    - Fixed issue causing hourly update job to sometimes fail.
+    - Fixed an issue causing hourly update job to sometimes fail.
   2016-09-02:
     - Fixed several issues that were causing flairs to behave weirdly and/or not automatically update. Issues
       have been occuring over the past week or so.
