@@ -133,13 +133,13 @@ namespace ChampionMains.Pyrobot.Services
 
         public async Task<bool> SetFlairsAsync(string subreddit, ICollection<UserFlairParameter> flairs)
         {
-            var errorResultTasks = flairs.Select((flair, i) => new {flair, g = i / MaxFlairUpdateSize}).GroupBy(x => x.g)
-                .Select(async group =>
+            var errorResultTasks = flairs.Select((flair, i) => new {flair, g = i / MaxFlairUpdateSize}).GroupBy(x => x.g, x => x.flair)
+                .Select(async groupedFlairs =>
                 {
                     var uri = $"{BaseUri}/r/{subreddit}/api/flaircsv";
                     var data = new[]
                     {
-                        new KeyValuePair<string, string>("flair_csv", ResolveBulkFlairParameter(flairs))
+                        new KeyValuePair<string, string>("flair_csv", ResolveBulkFlairParameter(groupedFlairs))
                     };
                     var result = await _requester.PostAsync(uri, data);
                     return result.Any(token => token["errors"].Any());
