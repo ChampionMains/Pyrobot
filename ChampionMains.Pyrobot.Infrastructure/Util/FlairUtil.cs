@@ -5,7 +5,7 @@ namespace ChampionMains.Pyrobot.Util
     public static class FlairUtil
     {
         // regex to remove things that are (or look like) numbers
-        private const string FlairTextLeadingMasteryRegex = @"^\s*[\d,Ol]+\b";
+        private const string FlairTextLeadingMasteryRegex = @"^\s*[\d,Ol]+\s*\b";
 
         public static bool CheckFlairTextLeadingMastery(string text)
         {
