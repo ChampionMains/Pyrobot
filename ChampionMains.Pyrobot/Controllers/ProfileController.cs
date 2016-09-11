@@ -8,6 +8,7 @@ using ChampionMains.Pyrobot.Services;
 namespace ChampionMains.Pyrobot.Controllers
 {
     [Authorize]
+    [RoutePrefix("profile")]
     public class ProfileController : Controller
     {
         public RiotService Riot { get; set; }

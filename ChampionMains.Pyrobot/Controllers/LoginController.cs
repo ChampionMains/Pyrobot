@@ -9,6 +9,7 @@ using Microsoft.Owin.Security;
 
 namespace ChampionMains.Pyrobot.Controllers
 {
+    [RoutePrefix("login")]
     public class LoginController : Controller
     {
         private readonly UserService _users;
