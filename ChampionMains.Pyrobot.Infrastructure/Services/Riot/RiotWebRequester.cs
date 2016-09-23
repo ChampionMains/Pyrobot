@@ -175,6 +175,9 @@ namespace ChampionMains.Pyrobot.Services.Riot
         {
             var requestUri = GetRequestUri(region, innerUri, relativeUri, parameters, usePlatform);
             var attempts = MaxAttempts;
+
+            var failedRequests = new List<RiotHttpException>();
+
             while (attempts-- > 0)
             {
                 var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
@@ -202,8 +205,9 @@ namespace ChampionMains.Pyrobot.Services.Riot
                         case 429:
                         case 500:
                         case 503:
-                            // 429 too many requests (rate limtied) ... but we can continue
+                            // 429 too many requests (rate limtied) ... but we can continue. Throttler should be updated with the rate limit
                             // 500 and 503 indicate an error on Riot's API. If the attempts aren't depleted, we'll requeue and try again.
+                            failedRequests.Add(new RiotHttpException(response.StatusCode, $"Retryable request: {requestUri}. Attempt: {attempts + 1}/{MaxAttempts}."));
                             if (attempts > 0)
                             {
                                 await Task.Delay(RetryInterval);
@@ -212,7 +216,7 @@ namespace ChampionMains.Pyrobot.Services.Riot
                             // 403 blacklisted (temp or permanent) -- shouldn't happen hopefully
                         default:
                             await Console.Error.WriteLineAsync($"{requestUri} failed with status code {response.StatusCode}.");
-                            throw new RiotHttpException(response.StatusCode, requestUri);
+                            throw new RiotHttpException(response.StatusCode, $"Unimplemented status code response. Request: {requestUri}.");
                     }
                 }
                 finally
@@ -220,7 +224,7 @@ namespace ChampionMains.Pyrobot.Services.Riot
                     throttler.Lock.Release();
                 }
             }
-            throw new RiotHttpException("Failed to communicate with Riot API");
+            throw new RiotHttpException($"Failed to communicate with Riot API. Attempts: {MaxAttempts}. Request: {requestUri}.", new AggregateException(failedRequests));
         }
     }
 }
