@@ -64,10 +64,17 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             // update summoners
             var summoners = await _summonerService.GetSummonersForUpdateAsync();
 
+            var duplicates = summoners.GroupBy(i => new { i.SummonerId, i.Region })
+                .Where(g => g.Count() > 1).ToList();
+            if (duplicates.Count > 0)
+            {
+                throw new InvalidOperationException("Duplicate summonerIds: " + string.Join(", ", duplicates));
+            }
+
             Console.Out.WriteLine($"Updating {summoners.Count} summoners.");
 
             // update each region asynchronously
-            var getSummonerTasks = summoners.GroupBy(s => s.Region, s => s).Select(async summonersByRegion =>
+            var getSummonerTasks = summoners.GroupBy(s => s.Region).Select(async summonersByRegion =>
             {
                 var region = summonersByRegion.Key;
                 var summonerIds = summonersByRegion.Select(s => s.SummonerId).ToList();
