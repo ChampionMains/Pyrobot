@@ -47,7 +47,7 @@ namespace ChampionMains.Pyrobot.Services
             }
             catch (ArgumentException e)
             {
-                throw new ArgumentException("Summoner Ids: " + summonerIds.ToString(), e);
+                throw new ArgumentException($"Summoner Ids: [{string.Join(", ", summonerIds)}]", e);
             }
         }
 
