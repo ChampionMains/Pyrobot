@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -70,6 +71,11 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             {
                 var region = summonersByRegion.Key;
                 var summonerIds = summonersByRegion.Select(s => s.SummonerId).ToList();
+
+                if (new HashSet<long>(summonerIds).Count != summonerIds.Count)
+                {
+                    throw new InvalidOperationException("summonerIds has duplicate values");
+                }
 
                 Console.Out.WriteLine($"Updating {summonerIds.Count} summoners from region {region}");
 
