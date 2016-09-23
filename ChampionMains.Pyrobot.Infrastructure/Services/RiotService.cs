@@ -32,7 +32,7 @@ namespace ChampionMains.Pyrobot.Services
             return GetSummonersFromResponse(await WebRequester.SendRequestAsync(region, uri)).First();
         }
 
-        public async Task<IDictionary<long, Summoner>> GetSummoners(string region, IEnumerable<long> summonerIds)
+        public async Task<IDictionary<long, Summoner>> GetSummoners(string region, ICollection<long> summonerIds)
         {
             var data = summonerIds.Select((id, i) => new {id, g = i/MaxSummonerRequestSize}).GroupBy(x => x.g)
                 .Select(async group =>
@@ -41,7 +41,14 @@ namespace ChampionMains.Pyrobot.Services
                     return GetSummonersFromResponse(await WebRequester.SendRequestAsync(region, uri));
                 }).ToList();
             await Task.WhenAll(data);
-            return data.SelectMany(d => d.Result).ToDictionary(s => s.Id, s => s);
+            try
+            {
+                return data.SelectMany(d => d.Result).ToDictionary(s => s.Id, s => s);
+            }
+            catch (ArgumentException e)
+            {
+                throw new ArgumentException("Summoner Ids: " + summonerIds.ToString(), e);
+            }
         }
 
         public async Task<Tuple<Tier, byte>> GetRank(string region, long summonerId)
@@ -50,7 +57,7 @@ namespace ChampionMains.Pyrobot.Services
             return GetRanksFromResponse(await WebRequester.SendRequestAsync(region, uri))?.First().Value;
         }
 
-        public async Task<IDictionary<long, Tuple<Tier, byte>>> GetRanks(string region, IEnumerable<long> summonerIds)
+        public async Task<IDictionary<long, Tuple<Tier, byte>>> GetRanks(string region, ICollection<long> summonerIds)
         {
             var data = summonerIds.Select((id, i) => new {id, g = i/MaxLeagueRequestSize}).GroupBy(x => x.g)
                 .Select(async group =>
@@ -71,7 +78,7 @@ namespace ChampionMains.Pyrobot.Services
         }
 
         public async Task<IDictionary<long, ICollection<ChampionMastery>>> GetChampionMasteries(string region,
-            IEnumerable<long> summonerIds)
+            ICollection<long> summonerIds)
         {
             var data = summonerIds.ToDictionary(id => id, async id => await GetChampionMastery(region, id));
             await Task.WhenAll(data.Values);
