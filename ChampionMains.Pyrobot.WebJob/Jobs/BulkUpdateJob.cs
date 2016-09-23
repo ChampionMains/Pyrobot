@@ -68,7 +68,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 .Where(g => g.Count() > 1).ToList();
             if (duplicates.Count > 0)
             {
-                throw new InvalidOperationException("Duplicate summonerIds: " + string.Join(", ", duplicates));
+                throw new InvalidOperationException("Duplicate summonerIds: " + string.Join(", ", duplicates.Select(g => "[" + string.Join(", ", g))));
             }
 
             Console.Out.WriteLine($"Updating {summoners.Count} summoners.");
