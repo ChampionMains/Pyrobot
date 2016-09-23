@@ -20,10 +20,10 @@ namespace ChampionMains.Pyrobot.Controllers
         }
 
 
-        [Route("{userName}")]
-        public ActionResult Detail(string userName)
-        {
-            return View();
-        }
+        //[Route("{userName}")]
+        //public ActionResult Detail(string userName)
+        //{
+        //    return View();
+        //}
     }
 }

@@ -34,6 +34,11 @@ namespace ChampionMains.Pyrobot.Controllers
             return View(ViewModel);
         }
 
+        public ActionResult FlairDisplay(string subreddit)
+        {
+            return View((object) subreddit);
+        }
+
         [HttpPost]
         public async Task<ActionResult> Register(SummonerModel model)
         {

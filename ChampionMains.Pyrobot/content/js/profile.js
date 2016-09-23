@@ -160,6 +160,10 @@
                 }, 5000);
             });
         };
+
+        $scope.iFrameUrl = function(subreddit) {
+            return window.flairdisplayUrl + '?subreddit=' + subreddit;
+        }
     });
 
     app.controller('DeleteController', function($scope, ajax, modal) {
@@ -253,4 +257,10 @@
             }
         };
     });
+
+
+    window.iFrameResize = function(iframe) {
+        iframe.width = iframe.contentWindow.document.body.scrollWidth;
+        iframe.height = iframe.contentWindow.document.body.scrollHeight;
+    };
 })(window.app);
