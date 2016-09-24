@@ -2,6 +2,8 @@
 layout: default
 title: Changelog
 changes:
+  2016-09-24:
+    - Moved site to [flairs.championmains.com](http://flairs.championmains.com/).
   2016-09-23:
     - Fixed an issue that was causing the horly update job to fail after 2016-09-20.
   2016-09-10:
