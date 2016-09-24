@@ -39,5 +39,10 @@ namespace ChampionMains.Pyrobot.Data.Models
         public virtual SummonerRank Rank { get; set; }
 
         public virtual ICollection<SummonerChampionMastery> ChampionMasteries { get; set; }
+
+        public override string ToString()
+        {
+            return $"{{Summoner {Id}: {Region}/{SummonerId}}}";
+        }
     }
 }

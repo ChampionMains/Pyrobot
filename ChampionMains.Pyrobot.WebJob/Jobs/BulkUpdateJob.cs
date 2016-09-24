@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -63,13 +64,25 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             // update summoners
             var summoners = await _summonerService.GetSummonersForUpdateAsync();
 
+            var duplicates = summoners.GroupBy(i => new { i.SummonerId, i.Region })
+                .Where(g => g.Count() > 1).ToList();
+            if (duplicates.Count > 0)
+            {
+                throw new InvalidOperationException("Duplicate summonerIds: " + string.Join(", ", duplicates.Select(g => "[" + string.Join(", ", g))));
+            }
+
             Console.Out.WriteLine($"Updating {summoners.Count} summoners.");
 
             // update each region asynchronously
-            var getSummonerTasks = summoners.GroupBy(s => s.Region, s => s).Select(async summonersByRegion =>
+            var getSummonerTasks = summoners.GroupBy(s => s.Region).Select(async summonersByRegion =>
             {
                 var region = summonersByRegion.Key;
                 var summonerIds = summonersByRegion.Select(s => s.SummonerId).ToList();
+
+                if (new HashSet<long>(summonerIds).Count != summonerIds.Count)
+                {
+                    throw new InvalidOperationException("summonerIds has duplicate values");
+                }
 
                 Console.Out.WriteLine($"Updating {summonerIds.Count} summoners from region {region}");
 

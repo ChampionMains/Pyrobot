@@ -35,6 +35,7 @@ namespace ChampionMains.Pyrobot.Services
                 var data = await _unitOfWork.Summoners
                     .Where(s => s.LastUpdate == null || s.LastUpdate < staleAfter)
                     .OrderBy(s => s.Region)
+                    .ThenBy(s => s.Id)
                     .Skip(batchSize * i).Take(batchSize)
                     .Include(s => s.User)
                     .Include(s => s.Rank)
