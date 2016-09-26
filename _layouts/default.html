@@ -3,13 +3,27 @@
   <head>
     <meta charset="utf-8">
     <title>/r/ChampionMains Flairs - {{ page.title }}</title>
+    <script type="text/javascript">
+      var redirectRegex = /(?<=.)(\.(html)?\/?|\/+)$/;
+      if (redirectRegex.test(window.location.pathname)) {
+        console.log(window.location.pathname);
+        var parts = window.location.href.split(window.location.pathname);
+        window.location.replace(parts[0] + window.location.pathname.replace(redirectRegex, '') + parts[1]);
+      }
+    </script>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/darkly/bootstrap.min.css">
     <link rel="stylesheet" href="css/styles.css">
   </head>
   <body>
     <header class="container text-center">
       <h1><a href="http://championmains-pyrobot.azurewebsites.net/">/r/ChampionMains Flairs</a></h1>
-      <h4>{{ page.title }}</h4>
+      <ul>
+        {% for link in site.navigation %}
+          <li {% if page.url contains link.url and link.url != '/' or page.url == link.url %}class="active"{% endif %}>
+            <a href="{{ link.url }}" title="{{ link.title }}">{{ link.text }}</a>
+          </li>
+        {% endfor %}
+      </ul>
     </header>
     <div class="container content">{{ content }}</div>
     <hr />

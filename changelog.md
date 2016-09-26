@@ -2,8 +2,10 @@
 layout: default
 title: Changelog
 changes:
+  2016-09-26:
+    - Updated the navigation of [docs.championmains.com](http://docs.championmains.com/) and added a [donation page](donate).
   2016-09-24:
-    - Moved site to [flairs.championmains.com](http://flairs.championmains.com/).
+    - Moved site to [flairs.championmains.com](http://flairs.championmains.com/), and this documentation site to [docs.championmains.com](http://docs.championmains.com/).
   2016-09-23:
     - Fixed an issue that was causing the horly update job to fail after 2016-09-20.
   2016-09-10:

@@ -1,0 +1,7 @@
+navigation:
+- text: Documentation
+  url: /
+- text: Changelog
+  url: /changelog
+- text: Support
+  url: /support

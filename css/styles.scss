@@ -10,6 +10,26 @@ body {
   }
 }
 
+header ul {
+  list-style-type: none;
+  padding: 0;
+  
+  li {
+    display: inline;
+    font-size: 19px;
+    margin-bottom: 10.5px;
+    font-weight: 400;
+    line-height: 1.1;
+    
+    &:not(:first-child)::before {
+      content: " | "
+    }
+    &.active a {
+      color: #fff;
+    }
+  }
+}
+
 .content {
   padding-left: 45px;
   h1, h2, hr {
@@ -35,6 +55,10 @@ blockquote {
     line-height: 70%;
     z-index: -1;
   }
+}
+
+code {
+  background-color: #ddd;
 }
 
 h2 {
