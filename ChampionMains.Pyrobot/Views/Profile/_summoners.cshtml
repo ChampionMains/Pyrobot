@@ -95,12 +95,14 @@
             </td>
             <td>
                 <span class="mastery" ng-class="'mastery-' + api.champions[subreddit.championId].level" title="Level {{ api.champions[subreddit.championId].level }}"></span>
-                <span class="prestige" ng-class="'prestige-' + (api.champions[subreddit.championId].prestige / 1000)"></span>
+                <span class="prestige" ng-if="subreddit.prestigeEnabled" ng-class="'prestige-' + (api.champions[subreddit.championId].prestige / 1000)"></span>
                 
-                <span class="hint" ng-tooltip="right,Prestige progress">
+                <span class="hint" ng-if="subreddit.prestigeEnabled" ng-tooltip="right,Prestige progress">
                     <span ng-bind="api.champions[subreddit.championId].points | number"></span> /
                     <span ng-bind="api.champions[subreddit.championId].nextPrestige | prestige"></span>
                 </span>
+                
+                <span ng-if="!subreddit.prestigeEnabled" ng-bind="api.champions[subreddit.championId].points | number"></span>
             </td>
         </tr>
     </tbody>
