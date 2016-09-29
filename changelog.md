@@ -5,7 +5,7 @@ changes:
   2016-09-28:
     - Removed prestige progress from subreddits that don't have prestige enabled in the website UI.
   2016-09-26:
-    - Updated the navigation of [docs.championmains.com](http://docs.championmains.com/) and added a [donation page](donate).
+    - Updated the navigation of [docs.championmains.com](http://docs.championmains.com/) and added a [support page](support).
   2016-09-24:
     - Moved site to [flairs.championmains.com](http://flairs.championmains.com/), and this documentation site to [docs.championmains.com](http://docs.championmains.com/).
   2016-09-23:
