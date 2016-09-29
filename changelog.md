@@ -2,6 +2,8 @@
 layout: default
 title: Changelog
 changes:
+  2016-09-28:
+    - Removed prestige progress from subreddits that don't have prestige enabled in the website UI.
   2016-09-26:
     - Updated the navigation of [docs.championmains.com](http://docs.championmains.com/) and added a [donation page](donate).
   2016-09-24:
