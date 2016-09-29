@@ -2,6 +2,8 @@
 layout: default
 title: Changelog
 changes:
+  2016-09-29:
+    - Fixed configuration setting that was causing the hourly update job to not run after site was moved on 2016/09/24.
   2016-09-28:
     - Removed prestige progress from subreddits that don't have prestige enabled in the website UI.
   2016-09-26:
@@ -9,7 +11,7 @@ changes:
   2016-09-24:
     - Moved site to [flairs.championmains.com](http://flairs.championmains.com/), and this documentation site to [docs.championmains.com](http://docs.championmains.com/).
   2016-09-23:
-    - Fixed an issue that was causing the horly update job to fail after 2016-09-20.
+    - Fixed an issue that was causing the hourly update job to fail after 2016-09-20.
   2016-09-10:
     - Fixed an issue causing hourly update job to sometimes fail.
   2016-09-07:
