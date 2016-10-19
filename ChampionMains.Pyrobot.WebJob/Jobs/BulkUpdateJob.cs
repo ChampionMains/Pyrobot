@@ -11,7 +11,7 @@ using Microsoft.Azure.WebJobs;
 namespace ChampionMains.Pyrobot.WebJob.Jobs
 {
     /// <summary>
-    ///     Updates the league standing for a summoner.
+    ///     Updates everything that needs to be updated
     /// </summary>
     public class BulkUpdateJob
     {
