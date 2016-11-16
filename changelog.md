@@ -2,6 +2,8 @@
 layout: default
 title: Changelog
 changes:
+  2016-11-15:
+    - Fixed a bug causing updates of summoners ranked in flex queue to fail.
   2016-09-29:
     - Fixed configuration setting that was causing the hourly update job to not run after site was moved on 2016/09/24.
   2016-09-28:
