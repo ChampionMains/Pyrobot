@@ -2,6 +2,8 @@
 layout: default
 title: Changelog
 changes:
+  2016-11-23:
+    - There has been some downtime over the past few days (403 not available). Hopefully some changes today will help stop that from happening so often.
   2016-11-15:
     - Fixed a bug causing updates of summoners ranked in flex queue to fail.
   2016-09-29:
