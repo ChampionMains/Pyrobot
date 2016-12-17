@@ -2,6 +2,9 @@
 layout: default
 title: Changelog
 changes:
+  2016-12-17:
+    - The hourly update job has been failing since around 2016-11-11. A rewrite and fix are in progress. If you want to manually update your flair, you can go to
+      [flairs.championmains.com](http://flairs.championmains.com/) and press the refresh buttons next to each summoner and the green checkmarks next to each subreddit.
   2016-11-23:
     - There has been some downtime over the past few days (403 not available). Hopefully some changes today will help stop that from happening so often.
   2016-11-15:
