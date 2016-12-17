@@ -216,7 +216,7 @@ namespace ChampionMains.Pyrobot.Services.Riot
                             // 403 blacklisted (temp or permanent) -- shouldn't happen hopefully
                         default:
                             await Console.Error.WriteLineAsync($"{requestUri} failed with status code {response.StatusCode}.");
-                            throw new RiotHttpException(response.StatusCode, $"Unimplemented status code response. Request: {requestUri}.");
+                            throw new RiotHttpException(response.StatusCode, $"Unimplemented status code response: {response.StatusCode}. Request: {requestUri}.");
                     }
                 }
                 finally

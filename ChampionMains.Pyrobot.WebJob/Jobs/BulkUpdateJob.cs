@@ -11,7 +11,7 @@ using Microsoft.Azure.WebJobs;
 namespace ChampionMains.Pyrobot.WebJob.Jobs
 {
     /// <summary>
-    ///     Updates the league standing for a summoner.
+    ///     Updates everything that needs to be updated
     /// </summary>
     public class BulkUpdateJob
     {
@@ -42,14 +42,16 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
             try
             {
-                var task = ExecuteInternal();
-                var result = await Task.WhenAny(task, Task.Delay(_timeout));
+                var cancellationTokenSource = new CancellationTokenSource(_timeout);
 
-                if (result != task)
-                    throw new TimeoutException($"{nameof(BulkUpdateJob)} timed out ({_timeout})");
-
-                if (result.Exception != null)
-                    throw result.Exception;
+                try
+                {
+                    await ExecuteInternal(cancellationTokenSource.Token);
+                }
+                catch (OperationCanceledException e)
+                {
+                    throw new TimeoutException($"{nameof(BulkUpdateJob)} timed out ({_timeout})", e);
+                }
             }
             finally
             {
@@ -57,7 +59,19 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             }
         }
 
-        private async Task ExecuteInternal()
+        private async Task ExecuteInternal(CancellationToken token)
+        {
+            // cancellation only occurs during the http api calls.
+            // once cancelled, the task no longer issues more http api calls,
+            // but will wait for existing calls to finish,
+            // and will continue to save the updated data into the database.
+
+            // TODO: different timeout for summoner data and flairs
+            await UpdateSummonerData(token);
+            await UpdateFlairs(token);
+        }
+
+        private async Task UpdateSummonerData(CancellationToken token)
         {
             const int summonerSaveBatchSize = 400;
 
@@ -86,10 +100,22 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
                 Console.Out.WriteLine($"Updating {summonerIds.Count} summoners from region {region}");
 
+                // arduous aync work
                 var summonerData = await _riotService.GetSummoners(region, summonerIds);
+                if (token.IsCancellationRequested)
+                {
+                    Console.Out.WriteLine($"Updating region {region} cancelled.");
+                    return null;
+                }
                 var summonerRanks = await _riotService.GetRanks(region, summonerIds);
+                if (token.IsCancellationRequested)
+                {
+                    Console.Out.WriteLine($"Updating region {region} cancelled.");
+                    return null;
+                }
                 var summonerMasteries = await _riotService.GetChampionMasteries(region, summonerIds);
 
+                // done with async work
                 Console.Out.WriteLine($"Pulled {summonerData.Count} summoner infos, {summonerRanks.Count} ranks, "
                                       + $"and {summonerMasteries.Count} mastery sets for region {region}.");
 
@@ -106,6 +132,10 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
             var summonerUpdates = getSummonerTasks.Select(t => t.Result).Select(t =>
             {
+                // task cancelled (or propagate null errors)
+                if (t == null && token.IsCancellationRequested)
+                    return 0;
+
                 var summonersByRegion = t.summonersByRegion;
                 var region = summonersByRegion.Key;
 
@@ -131,6 +161,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                             }
 
                             // save changes per batch/region
+                            // database call
                             return _summonerService.SaveChanges();
                         }).Sum();
 
@@ -139,10 +170,12 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 return changes;
             }).Sum();
 
-            Console.Out.WriteLine($"Updating summoners complete, {summonerUpdates} rows affected.");
+            Console.Out.WriteLine($"Updating summoners {(token.IsCancellationRequested ? "interrupted" : "complete")}, {summonerUpdates} rows affected.");
+            token.ThrowIfCancellationRequested();
+        }
 
-
-
+        private async Task UpdateFlairs(CancellationToken token)
+        {
             // update flairs
             var flairs = await _flairService.GetFlairsForUpdateAsync();
             Console.Out.WriteLine($"Updating {flairs.Count} flairs.");
@@ -150,12 +183,16 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             // pull existing flairs
             var getFlairTasks = flairs.GroupBy(f => f.SubredditId, f => f).Select(async flairsBySubreddit =>
             {
+                // cancel if need
+                if (token.IsCancellationRequested)
+                    return null;
+
                 var subreddit = _flairService.GetSubreddit(flairsBySubreddit.Key);
 
                 Console.Out.WriteLine($"Updating flairs from subreddit {subreddit.Name}.");
 
                 var existingFlairs = await _redditService.GetFlairsAsync(subreddit.Name);
-                
+
                 Console.Out.WriteLine($"Pulled {existingFlairs.Count} existing flairs from subreddit {subreddit.Name}.");
 
                 return new
@@ -171,6 +208,10 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             // update flairs in database, generate new flairs to send to reddit
             var setFlairTasks = getFlairTasks.Select(t => t.Result).Select(t =>
             {
+                // task cancelled (or propagate null errors)
+                if (t == null && token.IsCancellationRequested)
+                    return null;
+
                 var subreddit = t.subreddit;
                 var flairsBySubreddit = t.flairsBySubreddit;
                 var existingFlairs = t.existingFlairs;
@@ -207,12 +248,21 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                     updatedFlairs
                 };
 
-            }).Select(async x => await _redditService.SetFlairsAsync(x.subreddit.Name, x.updatedFlairs));
+            }).Select(async x =>
+            {
+                // cancel if x is null OR task cancelled
+                if (x == null || token.IsCancellationRequested)
+                    return;
+
+                await _redditService.SetFlairsAsync(x.subreddit.Name, x.updatedFlairs);
+            });
 
             await Task.WhenAll(setFlairTasks);
 
             var flairUpdates = await _flairService.SaveChangesAsync();
-            Console.Out.WriteLine($"Updating flairs complete, {flairUpdates} rows affected.");
+            Console.Out.WriteLine($"Updating flairs {(token.IsCancellationRequested ? "interrupted" : "complete")}, {flairUpdates} rows affected.");
+
+            token.ThrowIfCancellationRequested();
         }
     }
 }

@@ -26,7 +26,8 @@ namespace ChampionMains.Pyrobot.Services
         {
             var staleAfter = DateTimeOffset.Now - _flairUpdateMaxStaleTime;
             return await _context.SubredditUserFlairs.Where(s => s.LastUpdate == null || s.LastUpdate < staleAfter)
-                    .Include(x => x.User).ToListAsync();
+                    .Include(x => x.User).OrderBy(x => x.SubredditId) // note: non-deterministic order
+                    .Take(2500).ToListAsync(); // limit to updating 2,500 flairs per hour
         }
 
 
