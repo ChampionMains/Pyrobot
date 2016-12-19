@@ -5,8 +5,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Services;
+using ChampionMains.Pyrobot.Startup;
 using ChampionMains.Pyrobot.Util;
 using Microsoft.Azure.WebJobs;
+using RiotSharp;
+using RiotSharp.LeagueEndpoint;
 
 namespace ChampionMains.Pyrobot.WebJob.Jobs
 {
@@ -17,7 +20,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
     {
         private static readonly SemaphoreSlim Lock = new SemaphoreSlim(1, 1);
 
-        private readonly RiotService _riotService;
+        private readonly RiotApi _riotService;
         private readonly SummonerService _summonerService;
 
         private readonly RedditService _redditService;
@@ -25,7 +28,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
         private readonly TimeSpan _timeout;
 
-        public BulkUpdateJob(RiotService riotService, SummonerService summonerService,
+        public BulkUpdateJob(RiotApi riotService, SummonerService summonerService,
             RedditService redditService, FlairService flairService, WebJobConfiguration config)
         {
             _riotService = riotService;
@@ -90,7 +93,9 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             // update each region asynchronously
             var getSummonerTasks = summoners.GroupBy(s => s.Region).Select(async summonersByRegion =>
             {
-                var region = summonersByRegion.Key;
+                RiotSharp.Region region;
+                if (!Enum.TryParse(summonersByRegion.Key.ToLowerInvariant(), out region))
+                    throw new InvalidOperationException("Bad region encountered while updating: " + summonersByRegion.Key);
                 var summonerIds = summonersByRegion.Select(s => s.SummonerId).ToList();
 
                 if (new HashSet<long>(summonerIds).Count != summonerIds.Count)
@@ -101,29 +106,44 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 Console.Out.WriteLine($"Updating {summonerIds.Count} summoners from region {region}");
 
                 // arduous aync work
-                var summonerData = await _riotService.GetSummoners(region, summonerIds);
+                // general data
+                var summonerData = (await _riotService.GetSummonersAsync(region, summonerIds)).ToDictionary(s => s.Id, s => s);
                 if (token.IsCancellationRequested)
                 {
                     Console.Out.WriteLine($"Updating region {region} cancelled.");
                     return null;
                 }
-                var summonerRanks = await _riotService.GetRanks(region, summonerIds);
+                // leauges
+                Dictionary<long, List<League>> summonerLeagues = null;
+                try
+                {
+                    summonerLeagues = await _riotService.GetLeaguesAsync(region, summonerIds);
+                }
+                catch (RiotSharpException e)
+                {
+                    if (!e.Message.StartsWith("404")) // indicates summoners are unranked
+                        throw;
+                }
                 if (token.IsCancellationRequested)
                 {
                     Console.Out.WriteLine($"Updating region {region} cancelled.");
                     return null;
                 }
-                var summonerMasteries = await _riotService.GetChampionMasteries(region, summonerIds);
+                // champion mastery
+                var summonerMasteryTasks = summonerIds.ToDictionary(s => s, s => _riotService.GetAllChampionsMasteryEntriesAsync(
+                    RegionPlatformUtil.ConvertRegionToPlatform(region), s));
+                await Task.WhenAll(summonerMasteryTasks.Values);
+                var summonerMasteries = summonerMasteryTasks.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Result);
 
                 // done with async work
-                Console.Out.WriteLine($"Pulled {summonerData.Count} summoner infos, {summonerRanks.Count} ranks, "
+                Console.Out.WriteLine($"Pulled {summonerData.Count} summoner infos, {summonerLeagues.Count} leagues, "
                                       + $"and {summonerMasteries.Count} mastery sets for region {region}.");
 
                 return new
                 {
                     summonersByRegion,
                     summonerData,
-                    summonerRanks,
+                    summonerLeagues,
                     summonerMasteries
                 };
             }).ToList();
@@ -140,7 +160,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 var region = summonersByRegion.Key;
 
                 var summonerData = t.summonerData;
-                var summonerRanks = t.summonerRanks;
+                var summonerLeagues = t.summonerLeagues;
                 var summonerMasteries = t.summonerMasteries;
 
                 var changes =
@@ -151,13 +171,15 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                             foreach (var summoner in summonersByRegion)
                             {
                                 var data = summonerData[summoner.SummonerId];
-                                Tuple<Tier, byte> rank;
-                                summonerRanks.TryGetValue(summoner.SummonerId, out rank);
+
+                                List<League> leagues;
+                                summonerLeagues.TryGetValue(summoner.SummonerId, out leagues);
+                                var rank = RankUtil.GetHighestLeague(leagues, summoner.SummonerId);
+
                                 var mastery = summonerMasteries[summoner.SummonerId];
 
                                 _summonerService.UpdateSummoner(summoner, region, data.Name, data.ProfileIconId,
-                                    rank?.Item1,
-                                    rank?.Item2, mastery);
+                                    rank.Item1, rank.Item2, mastery);
                             }
 
                             // save changes per batch/region

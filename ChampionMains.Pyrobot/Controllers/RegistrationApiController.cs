@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
@@ -6,22 +7,21 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using ChampionMains.Pyrobot.Attributes;
 using ChampionMains.Pyrobot.Models;
-using ChampionMains.Pyrobot.Riot;
 using ChampionMains.Pyrobot.Services;
-using ChampionMains.Pyrobot.Services.Riot;
+using RiotSharp;
 
 namespace ChampionMains.Pyrobot.Controllers
 {
     [WebApiAuthorize]
     public class RegistrationApiController : ApiController
     {
-        protected RiotService Riot { get; set; }
+        protected RiotApi Riot { get; set; }
         protected SummonerService Summoners { get; set; }
         protected UserService Users { get; set; }
         protected ValidationService Validation { get; set; }
         protected WebJobService WebJob { get; set; }
 
-        public RegistrationApiController(RiotService riotService, SummonerService summonerService,
+        public RegistrationApiController(RiotApi riotService, SummonerService summonerService,
                 UserService userService, ValidationService validationService, WebJobService webJobService)
         {
             Riot = riotService;
@@ -44,7 +44,11 @@ namespace ChampionMains.Pyrobot.Controllers
                     return StatusCode(HttpStatusCode.Unauthorized);
 
                 // Summoner MUST exist.
-                var summoner = await FindSummonerAsync(model.Region, model.SummonerName);
+                var cacheKey = string.Concat(model.Region, ":", model.SummonerName).ToLowerInvariant();
+                Region region;
+                if (!Enum.TryParse(model.Region.ToLowerInvariant(), out region))
+                    return BadRequest("Unknown region: " + model.Region);
+                var summoner = await CacheUtil.GetItemAsync(cacheKey, () => Riot.GetSummonerAsync(region, model.SummonerName));
                 if (summoner == null)
                     return Conflict("Summoner not found.");
 
@@ -57,14 +61,9 @@ namespace ChampionMains.Pyrobot.Controllers
                     code = await Validation.GenerateAsync(User.Identity.Name, summoner.Id, model.Region, user.Name)
                 });
             }
-            catch (RiotHttpException e)
+            catch (RiotSharpException e)
             {
-                switch ((int) e.StatusCode)
-                {
-                    case 500:
-                    case 503:
-                        return Conflict("Error communicating with Riot (Service unavailable)");
-                }
+                //TODO
                 throw;
             }
         }
@@ -81,8 +80,12 @@ namespace ChampionMains.Pyrobot.Controllers
                 if (user == null)
                     return StatusCode(HttpStatusCode.Unauthorized);
 
+                Region region;
+                if (!Enum.TryParse(model.Region.ToLowerInvariant(), out region))
+                    return BadRequest("Invalid region.");
+
                 // Summoner MUST exist.
-                var riotSummoner = await Riot.GetSummoner(model.Region, model.SummonerName);
+                var riotSummoner = await Riot.GetSummonerAsync(region, model.SummonerName);
                 if (riotSummoner == null)
                     return Conflict("Summoner not found.");
 
@@ -90,7 +93,7 @@ namespace ChampionMains.Pyrobot.Controllers
                 if (await Summoners.IsSummonerRegisteredAsync(model.Region, model.SummonerName))
                     return Conflict("Summoner is already registered.");
 
-                var runePages = await Riot.GetRunePages(model.Region, riotSummoner.Id);
+                var runePages = (await Riot.GetRunePagesAsync(region, new List<long>(1) { riotSummoner.Id } )).First().Value;
                 var code = await Validation.GenerateAsync(User.Identity.Name, riotSummoner.Id, model.Region, user.Name);
                 
                 if (!runePages.Any(page => string.Equals(page.Name, code, StringComparison.OrdinalIgnoreCase)))
@@ -110,14 +113,9 @@ namespace ChampionMains.Pyrobot.Controllers
 
                 return Ok();
             }
-            catch (RiotHttpException e)
+            catch (RiotSharpException e)
             {
-                switch ((int) e.StatusCode)
-                {
-                    case 500:
-                    case 503:
-                        return Conflict("Error communicating with Riot (Service unavailable)");
-                }
+                //TODO
                 throw;
             }
         }
@@ -125,12 +123,6 @@ namespace ChampionMains.Pyrobot.Controllers
         private IHttpActionResult Conflict(string message)
         {
             return Content(HttpStatusCode.Conflict, new HttpError(message));
-        }
-
-        private Task<Summoner> FindSummonerAsync(string region, string summonerName)
-        {
-            return CacheUtil.GetItemAsync($"{region}:{summonerName}".ToLowerInvariant(),
-                () => Riot.GetSummoner(region, summonerName));
         }
     }
 }

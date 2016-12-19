@@ -1,21 +1,24 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using ChampionMains.Pyrobot.Models;
 using ChampionMains.Pyrobot.Services;
+using RiotSharp;
+using RiotSharp.SummonerEndpoint;
 
 namespace ChampionMains.Pyrobot.Controllers
 {
     [Authorize]
     public class ProfileController : Controller
     {
-        public RiotService Riot { get; set; }
+        public RiotApi Riot { get; set; }
         public SummonerService Summoners { get; set; }
         public UserService Users { get; set; }
         public ProfileViewModel ViewModel { get; set; }
 
-        public ProfileController(UserService userService, RiotService riotService, SummonerService summonerService)
+        public ProfileController(UserService userService, RiotApi riotService, SummonerService summonerService)
         {
             Users = userService;
             Riot = riotService;
@@ -38,26 +41,21 @@ namespace ChampionMains.Pyrobot.Controllers
         {
             ViewModel = await CreateViewModelAsync();
             if (!ModelState.IsValid)
-            {
                 return Error(ModelState);
-            }
 
             // Rule: Summoner must not be registered to a User.
             if (await Summoners.IsSummonerRegisteredAsync(model.Region, model.SummonerName))
-            {
                 return Error("Summoner is already registered.");
-            }
 
             // Rule: Summoner must exist.
             var cacheKey = string.Concat(model.Region, ":", model.SummonerName).ToLowerInvariant();
-            var summoner = await CacheUtil.GetItemAsync(cacheKey,
-                () => Riot.GetSummoner(model.Region, model.SummonerName));
+            Region region;
+            if (!Enum.TryParse(model.Region.ToLowerInvariant(), out region))
+                return Error("Unknown region: " + model.Region);
+            var summoner = await CacheUtil.GetItemAsync(cacheKey, () => Riot.GetSummonerAsync(region, model.SummonerName));
 
             if (summoner == null)
-            {
                 return Error("Summoner not found.");
-            }
-
             return Success();
         }
 

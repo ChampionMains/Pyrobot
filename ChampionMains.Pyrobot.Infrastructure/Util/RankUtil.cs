@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Data.Models;
+using RiotSharp;
 
 namespace ChampionMains.Pyrobot
 {
@@ -37,5 +39,59 @@ namespace ChampionMains.Pyrobot
         {
             return PrestigeLevels.FirstOrDefault(p => p > points);
         }
+
+        public static Tuple<byte, byte> GetHighestLeague(List<RiotSharp.LeagueEndpoint.League> leagues, long summonerId)
+        {
+            var league = leagues?.Where(l => l.Queue == Queue.RankedSolo5x5 || l.Queue == Queue.RankedFlexSR)
+                                    .OrderBy(l => l.Tier, RankUtil.TierComparer)
+                                    .FirstOrDefault();
+            byte? division = null;
+            if (league != null)
+            {
+                division = RankUtil.DivisionNumeralToByte(
+                    league.Entries.First(e => e.PlayerOrTeamId.Equals(summonerId.ToString())).Division);
+            }
+            return Tuple.Create(RankUtil.TierToByte(league?.Tier), division ?? 0);
+        }
+
+        public static byte DivisionNumeralToByte(string numeral)
+        {
+            numeral = numeral.ToUpperInvariant();
+            if (numeral[0] == 'I')
+            {
+                if (numeral.Length != 2) // I, III
+                    return (byte) numeral.Length;
+                if (numeral[1] == 'I') // II
+                    return 2;
+                return 4; // IV
+            }
+            return 5;
+        }
+
+        public static byte TierToByte(RiotSharp.LeagueEndpoint.Enums.Tier? tier)
+        {
+            switch (tier)
+            {
+                case RiotSharp.LeagueEndpoint.Enums.Tier.Challenger:
+                    return 7;
+                case RiotSharp.LeagueEndpoint.Enums.Tier.Master:
+                    return 6;
+                case RiotSharp.LeagueEndpoint.Enums.Tier.Diamond:
+                    return 5;
+                case RiotSharp.LeagueEndpoint.Enums.Tier.Platinum:
+                    return 4;
+                case RiotSharp.LeagueEndpoint.Enums.Tier.Gold:
+                    return 3;
+                case RiotSharp.LeagueEndpoint.Enums.Tier.Silver:
+                    return 2;
+                case RiotSharp.LeagueEndpoint.Enums.Tier.Bronze:
+                    return 1;
+                default: // unranked, null
+                    return 0;
+            }
+        }
+
+        public static readonly IComparer<RiotSharp.LeagueEndpoint.Enums.Tier> TierComparer = Comparer<RiotSharp.LeagueEndpoint.Enums.Tier>.Create(
+            (a, b) => TierToByte(b) - TierToByte(a)); // Reversed to be in correct order.
     }
 }

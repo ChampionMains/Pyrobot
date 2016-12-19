@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data;
 using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Data.Models;
-using ChampionMains.Pyrobot.Riot;
-using Summoner = ChampionMains.Pyrobot.Data.Models.Summoner;
+using RiotSharp.ChampionMasteryEndpoint;
 
 namespace ChampionMains.Pyrobot.Services
 {
@@ -95,13 +94,13 @@ namespace ChampionMains.Pyrobot.Services
         }
 
         public void UpdateSummoner(Summoner summoner, string region, string name, int profileIconId,
-            Tier? tier, byte? division, ICollection<ChampionMastery> championMastery)
+            byte? tier, byte? division, ICollection<ChampionMastery> championMastery)
         {
             summoner.Name = name;
             summoner.ProfileIconId = profileIconId;
 
             summoner.Rank.Division = division ?? 0;
-            summoner.Rank.Tier = (byte?) tier ?? 0;
+            summoner.Rank.Tier = tier ?? 0;
 
             foreach (var updated in championMastery)
             {
