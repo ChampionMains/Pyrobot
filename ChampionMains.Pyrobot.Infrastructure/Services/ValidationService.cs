@@ -9,7 +9,7 @@ namespace ChampionMains.Pyrobot.Services
         public Task<string> GenerateAsync(string principal, long summonerId, string region, string userName)
         {
             var nonce = string.Join(":", principal, summonerId, region, userName).ToLowerInvariant();
-            return Task.FromResult(ToHexString(Hash(nonce)));
+            return Task.FromResult(HashToString(Hash(nonce)));
         }
 
         public async Task<bool> ValidateAsync(string principal, long summonerId, string region, string userName, string code)
@@ -23,10 +23,11 @@ namespace ChampionMains.Pyrobot.Services
             return s.Aggregate<char, uint>(5381, (current, c) => (current << 5) + current + c);
         }
 
-        private static string ToHexString(uint value)
+        private static string HashToString(uint value)
         {
-            var bytes = BitConverter.GetBytes(value);
-            return string.Join("", bytes.Select(x => x.ToString("X2")));
+            if (value < 10000)
+                value += 10230;
+            return value.ToString();
         }
     }
 }
