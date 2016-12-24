@@ -29,7 +29,7 @@ namespace ChampionMains.Pyrobot.Services
                     .Where(f => f.LastUpdate == null || f.LastUpdate < staleAfter)
                     .OrderBy(f => f.LastUpdate)
                     .ThenBy(f => f.Id)
-                    .Take(1000) // limit to updating 1,000 flairs per hour (arbitrary)
+                    .Take(2000) // limit to 2,000 arbitrary
                     .OrderBy(f => f.SubredditId)
                     .Include(f => f.User)
                     .ToListAsync();
