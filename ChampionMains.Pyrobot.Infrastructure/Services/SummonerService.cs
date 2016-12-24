@@ -24,6 +24,7 @@ namespace ChampionMains.Pyrobot.Services
 
         public async Task<IList<Summoner>> GetSummonersForUpdateAsync()
         {
+            const int maxSummoners = 2000;
             const int batchSize = 500;
 
             var staleAfter = DateTimeOffset.Now - _riotUpdateMaxStaleTime;
@@ -34,9 +35,10 @@ namespace ChampionMains.Pyrobot.Services
             {
                 var data = await _unitOfWork.Summoners
                     .Where(s => s.LastUpdate == null || s.LastUpdate < staleAfter)
-                    .OrderBy(s => s.Region)
+                    .OrderBy(s => s.LastUpdate)
                     .ThenBy(s => s.Id)
                     .Skip(batchSize * i).Take(batchSize)
+                    .OrderBy(s => s.Region)
                     .Include(s => s.User)
                     .Include(s => s.Rank)
                     .Include(s => s.ChampionMasteries)
@@ -47,6 +49,9 @@ namespace ChampionMains.Pyrobot.Services
 
                 result.AddRange(data);
                 i++;
+
+                if (result.Count >= maxSummoners)
+                    break;
             }
 
             return result;
