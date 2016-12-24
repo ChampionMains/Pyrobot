@@ -34,6 +34,7 @@ namespace ChampionMains.Pyrobot.Data.Models
         public int SubredditId { get; set; }
         
         [Index("IX_Subreddit_User", 2, IsUnique = true)]
+        [Index("IX_User")]
         [ForeignKey("User")]
         [Required]
         public int UserId { get; set; }
