@@ -3,5 +3,7 @@ navigation:
   url: /
 - text: Changelog
   url: /changelog
-- text: Support
-  url: /support
+- text: Donate
+  url: /donate
+- text: Add a Sub
+  url: /subguide
