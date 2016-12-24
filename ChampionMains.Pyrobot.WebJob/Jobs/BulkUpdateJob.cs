@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ChampionMains.Pyrobot.Data;
 using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Services;
 using ChampionMains.Pyrobot.Util;
@@ -25,14 +26,18 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
         private readonly TimeSpan _timeout;
 
+        private readonly UnitOfWork _unitOfWork;
+
         public BulkUpdateJob(RiotService riotService, SummonerService summonerService,
-            RedditService redditService, FlairService flairService, WebJobConfiguration config)
+            RedditService redditService, FlairService flairService, WebJobConfiguration config,
+            UnitOfWork unitOfWork)
         {
             _riotService = riotService;
             _summonerService = summonerService;
             _redditService = redditService;
             _flairService = flairService;
             _timeout = config.TimeoutBulkUpdate;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task Execute([QueueTrigger(WebJobQueue.BulkUpdate)] string args)
@@ -46,6 +51,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
                 try
                 {
+                    _unitOfWork.Configuration.AutoDetectChangesEnabled = false;
                     await ExecuteInternal(cancellationTokenSource.Token);
                 }
                 catch (OperationCanceledException e)
