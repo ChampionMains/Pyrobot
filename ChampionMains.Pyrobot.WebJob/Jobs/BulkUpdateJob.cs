@@ -79,7 +79,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
         private async Task UpdateSummonerData(CancellationToken token)
         {
-            const int summonerSaveBatchSize = 400;
+            const int summonerSaveBatchSize = 200;
 
             // update summoners
             var summoners = await _summonerService.GetSummonersForUpdateAsync();
@@ -168,6 +168,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
                             // save changes per batch/region
                             // database call
+                            _unitOfWork.ChangeTracker.DetectChanges();
                             return _summonerService.SaveChanges();
                         }).Sum();
 
@@ -265,6 +266,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
             await Task.WhenAll(setFlairTasks);
 
+            _unitOfWork.ChangeTracker.DetectChanges();
             var flairUpdates = await _flairService.SaveChangesAsync();
             Console.Out.WriteLine($"Updating flairs {(token.IsCancellationRequested ? "interrupted" : "complete")}, {flairUpdates} rows affected.");
 
