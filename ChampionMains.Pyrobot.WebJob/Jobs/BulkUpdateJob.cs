@@ -51,7 +51,6 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
                 try
                 {
-                    _unitOfWork.Configuration.AutoDetectChangesEnabled = false;
                     await ExecuteInternal(cancellationTokenSource.Token);
                 }
                 catch (OperationCanceledException e)
@@ -79,7 +78,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
         private async Task UpdateSummonerData(CancellationToken token)
         {
-            const int summonerSaveBatchSize = 200;
+            const int summonerSaveBatchSize = 100;
 
             // update summoners
             var summoners = await _summonerService.GetSummonersForUpdateAsync();
