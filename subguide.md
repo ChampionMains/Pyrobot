@@ -77,15 +77,12 @@ focus in on the details and crop out anything unnecessary.
 Make sure to save image as `png`s and to name them as follows. If the images is a remake
 of an existing flair, go to your subreddit's /about/flair page and look up the old flair's
 CSS class, and give the image that name. For example, something like `Threshz0` might be
-Thresh's passive icon, so name the new version `Threshz0.png`. Doing this will prevent
+Thresh's passive icon, so name the new vers ion `Threshz0.png`. Doing this will prevent
 people's flairs from resetting -- the script uses the image names to generate the
 corresponding CSS class name.
 
 If the flair image is new, name it something **concise** and **descriptive**, like `r.png`
 for an ult icon or `arcade.png` for an arcade skin.
-
-If you already have an existing flair for that image and are familiar with CSS, you
-can look up the flair's CSS class in the mod flair menu.
 
 
 ## Sending Images
