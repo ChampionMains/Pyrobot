@@ -71,7 +71,7 @@ namespace ChampionMains.Pyrobot.WebJob
 
             public T CreateInstance<T>()
             {
-                return (T) _container.GetInstance(typeof(T));
+                return (T)_container.GetInstance(typeof(T));
             }
         }
     }
