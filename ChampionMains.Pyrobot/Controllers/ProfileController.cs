@@ -8,7 +8,6 @@ using ChampionMains.Pyrobot.Services;
 namespace ChampionMains.Pyrobot.Controllers
 {
     [Authorize]
-    [RoutePrefix("profile")]
     public class ProfileController : Controller
     {
         public RiotService Riot { get; set; }
@@ -32,11 +31,6 @@ namespace ChampionMains.Pyrobot.Controllers
                 return RedirectToAction("index", "login");
             }
             return View(ViewModel);
-        }
-
-        public ActionResult FlairDisplay(string subreddit)
-        {
-            return View((object) subreddit);
         }
 
         [HttpPost]
