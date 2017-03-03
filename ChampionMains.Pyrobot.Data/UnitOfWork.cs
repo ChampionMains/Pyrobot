@@ -13,6 +13,7 @@ namespace ChampionMains.Pyrobot.Data
         public IDbSet<Summoner> Summoners { get; set; }
         public IDbSet<User> Users { get; set; }
         public IDbSet<Champion> Champions { get; set; }
+        public IDbSet<SummonerChampionMastery> SummonerChampionMasteries { get; set; }
 
         public UnitOfWork()
         {
