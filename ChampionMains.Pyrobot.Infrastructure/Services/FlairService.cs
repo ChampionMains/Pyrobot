@@ -25,9 +25,14 @@ namespace ChampionMains.Pyrobot.Services
         public async Task<ICollection<SubredditUserFlair>> GetFlairsForUpdateAsync()
         {
             var staleAfter = DateTimeOffset.Now - _flairUpdateMaxStaleTime;
-            return await _context.SubredditUserFlairs.Where(s => s.LastUpdate == null || s.LastUpdate < staleAfter)
-                    .Include(x => x.User).OrderBy(x => x.SubredditId) // note: non-deterministic order
-                    .Take(2500).ToListAsync(); // limit to updating 2,500 flairs per hour
+            return await _context.SubredditUserFlairs
+                    .Where(f => f.LastUpdate == null || f.LastUpdate < staleAfter)
+                    .OrderBy(f => f.LastUpdate)
+                    .ThenBy(f => f.Id)
+                    .Take(1000) // limit to 1,000 arbitrary
+                    .OrderBy(f => f.SubredditId)
+                    .Include(f => f.User)
+                    .ToListAsync();
         }
 
 

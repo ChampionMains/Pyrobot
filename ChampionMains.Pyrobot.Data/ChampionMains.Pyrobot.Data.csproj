@@ -195,6 +195,10 @@
     <Compile Include="Migrations\201608290358477_created-recorddatetime.Designer.cs">
       <DependentUpon>201608290358477_created-recorddatetime.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612240740515_subreddituserflair-userid-index.cs" />
+    <Compile Include="Migrations\201612240740515_subreddituserflair-userid-index.Designer.cs">
+      <DependentUpon>201612240740515_subreddituserflair-userid-index.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Champion.cs" />
     <Compile Include="Models\CreatedModelBase.cs" />
@@ -303,6 +307,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201608290358477_created-recorddatetime.resx">
       <DependentUpon>201608290358477_created-recorddatetime.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612240740515_subreddituserflair-userid-index.resx">
+      <DependentUpon>201612240740515_subreddituserflair-userid-index.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

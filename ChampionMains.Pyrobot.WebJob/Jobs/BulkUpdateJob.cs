@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ChampionMains.Pyrobot.Data;
 using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Services;
 using ChampionMains.Pyrobot.Util;
@@ -25,14 +26,18 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
         private readonly TimeSpan _timeout;
 
+        private readonly UnitOfWork _unitOfWork;
+
         public BulkUpdateJob(RiotService riotService, SummonerService summonerService,
-            RedditService redditService, FlairService flairService, WebJobConfiguration config)
+            RedditService redditService, FlairService flairService, WebJobConfiguration config,
+            UnitOfWork unitOfWork)
         {
             _riotService = riotService;
             _summonerService = summonerService;
             _redditService = redditService;
             _flairService = flairService;
             _timeout = config.TimeoutBulkUpdate;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task Execute([QueueTrigger(WebJobQueue.BulkUpdate)] string args)
@@ -73,7 +78,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
         private async Task UpdateSummonerData(CancellationToken token)
         {
-            const int summonerSaveBatchSize = 400;
+            const int summonerSaveBatchSize = 100;
 
             // update summoners
             var summoners = await _summonerService.GetSummonersForUpdateAsync();
@@ -162,6 +167,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
                             // save changes per batch/region
                             // database call
+                            _unitOfWork.ChangeTracker.DetectChanges();
                             return _summonerService.SaveChanges();
                         }).Sum();
 
@@ -259,6 +265,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
             await Task.WhenAll(setFlairTasks);
 
+            _unitOfWork.ChangeTracker.DetectChanges();
             var flairUpdates = await _flairService.SaveChangesAsync();
             Console.Out.WriteLine($"Updating flairs {(token.IsCancellationRequested ? "interrupted" : "complete")}, {flairUpdates} rows affected.");
 
