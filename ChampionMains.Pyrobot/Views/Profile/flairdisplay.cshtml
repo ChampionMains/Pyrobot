@@ -1,0 +1,24 @@
+﻿@model string
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>flairdisplay</title>
+    <link rel="stylesheet" href="~/content/css/flairdisplay.css"/>
+    <link rel="stylesheet" href="//www.reddit.com/r/@Model/stylesheet.css" />
+</head>
+<body>
+<span id="flair" class="flair flair-mastery-7 flair-rank-diamond" title="sample text">sample text</span>
+<script type="text/javascript">
+    function set(mastery, prestige, rank, masteryText, text) {
+        var flair = document.getElementById('flair');
+        flair.title = text;
+        flair.innerHTML = text;
+    }
+</script>
+</body>
+</html>

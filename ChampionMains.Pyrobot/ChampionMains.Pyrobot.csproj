@@ -277,13 +277,14 @@
     <Compile Include="Attributes\WebApiAuthorizeAttribute.cs" />
     <Compile Include="CacheUtil.cs" />
     <Compile Include="Controllers\LoginController.cs" />
-    <Compile Include="Controllers\BulkUpdateApiController.cs" />
     <Compile Include="Controllers\ProfileApiController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
+    <Compile Include="Controllers\PublicApiController.cs" />
     <Compile Include="Controllers\RegistrationApiController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\LeaderboardViewModels.cs" />
     <Compile Include="Models\ProfileApiViewModels.cs" />
     <Compile Include="Models\ProfileViewModel.cs" />
     <Compile Include="Models\FlairViewModel.cs" />
