@@ -2,10 +2,8 @@
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.UI.WebControls;
 using ChampionMains.Pyrobot.Data;
 using ChampionMains.Pyrobot.Models;
 using ChampionMains.Pyrobot.Services;
@@ -15,11 +13,13 @@ namespace ChampionMains.Pyrobot.Controllers
     public class PublicApiController : ApiController
     {
         private readonly WebJobService _webJob;
+        private readonly UserService _users;
         private readonly UnitOfWork _unitOfWork;
 
-        public PublicApiController(WebJobService webJob, UnitOfWork unitOfWork)
+        public PublicApiController(WebJobService webJob, UserService users, UnitOfWork unitOfWork)
         {
             _webJob = webJob;
+            _users = users;
             _unitOfWork = unitOfWork;
         }
 
@@ -29,6 +29,22 @@ namespace ChampionMains.Pyrobot.Controllers
         {
             await _webJob.QueueBulkUpdate(Request.Headers.UserAgent.ToString());
             return true;
+        }
+
+        [Route("api/user-summoners")]
+        public async Task<List<SummonerInfoViewModel>> GetUserSummoners(string username)
+        {
+            var user = await _users.FindAsync(username);
+            if (user == null)
+                throw new HttpResponseException(HttpStatusCode.NoContent);
+
+            return _unitOfWork.Summoners.Where(s => s.UserId == user.Id)
+                .Select(s => new SummonerInfoViewModel
+                {
+                    Name = s.Name,
+                    Region = s.Region,
+                    Id = s.SummonerId
+                }).ToList();
         }
 
         [Route("api/leaderboard")]
