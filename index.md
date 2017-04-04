@@ -8,7 +8,7 @@ title: Documentation
   - ##### [What is this?](#what)
   - ##### [Who made this?](#maker)
   - ##### [Do we really need this?](#need)
-  - ##### [Will my flair update when I change change rank/mastery?](#automation)
+  - ##### [Will my flair update when I change rank/mastery?](#automation)
   - ##### [What is a /r/ChampionMains subreddit?](#championmains)
   - ##### [What is a Mastery Points Leaderboard?](#leaderboard)
   - ##### [How was this made?](#how-made)
@@ -53,7 +53,7 @@ version of [this service](https://summonerschool.reddit.com/comments/3z0bzu/) ma
 The site creates a way to recognize high-achieving members of ChampionMains subreddits, through
 “Mastery Points Leaderboards” and special flairs, without creating a hastle for moderators.
 
-## Will my flair update when I change change rank/mastery?
+## Will my flair update when I change rank/mastery?
 {:id="automation" name="automation"}
 
 Yes. Every hour, the bot runs a job that looks for flairs that haven't been updated in six hours,
