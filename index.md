@@ -16,6 +16,7 @@ title: Documentation
   - ##### [I don’t want this. I’m happy with the flairs as they are.](#plsno)
   - ##### [I like being able to show my rank, but I don’t want to show my mastery level...(or vice-versa)](#options)
   - ##### [Is it secure?](#security)
+  - ##### [Help! I've deleted my Reddit account and can't re-verify my summoner, what do I do?](#deleted-account)
 - #### [Usage Manual](#manual)
   - ##### [Signing-in](#login)
   - ##### [Adding Summoners](#add-summoner)
@@ -136,6 +137,12 @@ The source is available [at GitHub](https://github.com/championmains/Pyrobot). I
 issues or have a suggestion, submit it to the
 [issues page](https://github.com/championmains/Pyrobot/issues). If you would like to contribute
 directly, fell free to send a pull request.
+
+## Help! I've deleted my Reddit account and can't re-verify my summoner, what do I do?
+{:id="deleted-account" name="deleted-account"}
+
+Message [/u/LugnutsK](https://reddit.com/u/LugnutsK) with your *summoner name* and *region*. He'll
+fix that shit.
 
 * * *
 
