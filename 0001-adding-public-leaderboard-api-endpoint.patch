@@ -1,0 +1,169 @@
+From 5907c4d26e91021576f352203891b8f6c8f3f85b Mon Sep 17 00:00:00 2001
+From: Mingwei <Mingwei.Samuel@gmail.com>
+Date: Fri, 3 Mar 2017 13:59:50 -0800
+Subject: [PATCH] adding public leaderboard api endpoint
+
+---
+ ChampionMains.Pyrobot.Data/UnitOfWork.cs           |  1 +
+ ChampionMains.Pyrobot/ChampionMains.Pyrobot.csproj |  3 +-
+ .../Controllers/BulkUpdateApiController.cs         | 24 ---------
+ .../Controllers/PublicApiController.cs             | 57 ++++++++++++++++++++++
+ .../Models/LeaderboardViewModels.cs                | 17 +++++++
+ 5 files changed, 77 insertions(+), 25 deletions(-)
+ delete mode 100644 ChampionMains.Pyrobot/Controllers/BulkUpdateApiController.cs
+ create mode 100644 ChampionMains.Pyrobot/Controllers/PublicApiController.cs
+ create mode 100644 ChampionMains.Pyrobot/Models/LeaderboardViewModels.cs
+
+diff --git a/ChampionMains.Pyrobot.Data/UnitOfWork.cs b/ChampionMains.Pyrobot.Data/UnitOfWork.cs
+index ff145dd..1afa203 100644
+--- a/ChampionMains.Pyrobot.Data/UnitOfWork.cs
++++ b/ChampionMains.Pyrobot.Data/UnitOfWork.cs
+@@ -13,6 +13,7 @@ namespace ChampionMains.Pyrobot.Data
+         public IDbSet<Summoner> Summoners { get; set; }
+         public IDbSet<User> Users { get; set; }
+         public IDbSet<Champion> Champions { get; set; }
++        public IDbSet<SummonerChampionMastery> SummonerChampionMasteries { get; set; }
+ 
+         public UnitOfWork()
+         {
+diff --git a/ChampionMains.Pyrobot/ChampionMains.Pyrobot.csproj b/ChampionMains.Pyrobot/ChampionMains.Pyrobot.csproj
+index 587c1dc..cd11601 100644
+--- a/ChampionMains.Pyrobot/ChampionMains.Pyrobot.csproj
++++ b/ChampionMains.Pyrobot/ChampionMains.Pyrobot.csproj
+@@ -278,7 +278,7 @@
+     <Compile Include="Attributes\WebApiAuthorizeAttribute.cs" />
+     <Compile Include="CacheUtil.cs" />
+     <Compile Include="Controllers\LoginController.cs" />
+-    <Compile Include="Controllers\BulkUpdateApiController.cs" />
++    <Compile Include="Controllers\PublicApiController.cs" />
+     <Compile Include="Controllers\ProfileApiController.cs" />
+     <Compile Include="Controllers\PublicProfileController.cs" />
+     <Compile Include="Controllers\ProfileController.cs" />
+@@ -286,6 +286,7 @@
+     <Compile Include="Global.asax.cs">
+       <DependentUpon>Global.asax</DependentUpon>
+     </Compile>
++    <Compile Include="Models\LeaderboardViewModels.cs" />
+     <Compile Include="Models\ProfileApiViewModels.cs" />
+     <Compile Include="Models\ProfileViewModel.cs" />
+     <Compile Include="Models\FlairViewModel.cs" />
+diff --git a/ChampionMains.Pyrobot/Controllers/BulkUpdateApiController.cs b/ChampionMains.Pyrobot/Controllers/BulkUpdateApiController.cs
+deleted file mode 100644
+index 8e9751c..0000000
+--- a/ChampionMains.Pyrobot/Controllers/BulkUpdateApiController.cs
++++ /dev/null
+@@ -1,24 +0,0 @@
+-﻿using System.Threading.Tasks;
+-using System.Web.Http;
+-using ChampionMains.Pyrobot.Services;
+-
+-namespace ChampionMains.Pyrobot.Controllers
+-{
+-    public class BulkUpdateApiController : ApiController
+-    {
+-        private readonly WebJobService _webJob;
+-
+-        public BulkUpdateApiController(WebJobService webJob)
+-        {
+-            _webJob = webJob;
+-        }
+-
+-        [HttpPost]
+-        [Route("trigger-bulk-update")]
+-        public async Task<bool> TriggerBulkUpdate()
+-        {
+-            await _webJob.QueueBulkUpdate(Request.Headers.UserAgent.ToString());
+-            return true;
+-        }
+-    }
+-}
+diff --git a/ChampionMains.Pyrobot/Controllers/PublicApiController.cs b/ChampionMains.Pyrobot/Controllers/PublicApiController.cs
+new file mode 100644
+index 0000000..79e0355
+--- /dev/null
++++ b/ChampionMains.Pyrobot/Controllers/PublicApiController.cs
+@@ -0,0 +1,57 @@
++﻿using System.Collections.Generic;
++using System.Data.Entity;
++using System.Linq;
++using System.Net;
++using System.Net.Http;
++using System.Threading.Tasks;
++using System.Web.Http;
++using System.Web.UI.WebControls;
++using ChampionMains.Pyrobot.Data;
++using ChampionMains.Pyrobot.Models;
++using ChampionMains.Pyrobot.Services;
++
++namespace ChampionMains.Pyrobot.Controllers
++{
++    public class PublicApiController : ApiController
++    {
++        private readonly WebJobService _webJob;
++        private readonly UnitOfWork _unitOfWork;
++
++        public PublicApiController(WebJobService webJob, UnitOfWork unitOfWork)
++        {
++            _webJob = webJob;
++            _unitOfWork = unitOfWork;
++        }
++
++        [HttpPost]
++        [Route("trigger-bulk-update")]
++        public async Task<bool> TriggerBulkUpdate()
++        {
++            await _webJob.QueueBulkUpdate(Request.Headers.UserAgent.ToString());
++            return true;
++        }
++
++        [Route("api/leaderboard")]
++        public async Task<LeaderboardViewModel> GetLeaderboard(int championId, int count = 10, int minPoints = 0)
++        {
++            var entriesQuery = _unitOfWork.SummonerChampionMasteries.Where(cm => cm.ChampionId == championId)
++                .OrderByDescending(cm => cm.Points)
++                .Include(cm => cm.Summoner.User)
++                .GroupBy(cm => cm.Summoner.UserId)
++                .Select(group  => new LeaderboardEntryViewModel
++                {
++                    Name = group.Any() ? group.FirstOrDefault().Summoner.User.Name : null,
++                    TotalPoints = group.Select(cm => cm.Points).Sum()
++                })
++                .Where(cm => cm.TotalPoints >= minPoints)
++                .OrderByDescending(entry => entry.TotalPoints);
++            var entries = await (count < 0 ? entriesQuery.ToListAsync() : entriesQuery.Take(count).ToListAsync());
++
++            return new LeaderboardViewModel
++            {
++                ChampionId = championId,
++                Entries = entries
++            };
++        }
++    }
++}
+diff --git a/ChampionMains.Pyrobot/Models/LeaderboardViewModels.cs b/ChampionMains.Pyrobot/Models/LeaderboardViewModels.cs
+new file mode 100644
+index 0000000..99b3b16
+--- /dev/null
++++ b/ChampionMains.Pyrobot/Models/LeaderboardViewModels.cs
+@@ -0,0 +1,17 @@
++﻿using System.Collections.Generic;
++
++namespace ChampionMains.Pyrobot.Models
++{
++    public class LeaderboardViewModel
++    {
++        public string SortedBy => "mastery";
++        public int ChampionId { get; set; }
++        public IList<LeaderboardEntryViewModel> Entries { get; set; }
++    }
++
++    public class LeaderboardEntryViewModel
++    {
++        public string Name { get; set; }
++        public int TotalPoints { get; set; }
++    }
++}
+\ No newline at end of file
+-- 
+2.8.4.windows.1
+

@@ -14,4 +14,11 @@ namespace ChampionMains.Pyrobot.Models
         public string Name { get; set; }
         public int TotalPoints { get; set; }
     }
+
+    public class SummonerInfoViewModel
+    {
+        public string Name { get; set; }
+        public long Id { get; set; }
+        public string Region { get; set; }
+    }
 }

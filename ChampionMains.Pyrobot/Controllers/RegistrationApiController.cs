@@ -43,18 +43,21 @@ namespace ChampionMains.Pyrobot.Controllers
                 if (user == null)
                     return StatusCode(HttpStatusCode.Unauthorized);
 
-                // Summoner MUST exist.
-                var summoner = await FindSummonerAsync(model.Region, model.SummonerName);
-                if (summoner == null)
-                    return Conflict("Summoner not found.");
-
-                // Summoner MUST NOT be registered.
-                if (await Summoners.IsSummonerRegisteredAsync(model.Region, model.SummonerName))
-                    return Conflict("Summoner is already registered.");
+                Summoner riotSummoner = null;
+                // If Summoner is already in DB, we transfer it.
+                var dbSummoner = await Summoners.FindSummonerAsync(model.Region, model.SummonerName);
+                if (dbSummoner == null)
+                {
+                    // Otherwise, we check the summoner exists from the Riot API.
+                    riotSummoner = await FindSummonerAsync(model.Region, model.SummonerName);
+                    if (riotSummoner == null)
+                        return Conflict("Summoner not found.");
+                }
 
                 return Ok(new
                 {
-                    code = await Validation.GenerateAsync(User.Identity.Name, summoner.Id, model.Region, user.Name)
+                    code = await Validation.GenerateAsync(User.Identity.Name,
+                        dbSummoner?.SummonerId ?? riotSummoner.Id, model.Region, user.Name)
                 });
             }
             catch (RiotHttpException e)
@@ -81,32 +84,45 @@ namespace ChampionMains.Pyrobot.Controllers
                 if (user == null)
                     return StatusCode(HttpStatusCode.Unauthorized);
 
-                // Summoner MUST exist.
-                var riotSummoner = await Riot.GetSummoner(model.Region, model.SummonerName);
-                if (riotSummoner == null)
-                    return Conflict("Summoner not found.");
+                Summoner riotSummoner = null;
+                // If Summoner is already in DB, we transfer it.
+                var dbSummoner = await Summoners.FindSummonerAsync(model.Region, model.SummonerName);
+                if (dbSummoner == null)
+                {
+                    // Otherwise, we check the summoner exists from the Riot API.
+                    riotSummoner = await FindSummonerAsync(model.Region, model.SummonerName);
+                    if (riotSummoner == null)
+                        return Conflict("Summoner not found.");
+                }
 
-                // Summoner MUST NOT be registered.
-                if (await Summoners.IsSummonerRegisteredAsync(model.Region, model.SummonerName))
-                    return Conflict("Summoner is already registered.");
+                var summonerId = dbSummoner?.SummonerId ?? riotSummoner.Id;
 
-                var runePages = await Riot.GetRunePages(model.Region, riotSummoner.Id);
-                var code = await Validation.GenerateAsync(User.Identity.Name, riotSummoner.Id, model.Region, user.Name);
+                var runePages = await Riot.GetRunePages(model.Region, summonerId);
+                var code = await Validation.GenerateAsync(User.Identity.Name, summonerId, model.Region, user.Name);
                 
                 if (!runePages.Any(page => string.Equals(page.Name, code, StringComparison.OrdinalIgnoreCase)))
                     return StatusCode(HttpStatusCode.ExpectationFailed);
 
-                // Create the data entity and associate it with the current user
-                var currentSummoner = Summoners.AddSummoner(user.Id, riotSummoner.Id, model.Region, riotSummoner.Name, riotSummoner.ProfileIconId);
+                if (dbSummoner != null)
+                {
+                    dbSummoner.User = user;
+                }
+                else
+                {
+                    // Create the data entity and associate it with the current user
+                    dbSummoner = Summoners.AddSummoner(user.Id, riotSummoner.Id, model.Region,
+                        riotSummoner.Name, riotSummoner.ProfileIconId);
+                }
+
                 var changes = await Summoners.SaveChangesAsync();
 
                 // Send confirmation mail.
                 //TODO
-                Trace.WriteLine($"user.id={user.Id}, user.name={user.Name}, summoner.Id={currentSummoner.Id}");
+                Trace.WriteLine($"user.id={user.Id}, user.name={user.Name}, summoner.Id={dbSummoner.Id}");
                 //BackgroundJob.Enqueue<ConfirmRegistrationMailJob>(job => job.Execute(user.Id, currentSummoner.Id));
 
                 // Queue up the league update.
-                await WebJob.QueueSummonerUpdate(currentSummoner.Id);
+                await WebJob.QueueSummonerUpdate(dbSummoner.Id);
 
                 return Ok();
             }
