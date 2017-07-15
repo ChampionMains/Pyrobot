@@ -325,6 +325,7 @@
     <Content Include="Views\Profile\flairdisplay.cshtml" />
     <None Include="Web.config" />
     <Content Include="Web.template.config" />
+    <None Include="Web.Example.config" />
     <None Include="Web.Local.config">
       <DependentUpon>Web.template.config</DependentUpon>
     </None>
@@ -401,16 +402,14 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <Target Name="BowerUpdate" BeforeTargets="Build">
-    <Exec Command="bower update --force" />
-  </Target>
-  <Target Name="CopyWebTemplateConfig" BeforeTargets="Build">
+  <Target Name="CopyWebTemplateConfig" BeforeTargets="Clean">
     <Delete Files="Web.config" />
     <Copy SourceFiles="Web.template.config" DestinationFiles="Web.config" />
-    <Delete Files="..\ChampionMains.Pyrobot.WebJob\App.config" Condition="Exists('..\ChampionMains.Pyrobot.WebJob\App.template.config') And !Exists('..\ChampionMains.Pyrobot.WebJob\App.Local.config')" />
-    <Copy SourceFiles="..\ChampionMains.Pyrobot.WebJob\App.template.config" DestinationFiles="..\ChampionMains.Pyrobot.WebJob\App.config" Condition="Exists('..\ChampionMains.Pyrobot.WebJob\App.template.config') And !Exists('..\ChampionMains.Pyrobot.WebJob\App.Local.config')" />
   </Target>
-  <Target Name="UpdateWebConfigBeforeRun" AfterTargets="CopyWebTemplateConfig" Condition="Exists('Web.Local.Config')">
+  <Target Name="BowerUpdate" BeforeTargets="Clean">
+    <Exec Command="bower update --force" />
+  </Target>
+  <Target Name="UpdateWebConfigBeforeRun" BeforeTargets="Build" Condition="Exists('Web.Local.Config')">
     <Message Text="Configuration: $(Configuration): Web.Local.config" Importance="high" />
     <TransformXml Source="Web.template.config" Transform="Web.Local.config" Destination="Web.config" />
   </Target>
