@@ -123,9 +123,9 @@ namespace ChampionMains.Pyrobot.Services.Riot
         }
 
         public async Task<JToken> SendRequestAsync(string region, string relativeUri,
-            IEnumerable<KeyValuePair<string, string>> parameters = null, string innerUri="api/lol", bool usePlatform = false)
+            IEnumerable<KeyValuePair<string, string>> parameters = null)
         {
-            var response = await SendRequestInternalAsync(region, innerUri, relativeUri, parameters, usePlatform);
+            var response = await SendRequestInternalAsync(region, relativeUri, parameters);
             // not found is a successful status code, indicating that the request was successful
             // but the entity did not exist (invalid summoner id, etc).
             if (response.StatusCode == HttpStatusCode.NotFound)
@@ -150,8 +150,7 @@ namespace ChampionMains.Pyrobot.Services.Riot
             return RegionPlatforms.TryGetValue(region, out platform) ? platform : null;
         }
 
-        private string GetRequestUri(string region, string innerUri, string relativeUri,
-            IEnumerable<KeyValuePair<string, string>> parameters, bool usePlatform)
+        private string GetRequestUri(string region, string relativeUri, IEnumerable<KeyValuePair<string, string>> parameters)
         {
             var queryString = GetRequestQueryString(parameters);
 
@@ -165,15 +164,15 @@ namespace ChampionMains.Pyrobot.Services.Riot
             region = region.ToLowerInvariant();
 
             return
-                $"https://{region}.api.pvp.net/{innerUri}/{(usePlatform ? GetRegionPlatform(region) : region)}/{relativeUri}?{queryString}";
+                $"https://{GetRegionPlatform(region)}.api.riotgames.com/lol/{relativeUri}?{queryString}";
         } 
 
         
 
-        private async Task<HttpResponseMessage> SendRequestInternalAsync(string region, string innerUri, string relativeUri,
-            IEnumerable<KeyValuePair<string, string>> parameters, bool usePlatform)
+        private async Task<HttpResponseMessage> SendRequestInternalAsync(string region, string relativeUri,
+            IEnumerable<KeyValuePair<string, string>> parameters)
         {
-            var requestUri = GetRequestUri(region, innerUri, relativeUri, parameters, usePlatform);
+            var requestUri = GetRequestUri(region, relativeUri, parameters);
             var attempts = MaxAttempts;
 
             var failedRequests = new List<RiotHttpException>();

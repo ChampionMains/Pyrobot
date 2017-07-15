@@ -2,12 +2,12 @@
 {
     public enum TierType
     {
-        CHALLENGER,
-        MASTER,
-        DIAMOND,
-        PLATINUM,
-        GOLD,
+        BRONZE,
         SILVER,
-        BRONZE
+        GOLD,
+        PLATINUM,
+        DIAMOND,
+        MASTER,
+        CHALLENGER
     }
 }
