@@ -16,7 +16,7 @@ title: Documentation
   - ##### [I don’t want this. I’m happy with the flairs as they are.](#plsno)
   - ##### [I like being able to show my rank, but I don’t want to show my mastery level...(or vice-versa)](#options)
   - ##### [Is it secure?](#security)
-  - ##### [Help! I've deleted my Reddit account and can't re-verify my summoner, what do I do?](#deleted-account)
+  - ##### [Help! I've lost my Reddit account and can't re-verify my summoner, what do I do?](#deleted-account)
 - #### [Usage Manual](#manual)
   - ##### [Signing-in](#login)
   - ##### [Adding Summoners](#add-summoner)
@@ -39,7 +39,7 @@ points.
 ## Who made this?
 {:id="maker" name="maker"}
 
-This site was made by [/u/LugnutsK](https://www.reddit.com/u/LugnutsK), and is a heavily modified 
+This site was made by [/u/LugnutsK](https://www.reddit.com/u/LugnutsK), and is a heavily modified
 version of [this service](https://summonerschool.reddit.com/comments/3z0bzu/) made by
 [/u/Kivinkujata](https://www.reddit.com/u/Kivinkujata).
 
@@ -89,7 +89,7 @@ content.
 > it was too much of a hastle for moderators (and also users) to manually set up every flair
 > through PMs. After seing the /r/SummonerSchool bot in action, and that the source was available
 > online, I decided to try to adapt the bot for our purposes. This is the result.
-> 
+>
 > The source is available [at GitHub](https://github.com/championmains/Pyrobot)
 >
 > _-[/u/LugnutsK](https://www.reddit.com/u/LugnutsK)_
@@ -107,7 +107,7 @@ message to let him know!
 ## I don’t want this. I’m happy with the flairs as they are.
 {:id="plsno" name="plsno"}
 
-That's fine. Unlike with the /r/SummonerSchool bot, you will still be able to set your flairs 
+That's fine. Unlike with the /r/SummonerSchool bot, you will still be able to set your flairs
 normally. If you no longer want to use the service, you can remove your summoners and disable the
 flairs for each subreddit.
 
@@ -123,7 +123,7 @@ On your profile under the ‘Subreddit Flair Settings’ you can set which icons
 flair. You can tick/untick the boxes to show/hide that icon and manage them for each Champion Main
 subreddits.
 
-Note that subreddit moderators have the option to require both to be required if 
+Note that subreddit moderators have the option to require both to be required if
 
 
 ## Is it secure?
@@ -138,11 +138,10 @@ issues or have a suggestion, submit it to the
 [issues page](https://github.com/championmains/Pyrobot/issues). If you would like to contribute
 directly, fell free to send a pull request.
 
-## Help! I've deleted my Reddit account and can't re-verify my summoner, what do I do?
+## Help! I've lost my Reddit account and can't re-verify my summoner, what do I do?
 {:id="deleted-account" name="deleted-account"}
 
-Message [/u/LugnutsK](https://reddit.com/u/LugnutsK) with your *summoner name* and *region*. He'll
-fix that shit.
+Message [/u/LugnutsK](https://reddit.com/u/LugnutsK) with your *summoner name* and *region*.
 
 * * *
 
@@ -221,10 +220,3 @@ If you change your flair image or flair text, the bot will re-add the rank/maste
 but preserve the changes.
 
 ![](./img/flair-2.png){:class="img-thumbnail"}
-
-
-
-
-
-
-

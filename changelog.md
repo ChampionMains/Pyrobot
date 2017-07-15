@@ -2,6 +2,10 @@
 layout: default
 title: Changelog
 changes:
+  2017-07-15:
+    - Updated backend for the V3 Riot API changes.
+    - Summoners can now be added even if they are already registered with another Reddit account. This change is to help with many people
+      who have lost access to their old Reddit accounts and can't re-register their summoners.
   2016-12-17:
     - The hourly update job has been failing since around 2016-11-11. A rewrite and fix are in progress. If you want to manually update your flair, you can go to
       [flairs.championmains.com](http://flairs.championmains.com/) and press the refresh buttons next to each summoner and the green checkmarks next to each subreddit.
