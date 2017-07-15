@@ -33,33 +33,33 @@ namespace ChampionMains.Pyrobot.Controllers
             return View(ViewModel);
         }
 
-        [HttpPost]
-        public async Task<ActionResult> Register(SummonerModel model)
-        {
-            ViewModel = await CreateViewModelAsync();
-            if (!ModelState.IsValid)
-            {
-                return Error(ModelState);
-            }
-
-            // Rule: Summoner must not be registered to a User.
-            if (await Summoners.IsSummonerRegisteredAsync(model.Region, model.SummonerName))
-            {
-                return Error("Summoner is already registered.");
-            }
-
-            // Rule: Summoner must exist.
-            var cacheKey = string.Concat(model.Region, ":", model.SummonerName).ToLowerInvariant();
-            var summoner = await CacheUtil.GetItemAsync(cacheKey,
-                () => Riot.GetSummoner(model.Region, model.SummonerName));
-
-            if (summoner == null)
-            {
-                return Error("Summoner not found.");
-            }
-
-            return Success();
-        }
+//        [HttpPost]
+//        public async Task<ActionResult> Register(SummonerModel model)
+//        {
+//            ViewModel = await CreateViewModelAsync();
+//            if (!ModelState.IsValid)
+//            {
+//                return Error(ModelState);
+//            }
+//
+//            // Rule: Summoner must not be registered to a User.
+//            if (await Summoners.IsSummonerRegisteredAsync(model.Region, model.SummonerName))
+//            {
+//                return Error("Summoner is already registered.");
+//            }
+//
+//            // Rule: Summoner must exist.
+//            var cacheKey = string.Concat(model.Region, ":", model.SummonerName).ToLowerInvariant();
+//            var summoner = await CacheUtil.GetItemAsync(cacheKey,
+//                () => Riot.GetSummoner(model.Region, model.SummonerName));
+//
+//            if (summoner == null)
+//            {
+//                return Error("Summoner not found.");
+//            }
+//
+//            return Success();
+//        }
 
         private async Task<ProfileViewModel> CreateViewModelAsync()
         {
