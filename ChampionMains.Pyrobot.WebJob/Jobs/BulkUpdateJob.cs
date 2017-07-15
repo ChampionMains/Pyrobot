@@ -43,7 +43,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
         public async Task Execute([QueueTrigger(WebJobQueue.BulkUpdate)] string args)
         {
             if (!await Lock.WaitAsync(1000))
-                throw new InvalidOperationException("Lock is not available. Task is already be running.");
+                throw new InvalidOperationException("Lock is not available. Task may already be running.");
 
             try
             {
