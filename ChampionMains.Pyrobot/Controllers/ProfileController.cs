@@ -8,6 +8,7 @@ using ChampionMains.Pyrobot.Services;
 namespace ChampionMains.Pyrobot.Controllers
 {
     [Authorize]
+    [RoutePrefix("profile")]
     public class ProfileController : Controller
     {
         public RiotService Riot { get; set; }
@@ -32,7 +33,7 @@ namespace ChampionMains.Pyrobot.Controllers
             }
             return View(ViewModel);
         }
-
+        
 //        [HttpPost]
 //        public async Task<ActionResult> Register(SummonerModel model)
 //        {
@@ -60,6 +61,11 @@ namespace ChampionMains.Pyrobot.Controllers
 //
 //            return Success();
 //        }
+
+        public ActionResult FlairDisplay(string subreddit)
+        {
+            return View((object) subreddit);
+        }
 
         private async Task<ProfileViewModel> CreateViewModelAsync()
         {
