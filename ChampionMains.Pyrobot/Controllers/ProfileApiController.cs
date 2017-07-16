@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web.Http;
 using ChampionMains.Pyrobot.Attributes;
@@ -22,17 +26,19 @@ namespace ChampionMains.Pyrobot.Controllers
         private readonly WebJobService _webJobService;
         private readonly FlairService _flairService;
         private readonly UnitOfWork _unitOfWork;
+        private readonly SubredditService _subredditService;
 
         private readonly TimeSpan _riotUpdateMinStaleTime;
 
         public ProfileApiController(UserService userService, SummonerService summonerService, WebJobService webJobService,
-            FlairService flairService, UnitOfWork unitOfWork, ApplicationConfiguration config)
+            FlairService flairService, UnitOfWork unitOfWork, SubredditService subredditService, ApplicationConfiguration config)
         {
             _userService = userService;
             _summonerService = summonerService;
             _webJobService = webJobService;
             _unitOfWork = unitOfWork;
             _flairService = flairService;
+            _subredditService = subredditService;
 
             _riotUpdateMinStaleTime = config.RiotUpdateMin;
         }
@@ -196,6 +202,52 @@ namespace ChampionMains.Pyrobot.Controllers
         public IEnumerable<int> GetPrestiges()
         {
             return RankUtil.PrestigeLevels;
+        }
+
+        [HttpGet]
+        [Route("profile/api/flaircss")]
+        public async Task<HttpResponseMessage> GetFlairCss()
+        {
+            var tasks = (await _subredditService.GetSubreddits()).Select(async subreddit =>
+            {
+                var subredditName = subreddit.Name;
+                var request = WebRequest.Create($"https://reddit.com/r/{subredditName}/stylesheet.css");
+
+                var response = await request.GetResponseAsync();
+                var data = response.GetResponseStream();
+                using (var reader = new StreamReader(data))
+                {
+                    var css = reader.ReadToEnd();
+                    var sb = new StringBuilder();
+
+                    var matches = Regex.Matches(css, // Cancer.
+                        @"(?<=\}|^)([^\}\{]*(?<=,|\}|^)\.flair\b[^\}\{]*)((?'brace'\{.*?)+(?'-brace'\}.*?)+)+(?(brace)(?!))");
+                    foreach (Match match in matches)
+                    {
+                        var oldSelectors = match.Groups[1].Value; // ".flair-rank-challenger,.flair-rank-diamond,.flair-rank-master"
+                        var styles = match.Groups[2].Value; // "{outline:#000 solid 1px}"
+
+                        var selectors = oldSelectors.Split(',');
+                        for (var i = 0; i < selectors.Length; i++)
+                        {
+                            // ".subreddit-zyramains>.flair-rank-challenger" comma separated
+                            var selector = selectors[i];
+                            if (i != 0)
+                                sb.Append(',');
+                            sb.Append(".subreddit-").Append(subredditName).Append('>').Append(selector);
+                        }
+                        sb.Append(styles);
+                    }
+                    return sb;
+                }
+            }).ToList();
+            await Task.WhenAll(tasks);
+
+            var result = string.Join("\n", tasks.Select(t => t.Result));
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(result, Encoding.UTF8, "text/css")
+            };
         }
 
         private IHttpActionResult Conflict(string message)

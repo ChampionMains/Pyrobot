@@ -69,6 +69,12 @@
             <button class="btn btn-primary" ng-disabled="subreddit.busy" type="submit"><span class="fa fa-pencil"></span></button>
         </td>
         <td>
+            <div class="subreddit" ng-class="'subreddit-' + subreddit.name">
+                <span class="flair flair-mastery-7 flair-rank-diamond" title="sample text">sample text</span>
+            </div>
+        </td>
+        @*
+        <td>
             <iframe width="50" height="10" scrolling="no" frameborder="0" ng-src="{{ iFrameUrl(subreddit.name) }}"
                     onload="iFrameResize(this)"></iframe>
         </td>

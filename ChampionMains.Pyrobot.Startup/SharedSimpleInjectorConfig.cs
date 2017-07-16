@@ -26,6 +26,7 @@ namespace ChampionMains.Pyrobot.Startup
             container.Register<UserService>(Lifestyle.Scoped);
             container.Register<SummonerService>(Lifestyle.Scoped);
             container.Register<FlairService>(Lifestyle.Scoped);
+            container.Register<SubredditService>(Lifestyle.Scoped);
             // above use db, below do not
             container.Register<RedditService>(Lifestyle.Singleton);
             container.Register<ValidationService>(Lifestyle.Singleton);

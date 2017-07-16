@@ -287,7 +287,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\PublicApiViewModels.cs" />
-    <Compile Include="Models\LeaderboardViewModels.cs" />
     <Compile Include="Models\ProfileApiViewModels.cs" />
     <Compile Include="Models\ProfileViewModel.cs" />
     <Compile Include="Models\FlairViewModel.cs" />

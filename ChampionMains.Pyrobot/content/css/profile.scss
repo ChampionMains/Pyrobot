@@ -97,6 +97,12 @@ table.table {
     }
 }
 
+.subreddit > .flair {
+    font-size: 12px;
+    display: inline-block;
+    box-sizing: content-box;
+}
+
 /* Spritesheets */
 
 $prestiges: 0 250 500 750 1000 2000 3000 4000 5000;

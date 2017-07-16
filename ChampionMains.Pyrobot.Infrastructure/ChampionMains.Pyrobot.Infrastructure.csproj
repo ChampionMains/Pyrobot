@@ -113,6 +113,7 @@
     <Compile Include="Jobs\AsyncJobBase.cs" />
     <Compile Include="Jobs\ConfirmFlairUpdatedMailJob.cs" />
     <Compile Include="Jobs\ConfirmRegistrationMailJob.cs" />
+    <Compile Include="Services\SubredditService.cs" />
     <Compile Include="Util\FlairUtil.cs" />
     <Compile Include="Util\RankUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

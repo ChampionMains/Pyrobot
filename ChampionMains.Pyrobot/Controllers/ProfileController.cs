@@ -14,13 +14,14 @@ namespace ChampionMains.Pyrobot.Controllers
         public RiotService Riot { get; set; }
         public SummonerService Summoners { get; set; }
         public UserService Users { get; set; }
+
         public ProfileViewModel ViewModel { get; set; }
 
-        public ProfileController(UserService userService, RiotService riotService, SummonerService summonerService)
+        public ProfileController(UserService users, RiotService riot, SummonerService summoners)
         {
-            Users = userService;
-            Riot = riotService;
-            Summoners = summonerService;
+            Users = users;
+            Riot = riot;
+            Summoners = summoners;
         }
 
         public async Task<ActionResult> Index()
@@ -32,39 +33,6 @@ namespace ChampionMains.Pyrobot.Controllers
                 return RedirectToAction("index", "login");
             }
             return View(ViewModel);
-        }
-        
-//        [HttpPost]
-//        public async Task<ActionResult> Register(SummonerModel model)
-//        {
-//            ViewModel = await CreateViewModelAsync();
-//            if (!ModelState.IsValid)
-//            {
-//                return Error(ModelState);
-//            }
-//
-//            // Rule: Summoner must not be registered to a User.
-//            if (await Summoners.IsSummonerRegisteredAsync(model.Region, model.SummonerName))
-//            {
-//                return Error("Summoner is already registered.");
-//            }
-//
-//            // Rule: Summoner must exist.
-//            var cacheKey = string.Concat(model.Region, ":", model.SummonerName).ToLowerInvariant();
-//            var summoner = await CacheUtil.GetItemAsync(cacheKey,
-//                () => Riot.GetSummoner(model.Region, model.SummonerName));
-//
-//            if (summoner == null)
-//            {
-//                return Error("Summoner not found.");
-//            }
-//
-//            return Success();
-//        }
-
-        public ActionResult FlairDisplay(string subreddit)
-        {
-            return View((object) subreddit);
         }
 
         private async Task<ProfileViewModel> CreateViewModelAsync()
