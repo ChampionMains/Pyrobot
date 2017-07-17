@@ -12,7 +12,7 @@
 
             pollPromise: null,
             poll: function(i) {
-                // default: polls 5 times every 5 seconds (total ~20 seconds; fencepost counting)
+                // default: polls 5 times with interval of 5 seconds (total ~20 seconds; fencepost counting)
                 i = i === undefined ? 5 : i;
                 var $this = this;
                 $timeout.cancel($this.pollPromise);
@@ -38,26 +38,55 @@
                 });
             }
         };
+    }).directive('flair', function() {
+        return {
+            scope: {
+                flair: '=',
+                flairRank: '=',
+                flairMastery: '=',
+                flairPrestige: '=',
+                flairMasteryPoints: '='
+            },
+            template: '<span class="flair" ng-class="classes" ng-attr-title="{{innerText}}" ng-bind="innerText"></span>',
+            link: function(scope, element, attrs) {
+                function update() {
+                    var flair = scope.flair;
+                    var text = flair.flairText;
+                    var classes = [];
+
+                    if (flair.rankEnabled)
+                        classes.push('flair-rank-' + scope.flairRank);
+                    if (flair.championMasteryEnabled && +scope.flairMastery > 0)
+                        classes.push('flair-mastery-' + scope.flairMastery);
+                    if (flair.prestigeEnabled && +scope.flairPrestige >= 1000)
+                        classes.push('flair-prestige-' + (+scope.flairPrestige / 1000));
+                    if (flair.championMasteryTextEnabled) {
+                        classes.push('flair-masteryText');
+                        text = scope.flairMasteryPoints + ' ' + text;
+                    }
+                    scope.classes = classes.join(' ');
+                    scope.innerText = text;
+                }
+                update();
+                scope.$watch('flair', update, true);
+            }
+        };
     }).directive('champImg', function() {
         var baseUrl = window.Riot.DDragon.m.cdn.replace('http://', '//') + '/' + window.Riot.DDragon.m.n.champion + '/img/champion/';
         return {
             scope: { champImg: '=' },
             link: function(scope, element, attrs) {
-                scope.$watch('champImg', function(val) {
-                    attrs.$set('src', baseUrl + val + '.png');
-                });
+                attrs.$set('src', baseUrl + scope.champImg + '.png');
             }
-        }
+        };
     }).directive('summonerImg', function() {
         var baseUrl = window.Riot.DDragon.m.cdn.replace('http://', '//') + '/' + window.Riot.DDragon.m.n.profileicon + '/img/profileicon/';
         return {
             scope: { summonerImg: '=' },
             link: function(scope, element, attrs) {
-                scope.$watch('summonerImg', function(val) {
-                    attrs.$set('src', baseUrl + val + '.png');
-                });
+                attrs.$set('src', baseUrl + scope.summonerImg + '.png');
             }
-        }
+        };
     }).filter('filterHidden', function() {
         return function(items) {
             var result = {};
@@ -74,7 +103,7 @@
             angular.forEach(items, function(item) {
                 filtered.push(item);
             });
-            filtered.sort(function (a, b) {
+            filtered.sort(function(a, b) {
                 return a[field] - b[field];
             });
             if(reverse) filtered.reverse();
@@ -96,6 +125,7 @@
 
         var modalDelete = modal('#modal-confirm-delete');
         var modalRegister = modal('#modal-register');
+        var modalEditFlair = modal('#modal-edit-flair');
 
         $scope.orderSubreddits = function(subreddits) {
             var filtered = [];
@@ -152,18 +182,34 @@
             modalRegister.show();
         };
 
+        $scope.editSubredditFlair = function(id, subreddit) {
+            modalEditFlair.data = { id: id, subreddit: subreddit };
+            modalEditFlair.show();
+        };
+    });
+
+    app.controller('EditFlairController', function($scope, $timeout, modal, api, ajax) {
+        var dialog = modal('#modal-edit-flair');
+
+        $scope.api = api;
+        $scope.dialog = dialog;
+
+        dialog.onShow(function(e) {
+            $scope.id = dialog.data.id;
+            $scope.subreddit = dialog.data.subreddit;
+            $scope.flairData = JSON.parse(JSON.stringify(dialog.data.subreddit.flair));
+        });
+
         $scope.updateSubredditFormSubmit = function(data, subreddit) {
             subreddit.busy = true;
             ajax.post('/profile/api/subreddit/update', data, function(ok, data) {
+                dialog.hide();
+                $scope.api.poll();
                 $timeout(function() {
                     subreddit.busy = false;
                 }, 5000);
             });
         };
-
-        $scope.iFrameUrl = function(subreddit) {
-            return window.flairdisplayUrl + '?subreddit=' + subreddit;
-        }
     });
 
     app.controller('DeleteController', function($scope, ajax, modal) {
@@ -190,7 +236,7 @@
     app.controller('RegisterController', function($scope, $timeout, ajax, modal) {
         var dialog = modal('#modal-register');
 
-        dialog.shown(function() {
+        dialog.onShow(function() {
             $scope.code = null;
             $scope.alert = null;
             window.setTimeout(function() { $('#summonerName').focus(); }, 100);
@@ -206,7 +252,7 @@
             ajax.post('/profile/api/summoner/validate', data, function(success, data, status) {
                 //console.log(arguments);
 
-                if (status === 417) {
+                if ((status === 417)) {
                     if (--validationAttempts) {
                         $timeout(executeValidation, 5000);
                         return;
@@ -257,10 +303,4 @@
             }
         };
     });
-
-
-    window.iFrameResize = function(iframe) {
-        iframe.width = iframe.contentWindow.document.body.scrollWidth;
-        iframe.height = iframe.contentWindow.document.body.scrollHeight;
-    };
 })(window.app);

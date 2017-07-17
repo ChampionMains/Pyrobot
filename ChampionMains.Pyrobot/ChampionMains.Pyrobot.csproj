@@ -322,7 +322,6 @@
     <Content Include="Properties\webjobs-list.json" />
     <Content Include="Views\Web.config" />
     <!-- - -->
-    <Content Include="Views\Profile\flairdisplay.cshtml" />
     <None Include="Web.config" />
     <Content Include="Web.template.config" />
     <None Include="Web.Example.config" />

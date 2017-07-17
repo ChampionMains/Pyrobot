@@ -9,7 +9,7 @@
 <table class="table">
     <thead>
     <tr>
-        <th><span ng-class="{ 'fade-out': !api.loading }" class="fa fa-refresh spinning fade"></span></th>
+        <th><span ng-class="{ 'fa-fade-out': !api.loading }" class="fa fa-refresh spinning fa-fade"></span></th>
         <th>Region</th>
         <th>Summoner</th>
         <th>Rank</th>
@@ -66,43 +66,17 @@
     <tbody>
     <tr ng-repeat="(id, subreddit) in orderSubreddits(api.subreddits) track by id">
         <td>
-            <button class="btn btn-primary" ng-disabled="subreddit.busy" type="submit"><span class="fa fa-pencil"></span></button>
+            <button class="btn btn-primary" ng-disabled="subreddit.busy" type="submit" ng-click="editSubredditFlair(id, subreddit)">
+                <span class="fa fa-pencil"></span>
+            </button>
         </td>
         <td>
-            <div class="subreddit" ng-class="'subreddit-' + subreddit.name">
-                <span class="flair flair-mastery-7 flair-rank-diamond" title="sample text">sample text</span>
+            <div class="subreddit" ng-class="'subreddit-' + subreddit.name"
+                 flair="subreddit.flair" flair-rank="(api.summoners | orderObjectBy:'tier':true)[0].tierString"
+                 flair-mastery="api.champions[subreddit.championId].level" flair-prestige="api.champions[subreddit.championId].prestige"
+                 flair-mastery-points="api.champions[subreddit.championId].points">
             </div>
         </td>
-        @*
-        <td>
-            <iframe width="50" height="10" scrolling="no" frameborder="0" ng-src="{{ iFrameUrl(subreddit.name) }}"
-                    onload="iFrameResize(this)"></iframe>
-        </td>
-        @*
-        <td>
-            <form ng-init="flairData = subreddit.flair" ng-submit="updateSubredditFormSubmit(flairData, subreddit)" class="flair-toggles input-group input-group-sm">
-                <span class="input-group-btn">
-                    <label class="btn btn-default" title="Rank: your highest rank" ng-if="subreddit.rankEnabled">
-                        <input ng-model="flairData.rankEnabled" ng-disabled="subreddit.busy" type="checkbox" autocomplete="off" />
-                        <span class="rank xs" ng-class="'rank-' + (api.summoners | orderObjectBy:'tier':true)[0].tierString"></span>
-                    </label>
-                    <label class="btn btn-default" title="Mastery: your highest champion mastery level" ng-if="subreddit.championMasteryEnabled">
-                        <input ng-model="flairData.championMasteryEnabled" ng-disabled="subreddit.busy" type="checkbox" autocomplete="off" />
-                        <span class="mastery" ng-class="'mastery-' + api.champions[subreddit.championId].level"></span>
-                    </label>
-                    <label class="btn btn-default" title="Prestige: your total champion mastery points, starting at 250k" ng-if="subreddit.prestigeEnabled">
-                        <input ng-model="flairData.prestigeEnabled" ng-disabled="subreddit.busy" type="checkbox" autocomplete="off" />
-                        <span class="prestige" ng-class="'prestige-' + (api.champions[subreddit.championId].prestige / 1000)"></span>
-                    </label>
-                    <label class="btn btn-default" title="Mastery points: your exact number of champion mastery points" ng-if="subreddit.championMasteryTextEnabled">
-                        <input ng-model="flairData.championMasteryTextEnabled" ng-disabled="subreddit.busy" type="checkbox" autocomplete="off" />
-                        <span class="masteryText" ng-bind="api.champions[subreddit.championId].points | number"></span>
-                    </label>
-                </span>
-                <input type="text" ng-model="flairData.flairText" ng-disabled="subreddit.busy" class="form-control" placeholder="flair text"/>
-                <span class="input-group-btn"><button class="btn btn-success" ng-disabled="subreddit.busy" type="submit"><span class="fa fa-check"></span></button></span>
-            </form>
-        </td>*@
         <td>
             <img class="champion" champ-img="api.champions[subreddit.championId].identifier"
                  alt="{{ api.champions[subreddit.championId].name }}" title="{{ api.champions[subreddit.championId].name }}"/>
@@ -110,21 +84,70 @@
             <span class="hint" ng-if="subreddit.adminOnly" ng-tooltip="right,This subreddit is only visible to Flair Bot admins."><span class="fa fa-shield"></span></span>
         </td>
         <td>
-            <span class="mastery" ng-class="'mastery-' + api.champions[subreddit.championId].level" title="Level {{ api.champions[subreddit.championId].level }}"></span>
-            <span class="prestige" ng-class="'prestige-' + (api.champions[subreddit.championId].prestige / 1000)"></span>
-                
-                <span class="hint" ng-if="subreddit.prestigeEnabled" ng-tooltip="right,Prestige progress">
-                    <span ng-bind="api.champions[subreddit.championId].points | number"></span> /
-                    <span ng-bind="api.champions[subreddit.championId].nextPrestige | prestige"></span>
-                </span>
-                
-                <span ng-if="!subreddit.prestigeEnabled" ng-bind="api.champions[subreddit.championId].points | number"></span>
-            </td>
-        </tr>
+            <span class="mastery" ng-class="'mastery-' + api.champions[subreddit.championId].level" title="Level {{ api.champions[subreddit.championId].level }}"></span>   
+            
+            <span class="prestige" ng-if="subreddit.prestigeEnabled" ng-class="'prestige-' + (api.champions[subreddit.championId].prestige / 1000)"></span>
+            <span class="hint" ng-if="subreddit.prestigeEnabled" ng-tooltip="right,Prestige progress">
+                <span ng-bind="api.champions[subreddit.championId].points | number"></span> /
+                <span ng-bind="api.champions[subreddit.championId].nextPrestige | prestige"></span>
+            </span>
+            
+            <span ng-if="!subreddit.prestigeEnabled" ng-bind="api.champions[subreddit.championId].points | number"></span>
+        </td>
+    </tr>
     </tbody>
 </table>
 
-<div class="modal pop-in" id="modal-confirm-delete" ng-controller="DeleteController">
+
+<form id="edit-flair" ng-controller="EditFlairController" ng-submit="updateSubredditFormSubmit(flairData, subreddit)">
+    <div class="modal fade" id="modal-edit-flair">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-disabled="busy">&times;</button>
+                    <h4 class="modal-title">Edit Flair</h4>
+                </div>
+                <div class="modal-body" ng-if="flairData">
+                    <div class="subreddit text-center" ng-class="'subreddit-' + subreddit.name"
+                         flair="flairData" flair-rank="(api.summoners | orderObjectBy:'tier':true)[0].tierString"
+                         flair-mastery="api.champions[subreddit.championId].level" flair-prestige="api.champions[subreddit.championId].prestige"
+                         flair-mastery-points="api.champions[subreddit.championId].points">
+                    </div>
+                    <hr/>
+                    <div class="flair-toggles input-group input-group-sm">
+                        <span class="input-group-btn">
+                            <label class="btn btn-default" title="Rank: your highest rank" ng-if="subreddit.rankEnabled">
+                                <input ng-model="flairData.rankEnabled" ng-disabled="subreddit.busy" type="checkbox" autocomplete="off"/>
+                                <span class="rank xs" ng-class="'rank-' + (api.summoners | orderObjectBy:'tier':true)[0].tierString"></span>
+                            </label>
+                            <label class="btn btn-default" title="Mastery: your highest champion mastery level" ng-if="subreddit.championMasteryEnabled">
+                                <input ng-model="flairData.championMasteryEnabled" ng-disabled="subreddit.busy" type="checkbox" autocomplete="off"/>
+                                <span class="mastery" ng-class="'mastery-' + api.champions[subreddit.championId].level"></span>
+                            </label>
+                            <label class="btn btn-default" title="Prestige: your total champion mastery points, starting at 250k" ng-if="subreddit.prestigeEnabled">
+                                <input ng-model="flairData.prestigeEnabled" ng-disabled="subreddit.busy" type="checkbox" autocomplete="off"/>
+                                <span class="prestige" ng-class="'prestige-' + (api.champions[subreddit.championId].prestige / 1000)"></span>
+                            </label>
+                            <label class="btn btn-default" title="Mastery points: your exact number of champion mastery points" ng-if="subreddit.championMasteryTextEnabled">
+                                <input ng-model="flairData.championMasteryTextEnabled" ng-disabled="subreddit.busy" type="checkbox" autocomplete="off"/>
+                                <span class="masteryText" ng-bind="api.champions[subreddit.championId].points | number"></span>
+                            </label>
+                        </span>
+                        <input type="text" ng-model="flairData.flairText" ng-disabled="subreddit.busy" class="form-control" placeholder="flair text"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-disabled="subreddit.busy">Cancel</button>
+                    <button type="submit" class="btn btn-primary" ng-disabled="subreddit.busy">
+                        <span class="fa fa-spin fa-spinner" ng-show="subreddit.busy"></span> Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="modal fade" id="modal-confirm-delete" ng-controller="DeleteController">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -146,7 +169,7 @@
     </div>
 </div>
 
-<div class="modal pop-in" id="modal-register" ng-controller="RegisterController">
+<div class="modal fade" id="modal-register" ng-controller="RegisterController">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">

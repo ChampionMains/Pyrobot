@@ -64,12 +64,14 @@
             this.dialog = $(id);
         }
         Modal.prototype = {
-            hide: function () { this.dialog.modal('hide'); },
-            hidden: function (handler) { this.dialog.on('hidden.bs.modal', handler); },
-            show: function () { this.dialog.modal('show'); },
-            shown: function (handler) { this.dialog.on('shown.bs.modal', handler); }
+            hide: function() { this.dialog.modal('hide'); },
+            onHide: function(handler) { this.dialog.on('hide.bs.modal', handler); },
+            onHidden: function(handler) { this.dialog.on('hidden.bs.modal', handler); },
+            show: function() { this.dialog.modal('show'); },
+            onShow: function(handler) { this.dialog.on('show.bs.modal', handler); },
+            onShown: function(handler) { this.dialog.on('shown.bs.modal', handler); }
         };
-        return function (id) {
+        return function(id) {
             if (!modalDictionary[id]) {
                 modalDictionary[id] = new Modal(id);
             }

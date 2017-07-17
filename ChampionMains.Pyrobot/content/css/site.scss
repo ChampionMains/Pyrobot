@@ -123,15 +123,6 @@ h2 {
     transform: $rule;
 }
 
-.modal.pop-in {
-    @include transform(scale(0.7));
-    @include transition(all .3s);
-}
-
-.modal.pop-in.in {
-    @include transform(scale(1));
-}
-
 .spinning {
     animation: spin 1s infinite linear;
     -moz-animation: spin2 1s infinite linear;
@@ -151,13 +142,13 @@ h2 {
     to { -webkit-transform: rotate(360deg); }
 }
 
-.fade {
+.fa-fade {
     opacity: 1;
     transition: opacity 300ms ease-in-out;
     -moz-transition: opacity 300ms ease-in-out;
     -webkit-transition: opacity 300ms ease-in-out;
 }
-.fade-out {
+.fa-fade-out {
     opacity: 0; 
 }
 
