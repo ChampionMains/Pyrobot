@@ -15,6 +15,7 @@ using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Data.WebJob;
 using ChampionMains.Pyrobot.Models;
 using ChampionMains.Pyrobot.Services;
+using WebApi.OutputCache.V2;
 
 namespace ChampionMains.Pyrobot.Controllers
 {
@@ -206,6 +207,7 @@ namespace ChampionMains.Pyrobot.Controllers
 
         [HttpGet]
         [Route("profile/api/flaircss")]
+        [CacheOutput(ServerTimeSpan = 3600 * 6, ClientTimeSpan = 3600, ExcludeQueryStringFromCacheKey = true)]
         public async Task<HttpResponseMessage> GetFlairCss()
         {
             var tasks = (await _subredditService.GetSubreddits()).Select(async subreddit =>

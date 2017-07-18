@@ -51,7 +51,7 @@
             link: function(scope, element, attrs) {
                 function update() {
                     var flair = scope.flair;
-                    var text = flair.flairText;
+                    var text = flair.flairText || '';
                     var classes = [];
 
                     if (flair.rankEnabled)
@@ -62,7 +62,7 @@
                         classes.push('flair-prestige-' + (+scope.flairPrestige / 1000));
                     if (flair.championMasteryTextEnabled) {
                         classes.push('flair-masteryText');
-                        text = scope.flairMasteryPoints + ' ' + text;
+                        text = scope.flairMasteryPoints.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' ' + text;
                     }
                     scope.classes = classes.join(' ');
                     scope.innerText = text;

@@ -7,6 +7,7 @@ using System.Web.Http;
 using ChampionMains.Pyrobot.Data;
 using ChampionMains.Pyrobot.Models;
 using ChampionMains.Pyrobot.Services;
+using WebApi.OutputCache.V2;
 
 namespace ChampionMains.Pyrobot.Controllers
 {
@@ -32,6 +33,7 @@ namespace ChampionMains.Pyrobot.Controllers
         }
 
         [Route("api/user-summoners")]
+        [CacheOutput(ServerTimeSpan = 60 * 5, ClientTimeSpan = 50 * 5)]
         public async Task<List<SummonerInfoViewModel>> GetUserSummoners(string username)
         {
             var user = await _users.FindAsync(username);
@@ -48,6 +50,7 @@ namespace ChampionMains.Pyrobot.Controllers
         }
 
         [Route("api/leaderboard")]
+        [CacheOutput(ServerTimeSpan = 60 * 5, ClientTimeSpan = 50 * 5)]
         public async Task<LeaderboardViewModel> GetLeaderboard(int championId, int count = 10, int minPoints = 0)
         {
             var entriesQuery = _unitOfWork.SummonerChampionMasteries.Where(cm => cm.ChampionId == championId)
