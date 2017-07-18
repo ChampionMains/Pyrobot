@@ -2,6 +2,8 @@
 layout: default
 title: Changelog
 changes:
+  2017-07-17:
+    - Flairs now show a preview in both the subreddit table and the new edit modal.
   2017-07-15:
     - Updated backend for the V3 Riot API changes.
     - Summoners can now be added even if they are already registered with another Reddit account. This change is to help with many people
