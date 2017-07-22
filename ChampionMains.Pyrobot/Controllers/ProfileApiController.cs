@@ -207,45 +207,11 @@ namespace ChampionMains.Pyrobot.Controllers
 
         [HttpGet]
         [Route("profile/api/flaircss")]
-        [CacheOutput(ServerTimeSpan = 3600 * 6, ClientTimeSpan = 3600, ExcludeQueryStringFromCacheKey = true)]
+        [CacheOutput(ServerTimeSpan = 60 * 10, ClientTimeSpan = 60 * 30, ExcludeQueryStringFromCacheKey = true)]
         public async Task<HttpResponseMessage> GetFlairCss()
         {
-            var tasks = (await _subredditService.GetSubreddits()).Select(async subreddit =>
-            {
-                var subredditName = subreddit.Name;
-                var request = WebRequest.Create($"https://reddit.com/r/{subredditName}/stylesheet.css");
-
-                var response = await request.GetResponseAsync();
-                var data = response.GetResponseStream();
-                using (var reader = new StreamReader(data))
-                {
-                    var css = reader.ReadToEnd();
-                    var sb = new StringBuilder();
-
-                    var matches = Regex.Matches(css, // Cancer.
-                        @"(?<=\}|^)([^\}\{]*(?<=,|\}|^)\.flair\b[^\}\{]*)((?'brace'\{.*?)+(?'-brace'\}.*?)+)+(?(brace)(?!))");
-                    foreach (Match match in matches)
-                    {
-                        var oldSelectors = match.Groups[1].Value; // ".flair-rank-challenger,.flair-rank-diamond,.flair-rank-master"
-                        var styles = match.Groups[2].Value; // "{outline:#000 solid 1px}"
-
-                        var selectors = oldSelectors.Split(',');
-                        for (var i = 0; i < selectors.Length; i++)
-                        {
-                            // ".subreddit-zyramains>.flair-rank-challenger" comma separated
-                            var selector = selectors[i];
-                            if (i != 0)
-                                sb.Append(',');
-                            sb.Append(".subreddit-").Append(subredditName).Append('>').Append(selector);
-                        }
-                        sb.Append(styles);
-                    }
-                    return sb;
-                }
-            }).ToList();
-            await Task.WhenAll(tasks);
-
-            var result = string.Join("\n", tasks.Select(t => t.Result));
+            var subredditCss = (await _subredditService.GetSubreddits()).Select(subreddit => subreddit.FlairCss).Where(css => !string.IsNullOrWhiteSpace(css));
+            var result = string.Join("\n", subredditCss);
             return new HttpResponseMessage(HttpStatusCode.OK)
             {
                 Content = new StringContent(result, Encoding.UTF8, "text/css")

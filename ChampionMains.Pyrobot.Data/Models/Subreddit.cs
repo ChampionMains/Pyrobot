@@ -31,11 +31,14 @@ namespace ChampionMains.Pyrobot.Data.Models
         public bool ChampionMasteryTextEnabled { get; set; }
 
         [Required]
-        // TODO: not implement
+        // TODO: not implemented
         public bool TextDisabled { get; set; }
 
         [Required]
         public byte MinimumChampionMasteryLevel { get; set; }
+
+        [MaxLength]
+        public string FlairCss { get; set; }
 
         /// <summary>
         /// If true, users can only enable both or neither (rank, championmastery)

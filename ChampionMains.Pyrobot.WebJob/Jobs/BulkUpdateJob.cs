@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data;
@@ -23,19 +27,21 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
         private readonly RedditService _redditService;
         private readonly FlairService _flairService;
+        private readonly SubredditService _subredditService;
 
         private readonly TimeSpan _timeout;
 
         private readonly UnitOfWork _unitOfWork;
 
         public BulkUpdateJob(RiotService riotService, SummonerService summonerService,
-            RedditService redditService, FlairService flairService, WebJobConfiguration config,
-            UnitOfWork unitOfWork)
+            RedditService redditService, FlairService flairService, SubredditService subredditService,
+            WebJobConfiguration config, UnitOfWork unitOfWork)
         {
             _riotService = riotService;
             _summonerService = summonerService;
             _redditService = redditService;
             _flairService = flairService;
+            _subredditService = subredditService;
             _timeout = config.TimeoutBulkUpdate;
             _unitOfWork = unitOfWork;
         }
@@ -74,6 +80,10 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             // TODO: different timeout for summoner data and flairs
             await UpdateSummonerData(token);
             await UpdateFlairs(token);
+
+            // This could be done in parallel with the previous two but I don't
+            // want to deal with concurrent updates to UnitOfWork.
+            await UpdateSubredditCss(token);
         }
 
         private async Task UpdateSummonerData(CancellationToken token)
@@ -270,6 +280,51 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             Console.Out.WriteLine($"Updating flairs {(token.IsCancellationRequested ? "interrupted" : "complete")}, {flairUpdates} rows affected.");
 
             token.ThrowIfCancellationRequested();
+        }
+
+        private async Task UpdateSubredditCss(CancellationToken token)
+        {
+            var tasks = (await _subredditService.GetSubreddits()).Select(async subreddit =>
+            {
+                var subredditName = subreddit.Name;
+                var request = WebRequest.Create($"https://reddit.com/r/{subredditName}/stylesheet.css");
+
+                var response = await request.GetResponseAsync();
+
+                token.ThrowIfCancellationRequested();
+
+                var data = response.GetResponseStream();
+                using (var reader = new StreamReader(data))
+                {
+                    var css = await reader.ReadToEndAsync();
+                    var sb = new StringBuilder();
+
+                    token.ThrowIfCancellationRequested();
+
+                    var matches = Regex.Matches(css, // Cancer.
+                        @"(?<=\}|^)([^\}\{]*(?<=,|\}|^)\.flair\b[^\}\{]*)((?'brace'\{.*?)+(?'-brace'\}.*?)+)+(?(brace)(?!))");
+                    foreach (Match match in matches)
+                    {
+                        var oldSelectors = match.Groups[1].Value; // ".flair-rank-challenger,.flair-rank-diamond,.flair-rank-master"
+                        var styles = match.Groups[2].Value; // "{outline:#000 solid 1px}"
+
+                        var selectors = oldSelectors.Split(',');
+                        for (var i = 0; i < selectors.Length; i++)
+                        {
+                            // ".subreddit-zyramains>.flair-rank-challenger" comma separated
+                            var selector = selectors[i];
+                            if (i != 0)
+                                sb.Append(',');
+                            sb.Append(".subreddit-").Append(subredditName).Append('>').Append(selector);
+                        }
+                        sb.Append(styles);
+                    }
+                    subreddit.FlairCss = sb.ToString();
+                }
+            }).ToList();
+            await Task.WhenAll(tasks);
+            var updates = await _subredditService.SaveChangesAsync();
+            Console.Out.WriteLine($"Updating subreddit css {(token.IsCancellationRequested ? "interrupted" : "complete")}, {updates} rows affected.");
         }
     }
 }
