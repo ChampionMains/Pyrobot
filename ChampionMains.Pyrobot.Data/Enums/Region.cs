@@ -16,9 +16,9 @@ namespace ChampionMains.Pyrobot.Data.Enums
             return Enum.GetValues(typeof(Region)).Cast<Region>();
         }
 
-        public static IEnumerable<string> GetRegionStrings()
+        public static List<string> GetRegionStrings()
         {
-            return GetRegions().Select(x => x.ToString());
+            return GetRegions().Select(x => x.ToString()).ToList();
         }
     }
 }

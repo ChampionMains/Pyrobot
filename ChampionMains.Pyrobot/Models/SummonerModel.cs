@@ -8,7 +8,12 @@ namespace ChampionMains.Pyrobot.Models
 {
     public class SummonerModel
     {
-        public static readonly IEnumerable<string> AllRegions = RegionUtils.GetRegionStrings();
+        public static readonly List<string> AllRegions = RegionUtils.GetRegionStrings();
+        static SummonerModel()
+        {
+            // https://discussion.developer.riotgames.com/articles/2435/impending-removal-of-rune-page-names-from-kr-summo.html
+            AllRegions.Remove("KR");
+        }
 
         public class RegionValidationAttribute : ValidationAttribute
         {
