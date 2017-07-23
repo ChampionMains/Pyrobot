@@ -2,6 +2,9 @@
 layout: default
 title: Changelog
 changes:
+  2017-07-22:
+    - Updated the hourly update job to also update subreddit flair CSS. Previously flair CSS would update sporadically and new CSS
+    could take several hours to show up on new subreddits.
   2017-07-17:
     - Flairs now show a preview in both the subreddit table and the new edit modal.
   2017-07-15:
