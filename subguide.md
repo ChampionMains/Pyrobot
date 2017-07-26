@@ -49,6 +49,8 @@ There have also been a few larger 32x32 px and 64x32 px flairs:
 The flair size actually isn't what is important for the images right now, just the
 *aspect ratio*. The scripts I use to generate the CSS will take care of the scaling,
 and it'll also be easier to changes sizes later.
+**In fact, I have begun keeping images larger than their pixel size which lets details
+shine on high-dpi screens (July 2017).**
 For the wide flairs the ratio is 2:1, for the square ones its 1:1.
 You could also pick another aspect ratio if you like.
 
