@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.Web.Mvc;
 using ChampionMains.Pyrobot.Services;
 using ChampionMains.Pyrobot.Startup;
@@ -32,6 +33,8 @@ namespace ChampionMains.Pyrobot
                 s["webjob.wakeup.url"],
                 s["userAgent"]), Lifestyle.Singleton);
 
+            if (s["website.hmacKey"]?.Length < 32)
+                throw new ArgumentException("website.hmacKey has insufficient length or is null.");
             container.Register(() => new ValidationService(s["website.hmacKey"]), Lifestyle.Singleton);
 
             SharedSimpleInjectorConfig.Configure(container, s);
