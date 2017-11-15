@@ -179,7 +179,7 @@
             </div>
             <div class="modal-body">
                 <div class="modal-wizard">
-                    <div class="modal-wizard-step" ng-class="{'slide-left': code}">
+                    <div class="modal-wizard-step" ng-class="{'slide-left': token}">
                         <p>This dialog will allow you to link your summoner to your Reddit account.</p>
                         <p>Linking your summoner will allow you to display a ranked flair on qualifying subreddits.</p>
                         <form class="form-horizontal">
@@ -193,7 +193,7 @@
                                 <label for="region" class="col-sm-4 control-label">Region</label>
                                 <div class="col-sm-8">
                                     <select class="form-control" id="region" ng-disabled="busy" ng-model="region">
-                                        @foreach (string r in SummonerModel.AllRegions)
+                                        @foreach (var r in SummonerModel.AllRegions)
                                         {
                                             <option value="@r">@r</option>
                                         }
@@ -208,9 +208,9 @@
                             <strong>Almost Done!</strong>
                         </p>
                         <p>
-                            Validate your summoner by renaming a <em>rune page</em> to:
+                            Validate your summoner by changing your <em>summoner icon</em> to:
                         </p>
-                        <blockquote ng-bind="code"></blockquote>
+                        <img class="" style="width: 96px;" summoner-img="profileIcon" alt="icon" />
                     </div>
                 </div>
             </div>

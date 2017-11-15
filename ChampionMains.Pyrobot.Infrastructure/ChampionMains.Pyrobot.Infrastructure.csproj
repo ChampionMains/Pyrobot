@@ -130,6 +130,7 @@
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\ValidationService.cs" />
     <Compile Include="Services\WebJobService.cs" />
+    <Compile Include="Util\ThreadRandom.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ChampionMains.Pyrobot.Data\ChampionMains.Pyrobot.Data.csproj">

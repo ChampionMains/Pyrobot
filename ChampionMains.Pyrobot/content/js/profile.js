@@ -83,8 +83,10 @@
         var baseUrl = window.Riot.DDragon.m.cdn.replace('http://', '//') + '/' + window.Riot.DDragon.m.n.profileicon + '/img/profileicon/';
         return {
             scope: { summonerImg: '=' },
-            link: function(scope, element, attrs) {
-                attrs.$set('src', baseUrl + scope.summonerImg + '.png');
+            link: function (scope, element, attrs) {
+                scope.$watch('summonerImg', function (val) {
+                    attrs.$set('src', baseUrl + val + '.png');
+                });
             }
         };
     }).filter('filterHidden', function() {
@@ -237,7 +239,10 @@
         var dialog = modal('#modal-register');
 
         dialog.onShow(function() {
-            $scope.code = null;
+            //$scope.code = null;
+            $scope.profileIcon = null;
+            $scope.token = null;
+
             $scope.alert = null;
             window.setTimeout(function() { $('#summonerName').focus(); }, 100);
         });
@@ -247,7 +252,8 @@
         function executeValidation() {
             var data = {
                 region: $scope.region,
-                summonerName: $scope.summonerName
+                summonerName: $scope.summonerName,
+                token: $scope.token
             };
             ajax.post('/profile/api/summoner/validate', data, function(success, data, status) {
                 //console.log(arguments);
@@ -257,7 +263,7 @@
                         $timeout(executeValidation, 5000);
                         return;
                     }
-                    $scope.alert = { text: 'Validation was unsuccessful. Please double check the rune page.' };
+                    $scope.alert = { text: 'Validation was unsuccessful. Please double check your summoner icon.' };
                     $scope.busy = false;
                     return;
                 }
@@ -285,7 +291,9 @@
                     $scope.alert = { text: data.error };
                     return;
                 }
-                $scope.code = data.result.code;
+                $scope.profileIcon = data.result.profileIcon;
+                $scope.token = data.result.token;
+                //$scope.code = data.result.code;
             });
         }
 
@@ -293,8 +301,9 @@
         $scope.confirm = function() {
             $scope.busy = true;
             $scope.alert = null;
-            
-            if ($scope.code) {
+
+            // if ($scope.code) {
+            if ($scope.token) {
                 validationAttempts = 3;
                 executeValidation();
             }

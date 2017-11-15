@@ -29,7 +29,8 @@ namespace ChampionMains.Pyrobot.Startup
             container.Register<SubredditService>(Lifestyle.Scoped);
             // above use db, below do not
             container.Register<RedditService>(Lifestyle.Singleton);
-            container.Register<ValidationService>(Lifestyle.Singleton);
+            if (s["website.hmacKey"]?.Length < 32)
+                throw new ArgumentException("website.hmacKey has insufficient length or is null.");
             container.Register(() => new RoleService(
                 s["security.admins"].Split(',').Select(x => x.Trim()).ToList()), Lifestyle.Singleton);
             container.Register(() => new RiotService

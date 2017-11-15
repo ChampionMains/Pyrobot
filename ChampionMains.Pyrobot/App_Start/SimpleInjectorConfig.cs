@@ -32,6 +32,8 @@ namespace ChampionMains.Pyrobot
                 s["webjob.wakeup.url"],
                 s["userAgent"]), Lifestyle.Singleton);
 
+            container.Register(() => new ValidationService(s["website.hmacKey"]), Lifestyle.Singleton);
+
             SharedSimpleInjectorConfig.Configure(container, s);
             
 

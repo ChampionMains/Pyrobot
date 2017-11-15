@@ -35,5 +35,10 @@ namespace ChampionMains.Pyrobot.Models
 
         [Required(ErrorMessage = "Summoner name is required")]
         public string SummonerName { get; set; }
+
+        /// <summary>
+        /// Token from ValidationService.
+        /// </summary>
+        public string Token { get; set; }
     }
 }

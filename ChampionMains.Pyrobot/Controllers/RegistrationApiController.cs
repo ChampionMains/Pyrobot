@@ -9,12 +9,18 @@ using ChampionMains.Pyrobot.Models;
 using ChampionMains.Pyrobot.Riot;
 using ChampionMains.Pyrobot.Services;
 using ChampionMains.Pyrobot.Services.Riot;
+using ChampionMains.Pyrobot.Util;
 
 namespace ChampionMains.Pyrobot.Controllers
 {
     [WebApiAuthorize]
     public class RegistrationApiController : ApiController
     {
+        /// <summary>
+        /// Public profile icons range from id 0-28.
+        /// </summary>
+        private const int ProfileIconRange = 29;
+
         protected RiotService Riot { get; set; }
         protected SummonerService Summoners { get; set; }
         protected UserService Users { get; set; }
@@ -43,21 +49,17 @@ namespace ChampionMains.Pyrobot.Controllers
                 if (user == null)
                     return StatusCode(HttpStatusCode.Unauthorized);
 
-                Summoner riotSummoner = null;
-                // If Summoner is already in DB, we transfer it.
-                var dbSummoner = await Summoners.FindSummonerAsync(model.Region, model.SummonerName);
-                if (dbSummoner == null)
-                {
-                    // Otherwise, we check the summoner exists from the Riot API.
-                    riotSummoner = await FindSummonerAsync(model.Region, model.SummonerName);
-                    if (riotSummoner == null)
-                        return Conflict("Summoner not found.");
-                }
+                // We always pull from Riot in order to get the latest profile icon. (Within 2 min).
+                var riotSummoner = await FindSummonerAsync(model.Region, model.SummonerName);
+                if (riotSummoner == null)
+                    return Conflict("Summoner not found.");
+                
+                var profileIcon = ThreadRandom.NextExcluding(ProfileIconRange, riotSummoner.ProfileIconId);
 
                 return Ok(new
                 {
-                    code = await Validation.GenerateAsync(User.Identity.Name,
-                        dbSummoner?.SummonerId ?? riotSummoner.Id, model.Region, user.Name)
+                    profileIcon,
+                    token = Validation.GenerateToken(User.Identity.Name, riotSummoner.Id, model.Region, user.Name, profileIcon)
                 });
             }
             catch (RiotHttpException e)
@@ -84,24 +86,20 @@ namespace ChampionMains.Pyrobot.Controllers
                 if (user == null)
                     return StatusCode(HttpStatusCode.Unauthorized);
 
-                Summoner riotSummoner = null;
-                // If Summoner is already in DB, we transfer it.
-                var dbSummoner = await Summoners.FindSummonerAsync(model.Region, model.SummonerName);
-                if (dbSummoner == null)
+                // We always pull from Riot in order to get the latest profile icon. With force.
+                var riotSummoner = await FindSummonerAsync(model.Region, model.SummonerName, true);
+                if (riotSummoner == null)
+                    return Conflict("Summoner not found.");
+
+                // Check if token is valid and user has updated their profile icon.
+                if (!Validation.ValidateToken(model.Token, User.Identity.Name, riotSummoner.Id, model.Region, user.Name,
+                    riotSummoner.ProfileIconId))
                 {
-                    // Otherwise, we check the summoner exists from the Riot API.
-                    riotSummoner = await FindSummonerAsync(model.Region, model.SummonerName);
-                    if (riotSummoner == null)
-                        return Conflict("Summoner not found.");
+                    return StatusCode(HttpStatusCode.ExpectationFailed);
                 }
 
-                var summonerId = dbSummoner?.SummonerId ?? riotSummoner.Id;
-
-                var runePages = await Riot.GetRunePages(model.Region, summonerId);
-                var code = await Validation.GenerateAsync(User.Identity.Name, summonerId, model.Region, user.Name);
-                
-                if (!runePages.Any(page => string.Equals(page.Name, code, StringComparison.OrdinalIgnoreCase)))
-                    return StatusCode(HttpStatusCode.ExpectationFailed);
+                // If Summoner is already in DB, we transfer it.
+                var dbSummoner = await Summoners.FindSummonerAsync(model.Region, model.SummonerName);
 
                 if (dbSummoner != null)
                 {
@@ -143,10 +141,10 @@ namespace ChampionMains.Pyrobot.Controllers
             return Content(HttpStatusCode.Conflict, new HttpError(message));
         }
 
-        private Task<Summoner> FindSummonerAsync(string region, string summonerName)
+        private Task<Summoner> FindSummonerAsync(string region, string summonerName, bool force = false)
         {
             return CacheUtil.GetItemAsync($"{region}:{summonerName}".ToLowerInvariant(),
-                () => Riot.GetSummoner(region, summonerName));
+                () => Riot.GetSummoner(region, summonerName), force);
         }
     }
 }
