@@ -17,7 +17,7 @@ namespace ChampionMains.Pyrobot
 
             if (force || item == null)
             {
-                item = createItem();
+                item = createItem() ?? item;
                 if (item == null)
                     return null;
                 HttpRuntime.Cache.Add(key, item, null,
@@ -34,7 +34,7 @@ namespace ChampionMains.Pyrobot
 
             if (force || item == null)
             {
-                item = await createItem();
+                item = await createItem() ?? item;
                 if (item == null)
                     return null;
                 HttpRuntime.Cache.Add(key, item, null,
