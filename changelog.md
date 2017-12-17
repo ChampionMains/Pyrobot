@@ -2,6 +2,9 @@
 layout: default
 title: Changelog
 changes:
+  2017-08-30:
+    - The hourly update job has been disabled to due changes in the Riot API. There is currently no estimate of when it will be
+      re-enabled
   2017-07-22:
     - Updated the hourly update job to also update subreddit flair CSS. Previously flair CSS would update sporadically and new CSS
       could take several hours to show up on new subreddits.
