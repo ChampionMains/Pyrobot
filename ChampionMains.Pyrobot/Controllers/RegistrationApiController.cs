@@ -98,8 +98,8 @@ namespace ChampionMains.Pyrobot.Controllers
                     return StatusCode(HttpStatusCode.ExpectationFailed);
                 }
 
-                // If Summoner is already in DB, we transfer it.
-                var dbSummoner = await Summoners.FindSummonerAsync(model.Region, model.SummonerName);
+                // If Summoner is already in DB, we transfer it. Make sure to use summoner ID in case a name change has happened.
+                var dbSummoner = await Summoners.FindSummonerAsync(model.Region, riotSummoner.Id);
 
                 if (dbSummoner != null)
                 {

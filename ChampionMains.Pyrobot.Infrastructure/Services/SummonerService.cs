@@ -141,16 +141,11 @@ namespace ChampionMains.Pyrobot.Services
                 .FirstOrDefault(s => s.Id == id);
         }
 
-        public Task<Summoner> FindSummonerAsync(string region, string summonerName)
+        public Task<Summoner> FindSummonerAsync(string region, long summonerId)
         {
             return _unitOfWork.Summoners.FirstOrDefaultAsync(summoner =>
                 summoner.Region == region &&
-                summoner.Name == summonerName);
-        }
-
-        public async Task<bool> IsSummonerRegisteredAsync(string region, string summonerName)
-        {
-            return null != await FindSummonerAsync(region, summonerName);
+                summoner.SummonerId == summonerId);
         }
 
         public async Task<bool> RemoveAsync(int summonerId)
