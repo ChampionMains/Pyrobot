@@ -2,6 +2,8 @@
 layout: default
 title: Changelog
 changes:
+  2017-12-18:
+    - Patched a bug that prevented users from registering existing accounts that had undergone a name change.
   2017-08-30:
     - The hourly update job has been disabled to due changes in the Riot API. There is currently no estimate of when it will be
       re-enabled
