@@ -166,13 +166,12 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                             foreach (var summoner in summonersByRegion)
                             {
                                 var data = summonerData[summoner.SummonerId];
-                                Tuple<Tier, byte> rank;
-                                summonerRanks.TryGetValue(summoner.SummonerId, out rank);
+                                summonerRanks.TryGetValue(summoner.SummonerId, out var rank);
                                 var mastery = summonerMasteries[summoner.SummonerId];
 
                                 _summonerService.UpdateSummoner(summoner, region, data.Name, data.ProfileIconId,
                                     rank?.Item1,
-                                    rank?.Item2, mastery);
+                                    (byte?) rank?.Item2, mastery);
                             }
 
                             // save changes per batch/region

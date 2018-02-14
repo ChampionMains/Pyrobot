@@ -2,18 +2,32 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using ChampionMains.Pyrobot.Data.Enums;
+using Reg = MingweiSamuel.Camille.Enums.Region;
 
 namespace ChampionMains.Pyrobot.Models
 {
     public class SummonerModel
     {
-        public static readonly List<string> AllRegions = RegionUtils.GetRegionStrings();
-        static SummonerModel()
+        public static readonly List<string> AllRegions = new List<string>
         {
+            Reg.BR.Key,
+            Reg.EUNE.Key,
+            Reg.EUW.Key,
+            Reg.NA.Key,
             // https://discussion.developer.riotgames.com/articles/2435/impending-removal-of-rune-page-names-from-kr-summo.html
-            AllRegions.Remove("KR");
-        }
+            // Reg.KR.Key,
+            Reg.LAN.Key,
+            Reg.LAS.Key,
+            Reg.OCE.Key,
+            Reg.RU.Key,
+            Reg.TR.Key,
+            Reg.JP.Key
+        };
+
+//        static SummonerModel()
+//        {
+//            AllRegions.Remove("KR");
+//        }
 
         public class RegionValidationAttribute : ValidationAttribute
         {

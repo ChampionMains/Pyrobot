@@ -4,7 +4,7 @@ using System.Linq;
 using ChampionMains.Pyrobot.Data;
 using ChampionMains.Pyrobot.Services;
 using ChampionMains.Pyrobot.Services.Reddit;
-using ChampionMains.Pyrobot.Services.Riot;
+using MingweiSamuel.Camille;
 using SimpleInjector;
 
 namespace ChampionMains.Pyrobot.Startup
@@ -31,15 +31,11 @@ namespace ChampionMains.Pyrobot.Startup
             container.Register<RedditService>(Lifestyle.Singleton);
             container.Register(() => new RoleService(
                 s["security.admins"].Split(',').Select(x => x.Trim()).ToList()), Lifestyle.Singleton);
-            container.Register(() => new RiotService
-            {
-                WebRequester = new RiotWebRequester(s["riot.rateLimit"])
+            container.Register(() => RiotApi.NewInstance(
+                new RiotApiConfig.Builder(s["riot.apiKey"])
                 {
-                    ApiKey = s["riot.apiKey"],
-                    MaxAttempts = int.Parse(s["riot.maxAttempts"]),
-                    RetryInterval = TimeSpan.Parse(s["riot.retryInterval"])
-                }
-            }, Lifestyle.Singleton);
+                    Retries = int.Parse(s["riot.maxAttempts"]) - 1
+                }.Build()), Lifestyle.Singleton);
 
             // Reddit WebRequester
             container.Register(() => new RedditWebRequester(

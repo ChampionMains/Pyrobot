@@ -3,86 +3,75 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data.Enums;
-using ChampionMains.Pyrobot.Riot;
-using ChampionMains.Pyrobot.Services.Riot;
-using Newtonsoft.Json.Linq;
-using Summoner = ChampionMains.Pyrobot.Riot.Summoner;
+using MingweiSamuel.Camille;
+using MingweiSamuel.Camille.ChampionMastery;
+using MingweiSamuel.Camille.Enums;
+using MingweiSamuel.Camille.League;
+using MingweiSamuel.Camille.Summoner;
+using Tier = ChampionMains.Pyrobot.Data.Enums.Tier;
 
 namespace ChampionMains.Pyrobot.Services
 {
     public class RiotService
     {
-        private const string LeagueBaseUri = "league/v3/positions/by-summoner/";
-        private const string SummonerBaseUri = "summoner/v3/summoners/";
-        private const string ChampionMasteryBaseUri = "champion-mastery/v3/champion-masteries/by-summoner/";
-        private const string RunesBaseUri = "platform/v3/runes/by-summoner/";
+        private readonly RiotApi _api;
 
-        public RiotWebRequester WebRequester { get; set; }
-
-        public async Task<Summoner> GetSummoner(string region, string summonerName)
+        public RiotService(RiotApi api)
         {
-            var uri = SummonerBaseUri + "by-name/" + Uri.EscapeDataString(summonerName);
-            return (await WebRequester.SendRequestAsync(region, uri)).ToObject<Summoner>();
+            _api = api;
         }
 
-        public async Task<Summoner> GetSummoner(string region, long summonerId)
+        public Task<Summoner> GetSummoner(string region, string summonerName)
         {
-            var uri = SummonerBaseUri + summonerId;
-            return (await WebRequester.SendRequestAsync(region, uri)).ToObject<Summoner>();
+            return _api.Summoner.GetBySummonerNameAsync(Region.Get(region), summonerName);
+        }
+
+        public Task<Summoner> GetSummoner(string region, long summonerId)
+        {
+            return _api.Summoner.GetBySummonerIdAsync(Region.Get(region), summonerId);
         }
 
         public async Task<IDictionary<long, Summoner>> GetSummoners(string region, ICollection<long> summonerIds)
         {
-            var tasks = summonerIds.Select(async id => new KeyValuePair<long, Summoner>(id, await GetSummoner(region, id))).ToList();
-            await Task.WhenAll(tasks);
-            return tasks.Select(t => t.Result).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            var pairs = await Task.WhenAll(
+                summonerIds.Select(async id => new KeyValuePair<long, Summoner>(id, await GetSummoner(region, id))));
+            return pairs.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
 
-        public async Task<Tuple<Tier, byte>> GetRank(string region, long summonerId)
+        public async Task<Tuple<Tier, Division>> GetRank(string region, long summonerId)
         {
-            var uri = LeagueBaseUri + summonerId;
-            return GetRankFromResponse(await WebRequester.SendRequestAsync(region, uri));
+            var response = await _api.League.GetAllLeaguePositionsForSummonerAsync(Region.Get(region), summonerId);
+            return GetRankFromResponse(response);
         }
 
-        public async Task<IDictionary<long, Tuple<Tier, byte>>> GetRanks(string region, ICollection<long> summonerIds)
+        public async Task<IDictionary<long, Tuple<Tier, Division>>> GetRanks(string region, ICollection<long> summonerIds)
         {
-            var tasks = summonerIds.Select(async id => new KeyValuePair<long, Tuple<Tier, byte>>(id, await GetRank(region, id)));
-            await Task.WhenAll(tasks);
-            return tasks.Select(t => t.Result).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            var pairs = await Task.WhenAll(
+                summonerIds.Select(async id => new KeyValuePair<long, Tuple<Tier, Division>>(id, await GetRank(region, id))));
+            return pairs.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
 
-        public async Task<ICollection<ChampionMastery>> GetChampionMastery(string region, long summonerId)
+        public Task<ChampionMastery[]> GetChampionMastery(string region, long summonerId)
         {
-            var uri = ChampionMasteryBaseUri + summonerId;
-            var json = await WebRequester.SendRequestAsync(region, uri);
-            return json.ToObject<ICollection<ChampionMastery>>();
+            return _api.ChampionMastery.GetAllChampionMasteriesAsync(Region.Get(region), summonerId);
         }
 
-        public async Task<IDictionary<long, ICollection<ChampionMastery>>> GetChampionMasteries(string region,
+        public async Task<IDictionary<long, ChampionMastery[]>> GetChampionMasteries(string region,
             ICollection<long> summonerIds)
         {
-            var data = summonerIds.ToDictionary(id => id, async id => await GetChampionMastery(region, id));
-            await Task.WhenAll(data.Values);
-            return data.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Result);
+            var pairs = await Task.WhenAll(
+                summonerIds.Select(async id => new KeyValuePair<long, ChampionMastery[]>(id, await GetChampionMastery(region, id))));
+            return pairs.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
 
-        public async Task<ICollection<RunePage>> GetRunePages(string region, long summonerId)
+        private static Tuple<Tier, Division> GetRankFromResponse(IEnumerable<LeaguePosition> json)
         {
-            var uri = RunesBaseUri + summonerId;
-            var json = await WebRequester.SendRequestAsync(region, uri);
-
-            return json?["pages"].ToObject<ICollection<RunePage>>();
-        }
-
-        private static Tuple<Tier, byte> GetRankFromResponse(JToken json)
-        {
-            var entry = json?.ToObject<IList<LeagueEntry>>()
-                .FirstOrDefault(e => QueueType.RANKED_SOLO_5x5 == e.QueueType);
+            var entry = json.FirstOrDefault(e => Queue.RANKED_SOLO_5x5 == e.QueueType);
             if (entry == null)
                 return null;
-            var division = (byte)entry.Division;
-            var tier = (Tier) (entry.Tier + 1);
-            return Tuple.Create(tier, division);
+            Enum.TryParse(entry.Rank, out Division div);
+            Enum.TryParse(entry.Tier.First().ToString().ToUpperInvariant() + entry.Tier.Substring(1).ToLowerInvariant(), out Tier tier);
+            return Tuple.Create(tier, div);
         }
 
     }
