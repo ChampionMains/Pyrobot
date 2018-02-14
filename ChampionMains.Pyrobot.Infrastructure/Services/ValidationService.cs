@@ -47,8 +47,7 @@ namespace ChampionMains.Pyrobot.Services
             var colon = token.IndexOf(':');
             if (colon < 0)
                 return false;
-            long millis;
-            if (!long.TryParse(token.Substring(0, colon), out millis))
+            if (!long.TryParse(token.Substring(0, colon), out var millis))
                 return false;
             var genTime = EpochMillisToDateTime(millis);
             var delta = DateTime.UtcNow - genTime;

@@ -11,6 +11,8 @@
     <AssemblyName>ChampionMains.Pyrobot.Infrastructure</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,8 +32,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Autofac">
-      <HintPath>..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
+    <Reference Include="Camille, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MingweiSamuel.Camille.1.0.1-nightly-2018-02-15-13088e0cc4\lib\net45\Camille.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
@@ -69,14 +71,19 @@
       <HintPath>..\packages\WindowsAzure.Storage.7.1.2\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+    </Reference>
     <Reference Include="System.Spatial, Version=5.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Spatial.5.7.0\lib\net40\System.Spatial.dll</HintPath>
       <Private>True</Private>
@@ -123,8 +130,6 @@
     <Compile Include="Services\Reddit\RedditWebRequester.cs" />
     <Compile Include="Services\Reddit\SubRedditKind.cs" />
     <Compile Include="Services\RiotService.cs" />
-    <Compile Include="Services\Riot\RiotHttpException.cs" />
-    <Compile Include="Services\Riot\RiotWebRequester.cs" />
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\SummonerService.cs" />
     <Compile Include="Services\UserService.cs" />
@@ -140,10 +145,6 @@
     <ProjectReference Include="..\ChampionMains.Pyrobot.Reddit\ChampionMains.Pyrobot.Reddit.csproj">
       <Project>{23f0de13-732d-4cdc-9bf2-eafca93814e8}</Project>
       <Name>ChampionMains.Pyrobot.Reddit</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ChampionMains.Pyrobot.Riot\ChampionMains.Pyrobot.Riot.csproj">
-      <Project>{83196bcd-e758-40b7-9534-c176c86983aa}</Project>
-      <Name>ChampionMains.Pyrobot.Riot</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using ChampionMains.Pyrobot.Attributes;
 using ChampionMains.Pyrobot.Models;
-using ChampionMains.Pyrobot.Riot;
 using ChampionMains.Pyrobot.Services;
-using ChampionMains.Pyrobot.Services.Riot;
 using ChampionMains.Pyrobot.Util;
+using MingweiSamuel.Camille.Summoner;
+using MingweiSamuel.Camille.Util;
 
 namespace ChampionMains.Pyrobot.Controllers
 {
@@ -62,15 +62,16 @@ namespace ChampionMains.Pyrobot.Controllers
                     token = Validation.GenerateToken(User.Identity.Name, riotSummoner.Id, model.Region, user.Name, profileIcon)
                 });
             }
-            catch (RiotHttpException e)
+            catch (RiotResponseException e)
             {
-                switch ((int) e.StatusCode)
+                switch ((int) (e.GetResponse()?.StatusCode ?? 0))
                 {
                     case 500:
                     case 503:
                         return Conflict("Error communicating with Riot (Service unavailable)");
+                    default:
+                        throw;
                 }
-                throw;
             }
         }
 
@@ -124,15 +125,16 @@ namespace ChampionMains.Pyrobot.Controllers
 
                 return Ok();
             }
-            catch (RiotHttpException e)
+            catch (RiotResponseException e)
             {
-                switch ((int) e.StatusCode)
+                switch ((int)(e.GetResponse()?.StatusCode ?? 0))
                 {
                     case 500:
                     case 503:
                         return Conflict("Error communicating with Riot (Service unavailable)");
+                    default:
+                        throw;
                 }
-                throw;
             }
         }
 
