@@ -69,8 +69,10 @@ namespace ChampionMains.Pyrobot.Services
             var entry = json.FirstOrDefault(e => Queue.RANKED_SOLO_5x5 == e.QueueType);
             if (entry == null)
                 return null;
-            Enum.TryParse(entry.Rank, out Division div);
-            Enum.TryParse(entry.Tier.First().ToString().ToUpperInvariant() + entry.Tier.Substring(1).ToLowerInvariant(), out Tier tier);
+            Division div;
+            Enum.TryParse(entry.Rank, out div);
+            Tier tier;
+            Enum.TryParse(entry.Tier.First().ToString().ToUpperInvariant() + entry.Tier.Substring(1).ToLowerInvariant(), out tier);
             return Tuple.Create(tier, div);
         }
 
