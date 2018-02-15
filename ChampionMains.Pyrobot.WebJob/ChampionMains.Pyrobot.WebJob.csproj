@@ -235,7 +235,8 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <Target Name="CopyAppTemplateConfig" BeforeTargets="Clean">
+  <Target Name="CopyAppTemplateConfig" BeforeTargets="Build;UpdateAppConfigBeforeRun">
+    <Delete Files="App.config" />
     <Copy SourceFiles="App.template.config" DestinationFiles="App.config" />
   </Target>
   <Target Name="UpdateAppConfigBeforeRun" BeforeTargets="Build" Condition="Exists('App.Local.Config')">

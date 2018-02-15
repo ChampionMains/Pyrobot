@@ -412,12 +412,19 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <Target Name="CopyWebTemplateConfig" BeforeTargets="Clean">
+  <Target Name="BowerUpdate" BeforeTargets="Build">
+    <Exec Command="bower update --force" />
+  </Target>
+  
+  <!-- update webjob config -->
+  <Target Name="CopyWebJobAppConfig" BeforeTargets="Build;UpdateWebConfigBeforeRun">
+    <Delete Files="..\ChampionMains.Pyrobot.WebJob\App.config" />
+    <Copy SourceFiles="..\ChampionMains.Pyrobot.WebJob\App.template.config" DestinationFiles="..\ChampionMains.Pyrobot.WebJob\App.config" />
+  </Target>
+  
+  <Target Name="CopyWebTemplateConfig" BeforeTargets="Build;UpdateWebConfigBeforeRun">
     <Delete Files="Web.config" />
     <Copy SourceFiles="Web.template.config" DestinationFiles="Web.config" />
-  </Target>
-  <Target Name="BowerUpdate" BeforeTargets="Clean">
-    <Exec Command="bower update --force" />
   </Target>
   <Target Name="UpdateWebConfigBeforeRun" BeforeTargets="Build" Condition="Exists('Web.Local.Config')">
     <Message Text="Configuration: $(Configuration): Web.Local.config" Importance="high" />
