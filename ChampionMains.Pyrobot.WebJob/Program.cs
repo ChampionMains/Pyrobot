@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Data.Entity;
+using System.Threading;
 using ChampionMains.Pyrobot.Data;
 using ChampionMains.Pyrobot.Startup;
 using ChampionMains.Pyrobot.WebJob.Jobs;
