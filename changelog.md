@@ -2,6 +2,10 @@
 layout: default
 title: Changelog
 changes:
+  2018-02-21:
+    - The hourly update job is running again, but at a lower capacity. On average, summoners will be updated every 7 days.
+  2018-02-15:
+    - Updated Pyrobot to use the [Camille](https://github.com/MingweiSamuel/Camille) Riot API library.
   2017-12-18:
     - Patched a bug that prevented users from registering existing accounts that had undergone a name change.
   2017-08-30:
