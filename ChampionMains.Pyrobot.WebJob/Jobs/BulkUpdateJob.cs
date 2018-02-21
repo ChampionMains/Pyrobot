@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -207,16 +208,26 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
                 Console.Out.WriteLine($"Updating flairs from subreddit {subreddit.Name}.");
 
-                var existingFlairs = await _redditService.GetFlairsAsync(subreddit.Name);
-
-                Console.Out.WriteLine($"Pulled {existingFlairs.Count} existing flairs from subreddit {subreddit.Name}.");
-
-                return new
+                try
                 {
-                    subreddit,
-                    flairsBySubreddit,
-                    existingFlairs
-                };
+                    var existingFlairs = await _redditService.GetFlairsAsync(subreddit.Name);
+
+                    Console.Out.WriteLine(
+                        $"Pulled {existingFlairs.Count} existing flairs from subreddit {subreddit.Name}.");
+
+                    return new
+                    {
+                        subreddit,
+                        flairsBySubreddit,
+                        existingFlairs
+                    };
+                }
+                catch (HttpRequestException e)
+                {
+                    Console.Out.WriteLine(
+                        $"FAILED to pull existing flairs from subreddit {subreddit.Name}.", e);
+                    return null;
+                }
             }).ToList();
 
             await Task.WhenAll(getFlairTasks);
@@ -225,8 +236,14 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             var setFlairTasks = getFlairTasks.Select(t => t.Result).Select(t =>
             {
                 // task cancelled (or propagate null errors)
-                if (t == null && token.IsCancellationRequested)
+                if (t == null)
+                {
+                    // Or failed to pull existing flairs.
                     return null;
+                    //if (token.IsCancellationRequested)
+                    //    return null;
+                    //throw new NullReferenceException("Flair data null.");
+                }
 
                 var subreddit = t.subreddit;
                 var flairsBySubreddit = t.flairsBySubreddit;
