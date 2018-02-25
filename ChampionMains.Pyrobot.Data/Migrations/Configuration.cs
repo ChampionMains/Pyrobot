@@ -165,6 +165,7 @@ namespace ChampionMains.Pyrobot.Data.Migrations
                 new Champion {Id = 238, Name = "Zed", Identifier = "Zed"},
                 new Champion {Id = 115, Name = "Ziggs", Identifier = "Ziggs"},
                 new Champion {Id = 26, Name = "Zilean", Identifier = "Zilean"},
+                new Champion {Id = 143, Name = "Zoe", Identifier = "Zoe" },
                 new Champion {Id = 143, Name = "Zyra", Identifier = "Zyra"}
             };
             var cd = champions.ToDictionary(c => c.Name, c => c.Id);
