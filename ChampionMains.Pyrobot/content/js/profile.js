@@ -76,7 +76,10 @@
         return {
             scope: { champImg: '=' },
             link: function(scope, element, attrs) {
-                attrs.$set('src', baseUrl + scope.champImg + '.png');
+                scope.$watch('champImg',
+                    function(val) {
+                        attrs.$set('src', baseUrl + val + '.png');
+                    });
             }
         };
     }).directive('summonerImg', function() {
@@ -84,9 +87,10 @@
         return {
             scope: { summonerImg: '=' },
             link: function (scope, element, attrs) {
-                scope.$watch('summonerImg', function (val) {
-                    attrs.$set('src', baseUrl + val + '.png');
-                });
+                scope.$watch('summonerImg',
+                    function(val) {
+                        attrs.$set('src', baseUrl + val + '.png');
+                    });
             }
         };
     }).filter('filterHidden', function() {
