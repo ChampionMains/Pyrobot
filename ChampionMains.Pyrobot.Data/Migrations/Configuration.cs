@@ -56,7 +56,7 @@ namespace ChampionMains.Pyrobot.Data.Migrations
                 new Champion {Id = 60, Name = "Elise", Identifier = "Elise"},
                 new Champion {Id = 28, Name = "Evelynn", Identifier = "Evelynn"},
                 new Champion {Id = 81, Name = "Ezreal", Identifier = "Ezreal"},
-                new Champion {Id = 9, Name = "Fiddlesticks", Identifier = "FiddleSticks"},
+                new Champion {Id = 9, Name = "Fiddlesticks", Identifier = "Fiddlesticks"},
                 new Champion {Id = 114, Name = "Fiora", Identifier = "Fiora"},
                 new Champion {Id = 105, Name = "Fizz", Identifier = "Fizz"},
                 new Champion {Id = 3, Name = "Galio", Identifier = "Galio"},
