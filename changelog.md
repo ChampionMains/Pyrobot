@@ -2,6 +2,10 @@
 layout: default
 title: Changelog
 changes:
+  2018-12-02:
+    - Hourly update job will soon (by the new year) be reworked completely for long-term robustness.
+  2018-04-12:
+    - The hourly update job is experiencing intermittent failures.
   2018-02-21:
     - The hourly update job is running again, but at a lower capacity. On average, summoners will be updated every 7 days.
   2018-02-15:
