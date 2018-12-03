@@ -19,10 +19,6 @@ There is no fee for sending directly from a bank account or PayPal balance thoug
 
 [Send money through PayPal](https://paypal.me/MingweiSamuel){:class="btn btn-primary"}
 
-## Bitcoin
+## Venmo
 
-You can send Bitcoin to the following address:
-
-![](./img/bitcoin-qr.png)
-
-`1AJbdoQntZs7bByjMY6nh2Vce9V4TFfBzW`
+[Venmo @MingweiSamuel](https://venmo.com/MingweiSamuel){:class="btn btn-primary"}
