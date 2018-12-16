@@ -59,8 +59,10 @@ namespace ChampionMains.Pyrobot.Services
             // Extra case for converting V3.
             if (null == summoner.SummonerId)
                 throw new InvalidOperationException($"Summoner with DB ID {summoner.Id} missing summoner IDs.");
-            var summonerDataV3 = await this.GetSummonerV3(summoner.Region, (long) summoner.SummonerId);
-            return await this.GetSummonerByName(summoner.Region, summonerDataV3.Name);
+            var summonerDataV3 = await GetSummonerV3(summoner.Region, (long) summoner.SummonerId);
+            var summonerData = await GetSummonerByName(summoner.Region, summonerDataV3.Name);
+            summoner.SummonerIdEnc = summonerData.Id;
+            return summonerData;
         }
 
         public async Task<Tuple<Tier, Division>> GetRank(string region, string summonerIdEnc)
@@ -94,10 +96,14 @@ namespace ChampionMains.Pyrobot.Services
             var entry = json.FirstOrDefault(e => Queue.RANKED_SOLO_5x5 == e.QueueType);
             if (entry == null)
                 return null;
+
+            // V3 // TODO: Parse IRON and GRANDMASTER.
             Division div;
-            Enum.TryParse(entry.Rank, out div);
+            if (!Enum.TryParse(entry.Rank, out div))
+                return null;
             Tier tier;
-            Enum.TryParse(entry.Tier.First().ToString().ToUpperInvariant() + entry.Tier.Substring(1).ToLowerInvariant(), out tier);
+            if (!Enum.TryParse(entry.Tier.First().ToString().ToUpperInvariant() + entry.Tier.Substring(1).ToLowerInvariant(), out tier))
+                return null;
             return Tuple.Create(tier, div);
         }
 

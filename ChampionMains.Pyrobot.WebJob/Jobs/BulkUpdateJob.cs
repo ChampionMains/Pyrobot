@@ -158,6 +158,9 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
             await Task.WhenAll(getSummonerTasks);
 
+            // V3 // Save any updated SummonerIdEncs.
+            _summonerService.SaveChanges();
+
             var summonerUpdates = getSummonerTasks.Select(t => t.Result).Select(t =>
             {
                 // task cancelled (or propagate null errors)
