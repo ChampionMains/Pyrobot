@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -13,7 +13,6 @@ using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Services;
 using ChampionMains.Pyrobot.Util;
 using Microsoft.Azure.WebJobs;
-using MingweiSamuel.Camille.SummonerV4;
 
 namespace ChampionMains.Pyrobot.WebJob.Jobs
 {
@@ -64,6 +63,21 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 catch (OperationCanceledException e)
                 {
                     throw new TimeoutException($"{nameof(BulkUpdateJob)} timed out ({_timeout})", e);
+                }
+                catch (DbEntityValidationException e)
+                {
+                    var writer = new StringWriter();
+                    writer.WriteLine("DbEntityValidationException ------------");
+                    foreach (var entity in e.EntityValidationErrors)
+                    {
+                        writer.WriteLine("  " + entity.Entry.Entity.ToString() + ":");
+                        foreach (var error in entity.ValidationErrors)
+                        {
+                            writer.WriteLine("    " + error.PropertyName + ": " + error.ErrorMessage);
+                        }
+                    }
+                    writer.WriteLine("----------------------------------------");
+                    throw new InvalidOperationException(writer.ToString(), e);
                 }
             }
             finally
