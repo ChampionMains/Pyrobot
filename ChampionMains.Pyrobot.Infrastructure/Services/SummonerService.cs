@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data;
 using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Data.Models;
-using MingweiSamuel.Camille.ChampionMastery;
+using MingweiSamuel.Camille.ChampionMasteryV3;
 using Summoner = ChampionMains.Pyrobot.Data.Models.Summoner;
 
 namespace ChampionMains.Pyrobot.Services

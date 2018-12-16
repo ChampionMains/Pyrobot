@@ -30,6 +30,12 @@ namespace ChampionMains.Pyrobot.Data.Models
         [Required]
         public long SummonerId { get; set; }
 
+        /// <summary>
+        /// Encrypted summoner ID for V4.
+        /// </summary>
+        [StringLength(80)]
+        public string SummonerIdEnc { get; set; }
+
         [ForeignKey("User")]
         [Required]
         public int UserId { get; set; }

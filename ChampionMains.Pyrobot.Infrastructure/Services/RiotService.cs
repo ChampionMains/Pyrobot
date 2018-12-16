@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data.Enums;
 using MingweiSamuel.Camille;
-using MingweiSamuel.Camille.ChampionMastery;
+using MingweiSamuel.Camille.ChampionMasteryV3;
 using MingweiSamuel.Camille.Enums;
-using MingweiSamuel.Camille.League;
-using MingweiSamuel.Camille.Summoner;
+using MingweiSamuel.Camille.LeagueV3;
+using MingweiSamuel.Camille.SummonerV3;
 using Tier = ChampionMains.Pyrobot.Data.Enums.Tier;
 
 namespace ChampionMains.Pyrobot.Services
@@ -23,12 +23,12 @@ namespace ChampionMains.Pyrobot.Services
 
         public Task<Summoner> GetSummoner(string region, string summonerName)
         {
-            return _api.Summoner.GetBySummonerNameAsync(Region.Get(region), summonerName);
+            return _api.SummonerV3.GetBySummonerNameAsync(Region.Get(region), summonerName);
         }
 
         public Task<Summoner> GetSummoner(string region, long summonerId)
         {
-            return _api.Summoner.GetBySummonerIdAsync(Region.Get(region), summonerId);
+            return _api.SummonerV3.GetBySummonerIdAsync(Region.Get(region), summonerId);
         }
 
         public async Task<IDictionary<long, Summoner>> GetSummoners(string region, ICollection<long> summonerIds)
@@ -40,7 +40,7 @@ namespace ChampionMains.Pyrobot.Services
 
         public async Task<Tuple<Tier, Division>> GetRank(string region, long summonerId)
         {
-            var response = await _api.League.GetAllLeaguePositionsForSummonerAsync(Region.Get(region), summonerId);
+            var response = await _api.LeagueV3.GetAllLeaguePositionsForSummonerAsync(Region.Get(region), summonerId);
             return GetRankFromResponse(response);
         }
 
@@ -53,7 +53,7 @@ namespace ChampionMains.Pyrobot.Services
 
         public Task<ChampionMastery[]> GetChampionMastery(string region, long summonerId)
         {
-            return _api.ChampionMastery.GetAllChampionMasteriesAsync(Region.Get(region), summonerId);
+            return _api.ChampionMasteryV3.GetAllChampionMasteriesAsync(Region.Get(region), summonerId);
         }
 
         public async Task<IDictionary<long, ChampionMastery[]>> GetChampionMasteries(string region,

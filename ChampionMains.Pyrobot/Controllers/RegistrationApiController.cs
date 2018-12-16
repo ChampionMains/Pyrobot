@@ -8,7 +8,7 @@ using ChampionMains.Pyrobot.Attributes;
 using ChampionMains.Pyrobot.Models;
 using ChampionMains.Pyrobot.Services;
 using ChampionMains.Pyrobot.Util;
-using MingweiSamuel.Camille.Summoner;
+using MingweiSamuel.Camille.SummonerV3;
 using MingweiSamuel.Camille.Util;
 
 namespace ChampionMains.Pyrobot.Controllers
