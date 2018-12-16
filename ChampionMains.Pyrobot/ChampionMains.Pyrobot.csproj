@@ -413,8 +413,8 @@
   </Target>
   -->
   <Target Name="BowerUpdate" BeforeTargets="Build">
-    <Exec Command="npm i -g bower" />
-    <Exec Command="bower update --force" />
+    <Exec Command="npm install bower" />
+    <Exec Command="node .\node_modules\bower\bin\bower update --force" />
   </Target>
   <!-- update webjob config -->
   <Target Name="CopyWebJobAppConfig" BeforeTargets="Build;UpdateWebConfigBeforeRun">
