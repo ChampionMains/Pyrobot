@@ -304,7 +304,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             var tasks = (await _subredditService.GetSubreddits()).Select(async subreddit =>
             {
                 var subredditName = subreddit.Name;
-                var request = WebRequest.Create($"https://reddit.com/r/{subredditName}/stylesheet.css");
+                var request = WebRequest.Create($"https://old.reddit.com/r/{subredditName}/stylesheet.css");
 
                 var response = await request.GetResponseAsync();
 
