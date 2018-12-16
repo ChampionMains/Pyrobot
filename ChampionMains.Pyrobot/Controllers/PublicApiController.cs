@@ -44,8 +44,7 @@ namespace ChampionMains.Pyrobot.Controllers
                 .Select(s => new SummonerInfoViewModel
                 {
                     Name = s.Name,
-                    Region = s.Region,
-                    Id = s.SummonerId
+                    Region = s.Region
                 }).ToList();
         }
 

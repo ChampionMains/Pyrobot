@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Services;
 using Microsoft.Azure.WebJobs;
+using MingweiSamuel.Camille.SummonerV4;
 
 namespace ChampionMains.Pyrobot.WebJob.Jobs
 {
@@ -27,15 +28,17 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
         public async Task Execute([QueueTrigger(WebJobQueue.SummonerUpdate)] int id)
         {
             var summoner = _summoners.FindSummonerIncludeRankAndChampionMasteries(id);
-            if (summoner == null)
+            if (null == summoner)
                 return;
 
             if (summoner.LastUpdate > DateTimeOffset.Now - _riotUpdateMinStaleTime)
                 return;
 
-            var summonerData = await _riot.GetSummoner(summoner.Region, summoner.SummonerId);
-            var rank = await _riot.GetRank(summoner.Region, summoner.SummonerId);
-            var championMasteries = await _riot.GetChampionMastery(summoner.Region, summoner.SummonerId);
+            // V3 //
+            var summonerData = await _riot.GetSummonerUpgradeToV4(summoner);
+
+            var rank = await _riot.GetRank(summoner.Region, summoner.SummonerIdEnc);
+            var championMasteries = await _riot.GetChampionMastery(summoner.Region, summoner.SummonerIdEnc);
 
             _summoners.UpdateSummoner(summoner, summoner.Region, summonerData.Name, summonerData.ProfileIconId,
                 rank?.Item1, (byte?) rank?.Item2, championMasteries);

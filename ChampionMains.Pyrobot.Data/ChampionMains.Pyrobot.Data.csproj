@@ -208,6 +208,10 @@
     <Compile Include="Migrations\201812160140222_summoner-add-encrypted-summonerid.Designer.cs">
       <DependentUpon>201812160140222_summoner-add-encrypted-summonerid.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201812160523535_summoner-make-old-summonerid-optional.cs" />
+    <Compile Include="Migrations\201812160523535_summoner-make-old-summonerid-optional.Designer.cs">
+      <DependentUpon>201812160523535_summoner-make-old-summonerid-optional.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Champion.cs" />
     <Compile Include="Models\CreatedModelBase.cs" />
@@ -325,6 +329,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201812160140222_summoner-add-encrypted-summonerid.resx">
       <DependentUpon>201812160140222_summoner-add-encrypted-summonerid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201812160523535_summoner-make-old-summonerid-optional.resx">
+      <DependentUpon>201812160523535_summoner-make-old-summonerid-optional.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

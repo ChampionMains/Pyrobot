@@ -18,7 +18,6 @@ namespace ChampionMains.Pyrobot.Models
     public class SummonerInfoViewModel
     {
         public string Name { get; set; }
-        public long Id { get; set; }
         public string Region { get; set; }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data;
 using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Data.Models;
-using MingweiSamuel.Camille.ChampionMasteryV3;
+using MingweiSamuel.Camille.ChampionMasteryV4;
 using Summoner = ChampionMains.Pyrobot.Data.Models.Summoner;
 
 namespace ChampionMains.Pyrobot.Services
@@ -64,9 +64,9 @@ namespace ChampionMains.Pyrobot.Services
                 .Include(s => s.ChampionMasteries).ToList();
         }
 
-        public Summoner AddSummoner(int userId, long summonerId, string region, string name, int profileIconId)
+        public Summoner AddSummoner(int userId, string summonerIdEnc, string region, string name, int profileIconId)
         {
-            var summoner = _unitOfWork.Summoners.FirstOrDefault(s => s.UserId == userId && s.Region == region && s.SummonerId == summonerId);
+            var summoner = _unitOfWork.Summoners.FirstOrDefault(s => s.UserId == userId && s.Region == region && s.SummonerIdEnc == summonerIdEnc);
             if (summoner == null)
             {
                 summoner = new Summoner
@@ -74,7 +74,8 @@ namespace ChampionMains.Pyrobot.Services
                     Rank = new SummonerRank(),
                     UserId = userId,
                     Region = region,
-                    SummonerId = summonerId
+                    SummonerId = null,
+                    SummonerIdEnc = summonerIdEnc
                 };
                 _unitOfWork.Summoners.Add(summoner);
             }
@@ -141,11 +142,18 @@ namespace ChampionMains.Pyrobot.Services
                 .FirstOrDefault(s => s.Id == id);
         }
 
-        public Task<Summoner> FindSummonerAsync(string region, long summonerId)
+        public Task<Summoner> FindSummonerAsyncV3(string region, long summonerId)
         {
             return _unitOfWork.Summoners.FirstOrDefaultAsync(summoner =>
                 summoner.Region == region &&
                 summoner.SummonerId == summonerId);
+        }
+
+        public Task<Summoner> FindSummonerAsync(string region, string summonerIdEnc)
+        {
+            return _unitOfWork.Summoners.FirstOrDefaultAsync(summoner =>
+                summoner.Region == region &&
+                summoner.SummonerIdEnc == summonerIdEnc);
         }
 
         public async Task<bool> RemoveAsync(int summonerId)

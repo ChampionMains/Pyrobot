@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -8,7 +6,7 @@ using ChampionMains.Pyrobot.Attributes;
 using ChampionMains.Pyrobot.Models;
 using ChampionMains.Pyrobot.Services;
 using ChampionMains.Pyrobot.Util;
-using MingweiSamuel.Camille.SummonerV3;
+using MingweiSamuel.Camille.SummonerV4;
 using MingweiSamuel.Camille.Util;
 
 namespace ChampionMains.Pyrobot.Controllers
@@ -102,6 +100,15 @@ namespace ChampionMains.Pyrobot.Controllers
                 // If Summoner is already in DB, we transfer it. Make sure to use summoner ID in case a name change has happened.
                 var dbSummoner = await Summoners.FindSummonerAsync(model.Region, riotSummoner.Id);
 
+                // V3 // need to double check if summoner with old id is in DB.
+                if (dbSummoner == null)
+                {
+                    // V3 // get v3 summoner to check database.
+                    var riotSummonerV3 = await Riot.GetSummonerByNameV3(model.Region, model.SummonerName);
+                    dbSummoner = await Summoners.FindSummonerAsyncV3(model.Region, riotSummonerV3.Id);
+                }
+                // V3 // Done
+
                 if (dbSummoner != null)
                 {
                     dbSummoner.User = user;
@@ -146,7 +153,7 @@ namespace ChampionMains.Pyrobot.Controllers
         private Task<Summoner> FindSummonerAsync(string region, string summonerName, bool force = false)
         {
             return CacheUtil.GetItemAsync($"{region}:{summonerName}".ToLowerInvariant(),
-                () => Riot.GetSummoner(region, summonerName), force);
+                () => Riot.GetSummonerByName(region, summonerName), force);
         }
     }
 }

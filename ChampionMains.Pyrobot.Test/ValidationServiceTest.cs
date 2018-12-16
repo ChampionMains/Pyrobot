@@ -11,11 +11,12 @@ namespace ChampionMains.Pyrobot.Test
         public void TestBasic()
         {
             var validator = new ValidationService("deadbeef1998");
-            var token = validator.GenerateToken("LugnutsK", 123, "NA", "LugnutsK", 28);
+            var token = validator.GenerateToken("LugnutsK", "1skjlfKSFJLK99--2983a", "NA", "LugnutsK", 28);
             Console.WriteLine(token);
-            Assert.IsTrue(validator.ValidateToken(token, "Lugnutsk", 123, "NA", "LugNUtsK", 28));
+            Assert.IsTrue(validator.ValidateToken(token, "Lugnutsk", "1skjlfKSFJLK99--2983a", "NA", "LugNUtsK", 28));
             // Different profile icon.
-            Assert.IsFalse(validator.ValidateToken(token, "LugnutsK", 123, "NA", "LugnutsK", 27));
+            Assert.IsFalse(validator.ValidateToken(token, "LugnutsK", "1skjlfKSFJLK99--2983a", "NA", "LugnutsK", 27));
+            Assert.IsFalse(validator.ValidateToken(token, "LugnutsK", "1skjlfKSFJLK99-2983a", "NA", "LugnutsK", 28));
         }
 
         [TestMethod]
@@ -24,9 +25,9 @@ namespace ChampionMains.Pyrobot.Test
             var validator = new ValidationService("deadbeef1998");
             var oldToken = validator.GenerateTokenInternal(
                 ValidationService.CurrentEpochMillis() - 6 * 60_000,
-                "LugnutsK", 123, "NA", "LugnutsK", 5);
+                "LugnutsK", "1skjlfKSFJLK99--2983a", "NA", "LugnutsK", 5);
             Console.WriteLine(oldToken);
-            Assert.IsFalse(validator.ValidateToken(oldToken, "LugnutsK", 123, "NA", "LugnutsK", 5));
+            Assert.IsFalse(validator.ValidateToken(oldToken, "LugnutsK", "1skjlfKSFJLK99--2983a", "NA", "LugnutsK", 5));
         }
     }
 }

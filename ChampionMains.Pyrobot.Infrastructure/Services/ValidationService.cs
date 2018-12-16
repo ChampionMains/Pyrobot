@@ -20,28 +20,28 @@ namespace ChampionMains.Pyrobot.Services
         /// Generates a unique token for the given combination of identity informations and profileIcon id.
         /// Token is associated with the current time.
         /// </summary>
-        /// <param name="principal"></param>
+        /// <param name="principal">Reddit username</param>
         /// <param name="summonerId"></param>
         /// <param name="region"></param>
         /// <param name="userName"></param>
         /// <param name="profileIcon"></param>
         /// <returns>Unique HMAC token.</returns>
-        public string GenerateToken(string principal, long summonerId, string region, string userName, int profileIcon)
+        public string GenerateToken(string principal, string summonerIdEnc, string region, string userName, int profileIcon)
         {
-            return GenerateTokenInternal(CurrentEpochMillis(), principal, summonerId, region, userName, profileIcon);
+            return GenerateTokenInternal(CurrentEpochMillis(), principal, summonerIdEnc, region, userName, profileIcon);
         }
 
         /// <summary>
         /// Validates the token given the particular identity and profileIcon id.
         /// </summary>
         /// <param name="token"></param>
-        /// <param name="principal"></param>
+        /// <param name="principal">Reddit username</param>
         /// <param name="summonerId"></param>
         /// <param name="region"></param>
         /// <param name="userName"></param>
         /// <param name="profileIcon"></param>
         /// <returns></returns>
-        public bool ValidateToken(string token, string principal, long summonerId, string region, string userName,
+        public bool ValidateToken(string token, string principal, string summonerIdEnc, string region, string userName,
             int profileIcon)
         {
             var colon = token.IndexOf(':');
@@ -55,14 +55,14 @@ namespace ChampionMains.Pyrobot.Services
             // Tokens must be used within 5 minutes. (And not be from the future).
             if (delta < TimeSpan.FromSeconds(-1) || delta > TimeSpan.FromMinutes(5))
                 return false;
-            return token.Equals(GenerateTokenInternal(millis, principal, summonerId, region, userName, profileIcon));
+            return token.Equals(GenerateTokenInternal(millis, principal, summonerIdEnc, region, userName, profileIcon));
         }
 
-        internal string GenerateTokenInternal(long epoch, string principal, long summonerId, string region,
+        internal string GenerateTokenInternal(long epoch, string principal, string summonerIdEnc, string region,
             string userName, int profileIcon)
         {
             var result = epoch + ":" +
-                Hash(string.Join(":", epoch, principal, profileIcon, userName, summonerId, region).ToLowerInvariant());
+                Hash(string.Join(":", epoch, principal, profileIcon, userName, summonerIdEnc, region).ToLowerInvariant());
             return result;
         }
 

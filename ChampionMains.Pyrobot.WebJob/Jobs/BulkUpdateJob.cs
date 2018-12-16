@@ -13,6 +13,7 @@ using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Services;
 using ChampionMains.Pyrobot.Util;
 using Microsoft.Azure.WebJobs;
+using MingweiSamuel.Camille.SummonerV4;
 
 namespace ChampionMains.Pyrobot.WebJob.Jobs
 {
@@ -82,6 +83,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             await UpdateSummonerData(token);
             await UpdateFlairs(token);
 
+            // TODO: move this to its own job.
             // This could be done in parallel with the previous two but I don't
             // want to deal with concurrent updates to UnitOfWork.
             await UpdateSubredditCss(token);
@@ -107,29 +109,39 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             var getSummonerTasks = summoners.GroupBy(s => s.Region).Select(async summonersByRegion =>
             {
                 var region = summonersByRegion.Key;
-                var summonerIds = summonersByRegion.Select(s => s.SummonerId).ToList();
+                // V3 //
+//                var summonerIdEncs = summonersByRegion.Select(s => s.SummonerIdEnc).ToList();
+//
+//                if (new HashSet<string>(summonerIdEncs).Count != summonerIdEncs.Count)
+//                {
+//                    throw new InvalidOperationException("summonerIdEncs has duplicate values");
+//                }
+//
+//                Console.Out.WriteLine($"Updating {summonerIdEncs.Count} summoners from region {region}");
 
-                if (new HashSet<long>(summonerIds).Count != summonerIds.Count)
-                {
-                    throw new InvalidOperationException("summonerIds has duplicate values");
-                }
-
-                Console.Out.WriteLine($"Updating {summonerIds.Count} summoners from region {region}");
+                var summonersByRegionList = summonersByRegion.ToList();
+                Console.Out.WriteLine($"Updating {summonersByRegionList.Count} summoners from region {region}");
 
                 // arduous aync work
-                var summonerData = await _riotService.GetSummoners(region, summonerIds);
+//                var summonerData = await _riotService.GetSummoners(region, summonerIdEncs);
+                // V3 //
+                var summonerDataList = await Task.WhenAll(summonersByRegionList.Select(_riotService.GetSummonerUpgradeToV4));
+                var summonerData = summonerDataList.ToDictionary(s => s.Id, s => s);
+                var summonerIdEncs = summonerData.Keys.ToList();
+
+
                 if (token.IsCancellationRequested)
                 {
                     Console.Out.WriteLine($"Updating region {region} cancelled.");
                     return null;
                 }
-                var summonerRanks = await _riotService.GetRanks(region, summonerIds);
+                var summonerRanks = await _riotService.GetRanks(region, summonerIdEncs);
                 if (token.IsCancellationRequested)
                 {
                     Console.Out.WriteLine($"Updating region {region} cancelled.");
                     return null;
                 }
-                var summonerMasteries = await _riotService.GetChampionMasteries(region, summonerIds);
+                var summonerMasteries = await _riotService.GetChampionMasteries(region, summonerIdEncs);
 
                 // done with async work
                 Console.Out.WriteLine($"Pulled {summonerData.Count} summoner infos, {summonerRanks.Count} ranks, "
@@ -160,16 +172,16 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 var summonerMasteries = t.summonerMasteries;
 
                 var changes =
-                    summonersByRegion.Select((summoner, i) => new {summoner, g = i/summonerSaveBatchSize})
+                    summonersByRegion.Select((summoner, i) => new {summoner, g = i / summonerSaveBatchSize})
                         .GroupBy(x => x.g, x => x.summoner)
                         .Select(summonerBatch =>
                         {
                             foreach (var summoner in summonersByRegion)
                             {
-                                var data = summonerData[summoner.SummonerId];
+                                var data = summonerData[summoner.SummonerIdEnc];
                                 Tuple<Tier, Division> rank;
-                                summonerRanks.TryGetValue(summoner.SummonerId, out rank);
-                                var mastery = summonerMasteries[summoner.SummonerId];
+                                summonerRanks.TryGetValue(summoner.SummonerIdEnc, out rank);
+                                var mastery = summonerMasteries[summoner.SummonerIdEnc];
 
                                 _summonerService.UpdateSummoner(summoner, region, data.Name, data.ProfileIconId,
                                     rank?.Item1,
