@@ -75,6 +75,7 @@ namespace ChampionMains.Pyrobot.Data.Migrations
                 new Champion {Id = 126, Name = "Jayce", Identifier = "Jayce"},
                 new Champion {Id = 202, Name = "Jhin", Identifier = "Jhin"},
                 new Champion {Id = 222, Name = "Jinx", Identifier = "Jinx"},
+                new Champion {Id = 145, Name = "Kai'Sa", Identifier = "Kaisa"},
                 new Champion {Id = 429, Name = "Kalista", Identifier = "Kalista"},
                 new Champion {Id = 43, Name = "Karma", Identifier = "Karma"},
                 new Champion {Id = 30, Name = "Karthus", Identifier = "Karthus"},
@@ -105,6 +106,7 @@ namespace ChampionMains.Pyrobot.Data.Migrations
                 new Champion {Id = 267, Name = "Nami", Identifier = "Nami"},
                 new Champion {Id = 75, Name = "Nasus", Identifier = "Nasus"},
                 new Champion {Id = 111, Name = "Nautilus", Identifier = "Nautilus"},
+                new Champion {Id = 518, Name = "Neeko", Identifier = "Neeko"},
                 new Champion {Id = 76, Name = "Nidalee", Identifier = "Nidalee"},
                 new Champion {Id = 56, Name = "Nocturne", Identifier = "Nocturne"},
                 new Champion {Id = 20, Name = "Nunu", Identifier = "Nunu"},
@@ -113,6 +115,7 @@ namespace ChampionMains.Pyrobot.Data.Migrations
                 new Champion {Id = 516, Name="Ornn", Identifier = "Ornn"},
                 new Champion {Id = 80, Name = "Pantheon", Identifier = "Pantheon"},
                 new Champion {Id = 78, Name = "Poppy", Identifier = "Poppy"},
+                new Champion {Id = 555, Name = "Pyke", Identifier = "Pyke"},
                 new Champion {Id = 133, Name = "Quinn", Identifier = "Quinn"},
                 new Champion {Id = 497, Name = "Rakan", Identifier = "Rakan"},
                 new Champion {Id = 33, Name = "Rammus", Identifier = "Rammus"},
@@ -165,7 +168,7 @@ namespace ChampionMains.Pyrobot.Data.Migrations
                 new Champion {Id = 238, Name = "Zed", Identifier = "Zed"},
                 new Champion {Id = 115, Name = "Ziggs", Identifier = "Ziggs"},
                 new Champion {Id = 26, Name = "Zilean", Identifier = "Zilean"},
-                new Champion {Id = 143, Name = "Zoe", Identifier = "Zoe" },
+                new Champion {Id = 142, Name = "Zoe", Identifier = "Zoe" },
                 new Champion {Id = 143, Name = "Zyra", Identifier = "Zyra"}
             };
             var cd = champions.ToDictionary(c => c.Name, c => c.Id);
