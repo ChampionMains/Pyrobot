@@ -103,8 +103,8 @@ namespace ChampionMains.Pyrobot
 
                 var mailClient = new SmtpClient();
                 var mailMessage = new MailMessage();
-                mailMessage.To.Add("flairbugs@gmail.com");
-                mailMessage.From = new MailAddress("flairsite@jhallam.ca");
+                mailMessage.To.Add("flairbugs@mingweisamuel.com");
+                mailMessage.From = new MailAddress("flairsite@championmains.com");
                 mailMessage.Subject = error.GetType().Name;
                 mailMessage.Body = body.ToString();
                 mailClient.Send(mailMessage);
