@@ -212,6 +212,10 @@
     <Compile Include="Migrations\201812160523535_summoner-make-old-summonerid-optional.Designer.cs">
       <DependentUpon>201812160523535_summoner-make-old-summonerid-optional.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201812190151072_update-summonerrank-enum.cs" />
+    <Compile Include="Migrations\201812190151072_update-summonerrank-enum.Designer.cs">
+      <DependentUpon>201812190151072_update-summonerrank-enum.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Champion.cs" />
     <Compile Include="Models\CreatedModelBase.cs" />
@@ -332,6 +336,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201812160523535_summoner-make-old-summonerid-optional.resx">
       <DependentUpon>201812160523535_summoner-make-old-summonerid-optional.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201812190151072_update-summonerrank-enum.resx">
+      <DependentUpon>201812190151072_update-summonerrank-enum.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -10,9 +10,15 @@ namespace ChampionMains.Pyrobot.Data.Models
         [Required]
         public int Id { get; set; }
 
+        /// <summary>
+        /// <see cref="Enums.Division"/>
+        /// </summary>
         [Required]
         public byte Division { get; set; }
 
+        /// <summary>
+        /// <see cref="Enums.Tier"/>
+        /// </summary>
         [Required]
         public byte Tier { get; set; }
         

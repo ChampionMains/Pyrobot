@@ -97,13 +97,11 @@ namespace ChampionMains.Pyrobot.Services
             if (entry == null)
                 return null;
 
-            // V3 // TODO: Parse IRON and GRANDMASTER.
             Division div;
-            if (!Enum.TryParse(entry.Rank, out div))
-                return null;
+            Enum.TryParse(entry.Rank, out div);
             Tier tier;
-            if (!Enum.TryParse(entry.Tier.First().ToString().ToUpperInvariant() + entry.Tier.Substring(1).ToLowerInvariant(), out tier))
-                return null;
+            Enum.TryParse(entry.Tier.First().ToString().ToUpperInvariant() +
+                    entry.Tier.Substring(1).ToLowerInvariant(), out tier);
             return Tuple.Create(tier, div);
         }
 
