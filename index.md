@@ -17,6 +17,10 @@ title: Documentation
   - ##### [I like being able to show my rank, but I don’t want to show my mastery level...(or vice-versa)](#options)
   - ##### [Is it secure?](#security)
   - ##### [Help! I've lost my Reddit account and can't re-verify my summoner, what do I do?](#deleted-account)
+- #### [GDPR Compliance](#gdpr)
+  - ##### [Privacy Policy](#pp)
+  - ##### [Right of Access](#roa)
+  - ##### [Right to Erasure (Right to be Forgotten)](#rtbf)
 - #### [Usage Manual](#manual)
   - ##### [Signing-in](#login)
   - ##### [Adding Summoners](#add-summoner)
@@ -142,6 +146,41 @@ directly, fell free to send a pull request.
 {:id="deleted-account" name="deleted-account"}
 
 Message [/u/LugnutsK](https://reddit.com/u/LugnutsK) with your *summoner name* and *region*.
+
+* * *
+
+
+# GDPR Compliance
+{:id="gdpr" name="gdpr"}
+
+## Privacy Policy
+{:id="pp" name="pp"}
+
+This site does not store any directly personally identifiable information.
+This site stores your Reddit username, LoL summoner info, champion mastery info,
+and configured flairs. This information may be shared with third parties
+including, but not limited to: subreddit admins and
+[OriannaBot](https://orianna.molenzwiebel.xyz/).
+
+This site uses Google Analytics.
+
+## Right of Access
+{:id="roa" name="roa"}
+
+If you would like a copy of your data, message
+[/u/LugnutsK](https://reddit.com/u/LugnutsK) stating so.
+
+## Right to Erasure (Right to be Forgotten)
+{:id="rtbf" name="rtbf"}
+
+If you [deleted a LoL summoner account under GDPR](https://support.riotgames.com/hc/en-us/articles/360001316148-GDPR-and-Data-Processing),
+the summoner data will be deleted from this site within 30 days.
+However, your account on this site and data from other summoners on your
+account will not be deleted.
+
+If you would like your data on this site to be deleted, message
+[/u/LugnutsK](https://reddit.com/u/LugnutsK) stating so. You data will be
+removed within 30 days.
 
 * * *
 
