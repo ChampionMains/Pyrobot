@@ -2,6 +2,8 @@
 layout: default
 title: Changelog
 changes:
+  2018-12-18:
+    - Hourly update job has been fixed. Summoners should now be updated every 3 days.
   2018-12-02:
     - Hourly update job will soon (by the new year) be reworked completely for long-term robustness.
   2018-04-12:
