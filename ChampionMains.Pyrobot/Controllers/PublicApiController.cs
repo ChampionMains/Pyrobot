@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
@@ -28,7 +29,15 @@ namespace ChampionMains.Pyrobot.Controllers
         [Route("trigger-bulk-update")]
         public async Task<bool> TriggerBulkUpdate()
         {
-            await _webJob.QueueBulkUpdate(Request.Headers.UserAgent.ToString());
+            await _webJob.QueueBulkUpdate(DateTime.UtcNow.ToString("s"));
+            return true;
+        }
+
+        [HttpPost]
+        [Route("trigger-subreddit-css-update")]
+        public async Task<bool> TriggerSubredditCssUpdate()
+        {
+            await _webJob.QueueSubredditCssUpdate(DateTime.UtcNow.ToString("s"));
             return true;
         }
 

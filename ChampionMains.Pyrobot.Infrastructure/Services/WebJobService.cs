@@ -51,6 +51,11 @@ namespace ChampionMains.Pyrobot.Services
             await Queue(WebJobQueue.BulkUpdate, tag);
         }
 
+        public async Task QueueSubredditCssUpdate(string tag = "")
+        {
+            await Queue(WebJobQueue.SubredditCssUpdate, tag);
+        }
+
         private async Task Queue(string containerName, string message)
         {
             await WakeupWebJob();
