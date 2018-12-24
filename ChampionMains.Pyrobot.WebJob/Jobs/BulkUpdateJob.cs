@@ -10,6 +10,7 @@ using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Services;
 using ChampionMains.Pyrobot.Util;
 using Microsoft.Azure.WebJobs;
+using Newtonsoft.Json;
 
 namespace ChampionMains.Pyrobot.WebJob.Jobs
 {

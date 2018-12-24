@@ -52,17 +52,25 @@ namespace ChampionMains.Pyrobot.Services
         // Note: modifies the summoner argument with new SummonerIdEnc if needed.
         public async Task<Summoner> GetSummonerUpgradeToV4(Data.Models.Summoner summoner)
         {
-            if (null != summoner.SummonerIdEnc)
+            try
             {
-                return await GetSummoner(summoner.Region, summoner.SummonerIdEnc);
+                if (null != summoner.SummonerIdEnc)
+                {
+                    return await GetSummoner(summoner.Region, summoner.SummonerIdEnc);
+                }
+
+                // Extra case for converting V3.
+                if (null == summoner.SummonerId)
+                    throw new InvalidOperationException($"Summoner with DB ID {summoner.Id} missing summoner IDs.");
+                var summonerDataV3 = await GetSummonerV3(summoner.Region, (long) summoner.SummonerId);
+                var summonerData = await GetSummonerByName(summoner.Region, summonerDataV3.Name);
+                summoner.SummonerIdEnc = summonerData.Id;
+                return summonerData;
             }
-            // Extra case for converting V3.
-            if (null == summoner.SummonerId)
-                throw new InvalidOperationException($"Summoner with DB ID {summoner.Id} missing summoner IDs.");
-            var summonerDataV3 = await GetSummonerV3(summoner.Region, (long) summoner.SummonerId);
-            var summonerData = await GetSummonerByName(summoner.Region, summonerDataV3.Name);
-            summoner.SummonerIdEnc = summonerData.Id;
-            return summonerData;
+            catch (Exception e)
+            {
+                throw new InvalidOperationException(summoner.ToString(), e);
+            }
         }
 
         public async Task<Tuple<Tier, Division>> GetRank(string region, string summonerIdEnc)
@@ -78,9 +86,17 @@ namespace ChampionMains.Pyrobot.Services
             return pairs.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
 
-        public Task<ChampionMastery[]> GetChampionMastery(string region, string summonerIdEnc)
+        public async Task<ChampionMastery[]> GetChampionMastery(string region, string summonerIdEnc)
         {
-            return _api.ChampionMasteryV4.GetAllChampionMasteriesAsync(Region.Get(region), summonerIdEnc);
+            try
+            {
+                return await _api.ChampionMasteryV4.GetAllChampionMasteriesAsync(Region.Get(region), summonerIdEnc);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException(
+                    $"Failed to parse summoner champion mastery {{region: {region}, summonerIdenc: {summonerIdEnc}}}.", e);
+            }
         }
 
         public async Task<IDictionary<string, ChampionMastery[]>> GetChampionMasteries(string region,

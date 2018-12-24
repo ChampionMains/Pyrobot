@@ -48,7 +48,7 @@ namespace ChampionMains.Pyrobot.Data.Models
 
         public override string ToString()
         {
-            return $"{{Summoner \"{Name}\" {Id}: {Region}/{SummonerId}}}";
+            return $"{{Summoner \"{Name}\" {Id}: {Region}/{SummonerId}/{SummonerIdEnc}}}";
         }
     }
 }
