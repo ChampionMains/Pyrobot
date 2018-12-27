@@ -101,12 +101,13 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             // update summoners
             var summoners = await _summonerService.GetSummonersForUpdateAsync();
 
-            var duplicates = summoners.GroupBy(i => new { i.SummonerId, i.Region })
-                .Where(g => g.Count() > 1).ToList();
-            if (duplicates.Count > 0)
-            {
-                throw new InvalidOperationException("Duplicate summonerIds: " + string.Join(", ", duplicates.Select(g => "[" + string.Join(", ", g))));
-            }
+//            var duplicates = summoners
+//                .GroupBy(i => new { i.SummonerId, i.Region })
+//                .Where(g => g.Count() > 1).ToList();
+//            if (duplicates.Count > 0)
+//            {
+//                throw new InvalidOperationException("Duplicate summonerIds: " + string.Join(",\n", duplicates.Select(g => "[" + string.Join(", ", g) + "]")));
+//            }
 
             Console.Out.WriteLine($"Updating {summoners.Count} summoners.");
 
