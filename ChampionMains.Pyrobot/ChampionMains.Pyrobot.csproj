@@ -325,6 +325,7 @@
     <Content Include="content\css\site.scss" />
     <Content Include="manifest.json" />
     <Content Include="package.json" />
+    <Content Include="content\css\newStyles.scss" />
     <None Include="Properties\PublishProfiles\championmains-pyrobot - Web Deploy.pubxml" />
     <Content Include="Properties\webjobs-list.json" />
     <Content Include="Views\Web.config" />
