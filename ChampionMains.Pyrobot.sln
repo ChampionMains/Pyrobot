@@ -13,6 +13,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChampionMains.Pyrobot.Infrastructure", "ChampionMains.Pyrobot.Infrastructure\ChampionMains.Pyrobot.Infrastructure.csproj", "{9357D4E8-FC65-469E-9EBA-12B82BABD7E8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Site", "Site", "{FE7174B2-207C-4895-B0FD-76F4B616C6E3}"
+	ProjectSection(SolutionItems) = preProject
+		package.json = package.json
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{7F40DA89-D651-4A91-B2E2-D3B526276E11}"
 EndProject

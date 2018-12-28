@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+
+@{
+//    string angularApp = "";
+//    string angularController = "";
+//
+//    if (Page.Angular != null)
+//    {
+//        angularApp = $"ng-app=\"{Page.Angular}\"";
+//        angularController = $"ng-controller=\"MainController\"";
+//    }
+}
+
+@functions
+{
+    MvcHtmlString NoEscape(string s)
+    {
+        return new MvcHtmlString(s);
+    }
+
+}
+
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>@(Page.Title ?? "/r/ChampionMains Flairs")</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/content/css/bootswatch.css">
+    <link rel="stylesheet" href="~/content/css/site.scss">
+
+    <!-- favicons -->
+    <link rel="apple-touch-icon" sizes="57x57" href="~/content/icons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="~/content/icons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="~/content/icons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="~/content/icons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="~/content/icons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="~/content/icons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="~/content/icons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="~/content/icons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="~/content/icons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="~/content/icons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="~/content/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="~/content/icons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="~/content/icons/favicon-16x16.png">
+    <link rel="manifest" href="~/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="~/content/icons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- scripts -->
+    <script src="~/content/js/ga.js"></script>
+
+    <script src="~/bower_components/jquery/dist/jquery.min.js"></script>
+    @if (Page.Angular != null)
+    {
+        <script src="~/bower_components/angular/angular.min.js"></script>}
+
+    @RenderSection("head", false)
+</head>
+<body @NoEscape(angularController)>
+    <div class="container">
+        <div class="row">
+            <header>
+                <div class="col-sm-6">
+                    <h1>/r/ChampionMains Flairs</h1>
+                </div>
+                <div class="col-sm-6">
+                    <nav>
+                        <ul>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <li>
+                                    <a href="@Url.Action("index", "profile")">Profile</a>
+                                </li>
+                                <li>
+                                    @using (Html.BeginForm("logout", "Login"))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit">Log Out</button>
+                                    }
+                                </li>
+                            }
+                            <li>
+                                <a href="https://championmains.github.io/Pyrobot/">About <span class="fa fa-external-link-square"></span></a>
+                            </li>
+                            @if (User.IsInRole("admin") || User.IsInRole("moderator"))
+                            {
+                                @*<li>
+                                        <a href="/adminPanel">Admin</a>
+                                    </li>*@
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            </header>
+        </div>
+
+        @RenderBody()
+
+        <footer class="footer">
+            <p>/r/ChampionMains Flairs  isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing League of Legends. League of Legends and Riot Games are trademarks or registered trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc.</p>
+        </footer>
+    </div>
+</body>
+</html>
