@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Services;
 using Microsoft.Azure.WebJobs;
-using MingweiSamuel.Camille.SummonerV4;
 
 namespace ChampionMains.Pyrobot.WebJob.Jobs
 {

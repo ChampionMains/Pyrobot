@@ -1,17 +1,22 @@
 {
   "name": "pyrobot-redesign",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "client JS packages for pyrobot",
+  "author": "Mingwei Samuel",
+  "license": "LGPL-3.0",
+  "main": "none.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ChampionMains/Pyrobot.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "dependencies": {
+    "bower": "^1.8.4",
     "fitty": "^2.2.6",
     "material-design-lite": "^1.3.0",
     "mdl-ext": "^0.17.1"
   },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Mingwei Samuel",
-  "license": "LGPL-3.0"
+  "devDependencies": {}
 }

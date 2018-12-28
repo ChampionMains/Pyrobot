@@ -206,10 +206,6 @@
       <Project>{9357d4e8-fc65-469e-9eba-12b82babd7e8}</Project>
       <Name>ChampionMains.Pyrobot.Infrastructure</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ChampionMains.Pyrobot.Reddit\ChampionMains.Pyrobot.Reddit.csproj">
-      <Project>{23f0de13-732d-4cdc-9bf2-eafca93814e8}</Project>
-      <Name>ChampionMains.Pyrobot.Reddit</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ChampionMains.Pyrobot.Startup\ChampionMains.Pyrobot.Startup.csproj">
       <Project>{55C0978C-F23E-43E6-80B3-4FEC1993C5C9}</Project>
       <Name>ChampionMains.Pyrobot.Startup</Name>
