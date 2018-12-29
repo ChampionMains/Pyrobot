@@ -30,3 +30,19 @@ $image_path: '~/node_modules/material-design-lite/src/images';
 // 3. Your stuff
 //@import 'stylesheets/variables';
 //@import 'stylesheets/app/whatever';
+.username {
+    word-break: break-all;
+    font-family: 'PT Sans', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    font-weight: 700;
+    /* font-size: 29px; */
+}
+
+.userpane {
+    background-color: #303030;
+    padding: 16px;
+    max-width: 600px;
+}
+
+.mdl-layout__container {
+    position: static !important;
+}
