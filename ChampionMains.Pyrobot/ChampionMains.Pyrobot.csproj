@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\JavaScriptEngineSwitcher.V8.Native.win-x86.3.0.0\build\JavaScriptEngineSwitcher.V8.Native.win-x86.props" Condition="Exists('..\packages\JavaScriptEngineSwitcher.V8.Native.win-x86.3.0.0\build\JavaScriptEngineSwitcher.V8.Native.win-x86.props')" />
   <Import Project="..\packages\LibSassHost.Native.win-x86.1.2.0\build\LibSassHost.Native.win-x86.props" Condition="Exists('..\packages\LibSassHost.Native.win-x86.1.2.0\build\LibSassHost.Native.win-x86.props')" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.1\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.1\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
@@ -63,14 +62,8 @@
     <Reference Include="BundleTransformer.SassAndScss, Version=1.10.0.0, Culture=neutral, PublicKeyToken=973c344c93aac60d, processorArchitecture=MSIL">
       <HintPath>..\packages\BundleTransformer.SassAndScss.1.10.0\lib\net40\BundleTransformer.SassAndScss.dll</HintPath>
     </Reference>
-    <Reference Include="BundleTransformer.TypeScript, Version=1.10.0.0, Culture=neutral, PublicKeyToken=973c344c93aac60d, processorArchitecture=MSIL">
-      <HintPath>..\packages\BundleTransformer.TypeScript.1.10.0\lib\net40\BundleTransformer.TypeScript.dll</HintPath>
-    </Reference>
     <Reference Include="Camille, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MingweiSamuel.Camille.2.0.0-alpha-nightly-2018-12-16-3842eae176\lib\net45\Camille.dll</HintPath>
-    </Reference>
-    <Reference Include="ClearScript, Version=5.5.4.0, Culture=neutral, PublicKeyToken=935d0c957da47c73, processorArchitecture=MSIL">
-      <HintPath>..\packages\JavaScriptEngineSwitcher.V8.3.0.0\lib\net45\ClearScript.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
@@ -79,12 +72,6 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="JavaScriptEngineSwitcher.Core, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c608b2a8cc9e4472, processorArchitecture=MSIL">
-      <HintPath>..\packages\JavaScriptEngineSwitcher.Core.3.0.0\lib\net45\JavaScriptEngineSwitcher.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="JavaScriptEngineSwitcher.V8, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c608b2a8cc9e4472, processorArchitecture=MSIL">
-      <HintPath>..\packages\JavaScriptEngineSwitcher.V8.3.0.0\lib\net45\JavaScriptEngineSwitcher.V8.dll</HintPath>
     </Reference>
     <Reference Include="LibSassHost, Version=1.2.2.0, Culture=neutral, PublicKeyToken=3e24e88796a38e46, processorArchitecture=MSIL">
       <HintPath>..\packages\LibSassHost.1.2.2\lib\net45\LibSassHost.dll</HintPath>
@@ -275,23 +262,14 @@
     <Content Include="content\icons\ms-icon-310x310.png" />
     <Content Include="content\icons\ms-icon-70x70.png" />
     <Content Include="content\img\masteries.png" />
-    <Content Include="content\img\masteries\143.png" />
-    <Content Include="content\img\masteries\143000.jpg" />
-    <Content Include="content\img\masteries\banner1.png" />
-    <Content Include="content\img\masteries\banner2.png" />
-    <Content Include="content\img\masteries\banner3.png" />
-    <Content Include="content\img\masteries\banner5.png" />
-    <Content Include="content\img\masteries\banner6.png" />
-    <Content Include="content\img\masteries\banner7.png" />
-    <Content Include="content\img\masteries\circle.png" />
-    <Content Include="content\img\masteries\icon5.png" />
-    <Content Include="content\img\masteries\icon6.png" />
-    <Content Include="content\img\masteries\icon7.png" />
-    <Content Include="content\img\masteries\katarina.png" />
-    <Content Include="content\img\masteries\nami.png" />
+    <Content Include="content\img\banners.png" />
+    <Content Include="content\img\circle.png" />
+    <Content Include="content\img\mastery-icon.png" />
+    <Content Include="content\img\noise.png" />
     <Content Include="content\img\ranks.png" />
     <Content Include="content\js\angular-services.js" />
     <Content Include="content\js\ga.js" />
+    <Content Include="content\js\vueProfile.js" />
     <Content Include="content\js\profile.js" />
     <Content Include="content\Site.css" />
     <Content Include="favicon.ico" />
@@ -299,7 +277,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
-    <Compile Include="App_Start\JsEngineSwitcherConfig.cs" />
     <Compile Include="Attributes\ValidateModelAttribute.cs" />
     <Compile Include="App_Start\SimpleInjectorConfig.cs" />
     <Compile Include="App_Start\OwinStartup.cs" />
@@ -354,7 +331,8 @@
     <Content Include="content\css\site.scss" />
     <Content Include="manifest.json" />
     <Content Include="package.json" />
-    <Content Include="content\css\newStyles.scss" />
+    <Content Include="content\css\mdlStyles.scss" />
+    <Content Include="content\css\_vueChampBadge.scss" />
     <None Include="Properties\PublishProfiles\championmains-pyrobot - Web Deploy.pubxml" />
     <Content Include="Properties\webjobs-list.json" />
     <Content Include="Views\Web.config" />
@@ -362,6 +340,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Profile\newIndex.cshtml" />
     <Content Include="Views\_newMaster.cshtml" />
+    <Content Include="Views\Profile\_vueChampBadge.cshtml" />
     <!-- - -->
     <None Include="Web.config" />
     <Content Include="Web.template.config">
@@ -436,7 +415,6 @@
     <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.2.6.1\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.2.6.1\build\Microsoft.Net.Compilers.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.1\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.1\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
     <Error Condition="!Exists('..\packages\LibSassHost.Native.win-x86.1.2.0\build\LibSassHost.Native.win-x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibSassHost.Native.win-x86.1.2.0\build\LibSassHost.Native.win-x86.props'))" />
-    <Error Condition="!Exists('..\packages\JavaScriptEngineSwitcher.V8.Native.win-x86.3.0.0\build\JavaScriptEngineSwitcher.V8.Native.win-x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JavaScriptEngineSwitcher.V8.Native.win-x86.3.0.0\build\JavaScriptEngineSwitcher.V8.Native.win-x86.props'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -447,10 +425,11 @@
   -->
   <Target Name="NpmClientJs" BeforeTargets="BowerUpdate">
     <!-- TODO: set BeforeTargets="Build" after removing bower. -->
-    <Exec Command="npm install" />
+    <Exec Command="npm -v" />
+    <Exec Command="npm ci" />
   </Target>
   <Target Name="BowerUpdate" BeforeTargets="Build">
-    <Exec Command="npm install bower" />
+    <Exec Command="npm install --no-save bower" />
     <Exec Command="node .\node_modules\bower\bin\bower update --force" />
   </Target>
   <!-- update webjob config -->

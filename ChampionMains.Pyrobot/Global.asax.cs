@@ -12,7 +12,6 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using ChampionMains.Pyrobot.Data;
-using JavaScriptEngineSwitcher.Core;
 using SimpleInjector;
 using GlobalConfiguration = System.Web.Http.GlobalConfiguration;
 
@@ -57,8 +56,7 @@ namespace ChampionMains.Pyrobot
             // do database migrations
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<UnitOfWork, Data.Migrations.Configuration>());
 
-            // https://github.com/Taritsyn/JavaScriptEngineSwitcher/wiki/Registration-of-JS-engines#aspnet-4x
-            JsEngineSwitcherConfig.Configure(JsEngineSwitcher.Current);
+            // bundle scripts & css
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             // jsonp MediaTypeFormatter

@@ -1,0 +1,16 @@
+﻿<script type="text/x-template" id="champ-badge-template">
+    <div class="champ-badge">
+        <div class="banner" :mastery="champData && champData.level || 0"></div>
+        <div class="champ" :style="{ backgroundImage: 'url(https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/' + (champData && champData.id || -1) + '.png)' }"></div>
+        <div class="circle"></div>
+        <div class="mastery" :mastery="champData && champData.level || 0"></div>
+        <div class="name" v-text="champData && champData.name || ''"></div>
+        <div class="points" v-if="champData && champData.points">{{ champData.points | separator }}</div>
+    </div>
+</script>
+<script type="text/javascript">
+    Vue.component('champ-badge', {
+        template: '#champ-badge-template',
+        props: [ 'champData' ]
+    });
+</script>

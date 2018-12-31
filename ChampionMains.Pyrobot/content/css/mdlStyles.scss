@@ -1,0 +1,129 @@
+﻿@charset "UTF-8";
+
+// 1.  Configuration and helpers
+
+// MDL image path
+$image_path: '~/node_modules/material-design-lite/src/images';
+
+// Material Design Lite
+@import '~/node_modules/material-design-lite/src/variables';
+@import '~/node_modules/material-design-lite/src/mixins';
+
+// mdl-ext
+@import '~/node_modules/mdl-ext/src/variables';
+@import '~/node_modules/mdl-ext/src/mixins';
+@import '~/node_modules/mdl-ext/src/functions';
+
+// 2.  Vendors
+
+// Import MDL
+//@import '~/node_modules/material-design-icons/iconfont/material-icons';
+//@import '~/node_modules/roboto-fontface/css/roboto/sass/roboto-fontface-light';
+@import '~/node_modules/material-design-lite/src/material-design-lite';
+
+// Import required MDLEXT SASS modules
+@import '~/node_modules/mdl-ext/src/color-themes/dark-color-theme';
+//@import '~/node_modules/mdl-ext/src/aria-expanded-toggle/aria-expanded-toggle';
+//@import '~/node_modules/mdl-ext/src/menu-button/menu-button';
+//@import '~/node_modules/mdl-ext/src/selectfield/selectfield';
+
+// 3. Your stuff
+//@import 'stylesheets/variables';
+//@import 'stylesheets/app/whatever';
+
+
+
+
+
+.demo-layout {
+    position: relative;
+    background-image: url('/content/img/noise.png');
+    background-size: 48px;
+    background-repeat: repeat;
+}
+
+.demo-layout::before,
+.demo-layout::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    z-index: -1;
+    transform: translateX(-50%);
+    width: 100%;
+    min-width: 480px;
+    background-image: url('https://cdn.communitydragon.org/latest/champion/99/splash-art/centered/skin/8');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position: 100% 0%;
+}
+
+@media (min-width: 840px) {
+    .demo-layout::before {
+        transform: translateX(-50%) scaleX(-1);
+        left: -30%;
+    }
+
+    .demo-layout::after {
+        left: 70%;
+    }
+}
+
+.demo-layout .mdl-layout__header,
+.demo-layout .mdl-layout__drawer-button {
+    /* This background is dark, so we set text to white. Use 87% black instead if
+     your background is light. */
+    color: white;
+}
+
+.mdl-layout__header {
+    background-image: linear-gradient( hsl(0, 0%, 0%) 0%, hsla(0, 0%, 0%, 0.738) 19%, hsla(0, 0%, 0%, 0.541) 34%, hsla(0, 0%, 0%, 0.382) 47%, hsla(0, 0%, 0%, 0.278) 56.5%, hsla(0, 0%, 0%, 0.194) 65%, hsla(0, 0%, 0%, 0.126) 73%, hsla(0, 0%, 0%, 0.075) 80.2%, hsla(0, 0%, 0%, 0.042) 86.1%, hsla(0, 0%, 0%, 0.021) 91%, hsla(0, 0%, 0%, 0.008) 95.2%, hsla(0, 0%, 0%, 0.002) 98.2%, hsla(0, 0%, 0%, 0) 100% );
+}
+
+.demo-header .mdl-layout__header-row {
+    padding-left: 40px;
+}
+
+.demo-content {
+    border-radius: 2px;
+    padding: 80px 56px;
+    margin-bottom: 80px;
+}
+
+.demo-layout.is-small-screen .demo-content {
+    padding: 40px 28px;
+}
+
+.demo-content h3 {
+    margin-top: 48px;
+}
+
+.demo-footer {
+    padding-left: 40px;
+}
+
+.demo-footer .mdl-mini-footer--link-list a {
+    font-size: 13px;
+}
+
+
+.username {
+    word-break: break-all;
+    font-family: 'PT Sans', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    font-weight: 700;
+}
+
+.userpane {
+    background-color: #303030;
+    padding: 16px;
+    margin-top: calc(30px + 5vw);
+    max-width: 600px;
+}
+.userpane-spacer {
+    height: calc(50px + 25vw);
+}
+
+.mdl-layout__container {
+    position: static !important;
+}

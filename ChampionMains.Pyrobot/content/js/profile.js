@@ -3,9 +3,9 @@
 
     app.factory('api', function($q, $timeout, ajax) {
         return {
-            summoners: [],
+            summoners: {},
             champions: {},
-            subreddits: [],
+            subreddits: {},
             loading: false,
 
             status: null,
@@ -158,7 +158,7 @@
                 var complete = function() {
                     var index = $scope.updatingSummoners.indexOf(summoner.id);
                     $scope.updatingSummoners.splice(index, 1);
-                }
+                };
 
                 if (success) {
                     var clearWatch = $scope.$watch('api.summoners[' + summoner.id + '].lastUpdate',

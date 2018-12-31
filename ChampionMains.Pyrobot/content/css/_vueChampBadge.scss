@@ -1,0 +1,94 @@
+﻿.champ-badge {
+    position: relative;
+    width: 100%;
+    padding-bottom: 125%;
+    margin-bottom: 4.8em;
+
+    .circle {
+        background-image: url('/content/img/circle.png');
+        background-size: 108.3333%;
+        width: 100%;
+        padding-bottom: 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+        position: absolute;
+    }
+
+    .champ {
+        background-size: 107%;
+        background-position: center;
+        background-repeat: no-repeat;
+        border-radius: 100%;
+        position: absolute;
+        width: 77%;
+        padding-bottom: 77%;
+        top: 8.75%;
+        left: 11.5%;
+        box-shadow: 0 0 1em 0.8em black;
+    }
+
+    .mastery {
+        background-image: url('/content/img/masteries.png');
+        background-size: 100%;
+        width: 55%;
+        padding-bottom: 55%;
+        background-repeat: no-repeat;
+        position: absolute;
+        left: 22.5%;
+        top: 57%;
+    }
+
+    .banner {
+        background-image: url('/content/img/banners.png');
+        background-size: 100%;
+        width: 75%;
+        padding-bottom: 75%;
+        background-repeat: no-repeat;
+        position: absolute;
+        left: 12.5%;
+        top: 40%;
+        box-shadow: 0 -0.8em 0.8em -0.1em black;
+    }
+
+    .banner[mastery="0"] {
+        box-shadow: none;
+    }
+
+    .mastery, .banner {
+        @for $i from 1 through 7 {
+            &[mastery="#{$i}"] {
+                background-position-y: $i / 7 * 100%;
+            }
+        }
+    }
+
+    .name {
+        position: absolute;
+        width: 100%;
+        bottom: -1.5em;
+        font-size: 200%;
+        height: 2em;
+        line-height: 2em;
+    }
+
+    .points {
+        position: absolute;
+        width: 100%;
+        bottom: -3em;
+        font-size: 150%;
+        height: 1.5em;
+        line-height: 1.5em;
+    }
+
+    .points::before {
+        content: '';
+        display: inline-block;
+        vertical-align: middle;
+        width: 1.3em;
+        padding-bottom: 1.3em;
+        margin-right: 0.2em;
+        background-image: url('/content/img/mastery-icon.png');
+        background-size: 100%;
+        background-repeat: no-repeat;
+    }
+}

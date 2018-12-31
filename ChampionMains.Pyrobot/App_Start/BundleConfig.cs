@@ -1,5 +1,4 @@
 ﻿using System.Web.Optimization;
-using BundleTransformer.Core.Bundles;
 
 namespace ChampionMains.Pyrobot
 {
@@ -9,14 +8,22 @@ namespace ChampionMains.Pyrobot
         // https://github.com/Taritsyn/BundleTransformer/blob/5310f4c3e56ba823b657b59ba7f8d4c8992c9c4a/samples/BundleTransformer.Sample.AspNet4.Mvc4/App_Start/BundleConfig.cs
         public static void RegisterBundles(BundleCollection bundles)
         {
-            var npmScriptsBundle = new CustomScriptBundle("~/Bundles/npmScripts.js");
-            npmScriptsBundle.Include(
+            bundles.Add(new ScriptBundle("~/Bundles/polyfills").Include(
+                "~/node_modules/mdl-polyfills/Object.assign.js",
+                "~/node_modules/mdl-polyfills/Object.values.js",
+                "~/node_modules/mdl-polyfills/Object.entries.js",
+                "~/node_modules/native-promise-only/npo.js",
+                "~/node_modules/whatwg-fetch/dist/fetch.umd.js"));
+
+            bundles.Add(new ScriptBundle("~/Bundles/npmScripts").Include(
                 "~/node_modules/material-design-lite/material.js",
                 "~/node_modules/mdl-ext/lib/mdl-ext.js",
-                "~/node_modules/fitty/dist/fitty.module.js");
+                "~/node_modules/fitty/dist/fitty.min.js"));
 
-            bundles.Add(npmScriptsBundle);
-
+            bundles.Add(new ScriptBundle("~/Bundles/vue").Include(
+                "~/node_modules/vue/dist/vue.js",
+                "~/node_modules/numeral/numeral/js",
+                "~/node_modules/vue-numeral-filter/dist/vue-numeral-filter.min.js"));
 
 //            bundles.UseCdn = true;
 //
