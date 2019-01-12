@@ -1,5 +1,5 @@
 ﻿<script type="text/x-template" id="champ-badge-template">
-    <div class="champ-badge">
+    <div class="champ-badge" :title="champData && champData.name || 'None'">
         <div class="banner" :mastery="champData && champData.level || 0"></div>
         <div class="champ" :style="{ backgroundImage: 'url(https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/' + (champData && champData.id || -1) + '.png)' }"></div>
         <div class="circle"></div>

@@ -1,0 +1,36 @@
+﻿<script type="text/x-template" id="flair-display-template">
+    <div class="flair-display" :class="[ 'subreddit-' + subredditData.name ]" style="font-size: 12px; font-family: verdana, arial, helvetica, sans-serif;">
+        <span class="flair" :class="classes" :title="innerText" v-text="innerText" style="box-sizing: content-box; display: inline-block;"></span>
+    </div>
+</script>
+<script type="text/javascript">
+    Vue.component('flair-display', {
+        template: '#flair-display-template',
+        props: [ 'rankData', 'champData', 'subredditData' ],
+        computed: {
+            flair: function() {
+                return this.subredditData.flair;
+            },
+            classes: function() {
+                var classes = [];
+                if (this.flair.rankEnabled && this.rankData)
+                    classes.push('flair-rank-' + this.rankData.tierString);
+                if (this.flair.championMasteryEnabled && this.champData.level > 0)
+                    classes.push('flair-mastery-' + this.champData.level);
+                if (this.flair.prestigeEnabled && this.champData.prestige >= 1000)
+                    classes.push('flair-prestige-' + (this.champData.prestige / 1000));
+                if (this.flair.championMasteryTextEnabled) {
+                    classes.push('flair-masteryText');
+                }
+                return classes;
+            },
+            innerText: function() {
+                var text = this.flair.flairText || '';
+                if (this.flair.championMasteryTextEnabled) {
+                    text = this.champData.points.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' ' + text;
+                }
+                return text;
+            }
+        }
+    });
+</script>

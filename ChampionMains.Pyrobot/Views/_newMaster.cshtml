@@ -17,9 +17,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,700">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cabin:400,700">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="~/Bundles/dialogPolyfill" />
     <link rel="stylesheet" href="~/Content/css/mdlStyles.scss" />
-    
+
     <!-- favicons -->
     <link rel="apple-touch-icon" sizes="57x57" href="~/content/icons/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="~/content/icons/apple-icon-60x60.png">
@@ -42,7 +44,8 @@
     <!-- scripts -->
     <script src="~/content/js/ga.js"></script>
     <script src="~/Bundles/polyfills" type="text/javascript"></script>
-    @if (Page.HasVue != null) { <script src="~/Bundles/vue" type="text/javascript"></script> }
+    @if (Page.HasVue != null)
+    { <script src="~/Bundles/vue" type="text/javascript"></script> }
 
     @RenderSection("head", false)
 </head>

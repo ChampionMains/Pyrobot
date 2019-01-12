@@ -9,10 +9,58 @@
 
 @section head {
     <link href="@Url.Content("~/content/css/_vueChampBadge.scss")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/content/css/_vueRankBadge.scss")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/content/css/newProfile.scss")" rel="stylesheet" type="text/css" />
+    <link href="/profile/api/flaircss" rel="stylesheet" type="text/css" />
 }
 
 @section tail {
-    @{ Html.RenderPartial("_vueChampBadge"); }
+    @{
+        Html.RenderPartial("_vueChampBadge");
+        Html.RenderPartial("_vueRankBadge");
+        Html.RenderPartial("_vueFlairDisplay");
+        Html.RenderPartial("_vueChampIcon");
+    }
+
+    <div id="dialogApp">
+        <dialog class="mdl-dialog" id="modal-remove-summoner" style="width: 420px;">
+            <h4 class="mdl-dialog__title">Remove Summoner?</h4>
+            <div class="mdl-dialog__content">
+                <p v-if="summonerToRemove">
+                    {{ summonerToRemove.name }} ({{ summonerToRemove.region }}) will be removed.
+                </p>
+                <p>
+                    You can re-add this summoner later.
+                </p>
+            </div>
+            <div class="mdl-dialog__actions">
+                <button type="button" class="mdl-button" @@click="closeDialog($event.target)">Cancel</button>
+                <button type="button" class="mdl-button" @@click="removeSummoner($event)">Remove</button>
+            </div>
+        </dialog>
+
+        <dialog class="mdl-dialog" id="modal-add-summoner" style="width: 420px;">
+            <h4 class="mdl-dialog__title">Add Summoner</h4>
+            <div class="mdl-dialog__content">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
+                    <input type="text" value="" class="mdl-textfield__input" id="sample4" readonly>
+                    <input type="hidden" value="" name="sample4">
+                    <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+                    <label for="sample4" class="mdl-textfield__label">Country</label>
+                    <ul for="sample4" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+                        <li class="mdl-menu__item" data-val="DEU">Germany</li>
+                        <li class="mdl-menu__item" data-val="BLR">Belarus</li>
+                        <li class="mdl-menu__item" data-val="RUS">Russia</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mdl-dialog__actions">
+                <button type="button" class="mdl-button" @@click="closeDialog($event.target)">Cancel</button>
+                <button type="button" class="mdl-button" @@click="removeSummoner($event)">Remove</button>
+            </div>
+        </dialog>
+    </div>
+
     <script src="@Url.Content("~/content/js/vueProfile.js")" type="text/javascript"></script>
     <script type="text/javascript">
         fitty('.username', {
@@ -22,106 +70,149 @@
     </script>
 }
 
-<div id="app" class="mdl-grid">
-    <div class="userpane-spacer mdl-cell mdl-cell--12-col mdl-cell--hide-desktop"></div>
-    <div class="userpane mdl-shadow--2dp mdl-cell mdl-cell--6-col mdl-cell--1-offset-tablet mdl-cell--5-col-desktop mdl-cell--1-offset-desktop mdl-typography--text-center">
-        <div><h3 class="username">/u/@User.Identity.Name</h3></div>
-        <!-- YUUUUUSDHSUDHASOUDAS -->
-        <div>
-            <div style="width: calc(40px + 7vw); font-size: calc(3.4px + 0.595vw); display: inline-block;">
-                <champ-badge :champ-data="sortedChampions[1]"></champ-badge>
+<div id="app">
+    <div class="mdl-grid">
+        <div class="userpane-spacer mdl-cell mdl-cell--12-col mdl-cell--hide-desktop"></div>
+        <div class="userpane mdl-shadow--4dp mdl-cell mdl-cell--6-col mdl-cell--1-offset-tablet mdl-cell--5-col-desktop mdl-cell--1-offset-desktop mdl-typography--text-center">
+            <div class="mdl-grid mdl-grid--no-spacing" style="margin: 0 16px;">
+                <div class="mdl-cell mdl-cell--middle mdl-cell--4-col mdl-cell--2-col-tablet mdl-cell--1-col-phone">
+                    <rank-badge :rank-data="topRankedSummoners[0]"></rank-badge>
+                </div>
+                <div class="mdl-cell mdl-cell--middle mdl-cell--8-col mdl-cell--6-col-tablet mdl-cell--3-col-phone">
+                    <h3 class="username">/u/@User.Identity.Name</h3>
+                </div>
             </div>
-            <div style="width: calc(40px + 8vw); font-size: calc(3.4px + 0.680vw); display: inline-block;">
-                <champ-badge :champ-data="sortedChampions[0]"></champ-badge>
-            </div>
-            <div style="width: calc(40px + 6vw); font-size: calc(3.4px + 0.510vw); display: inline-block;">
-                <champ-badge :champ-data="sortedChampions[2]"></champ-badge>
-            </div>
-        </div>
-        <div>
-            <img src="/images/Gold_Emblem.png" style="margin-right: 0.5em; width: calc(50px + 10vw); display: inline-block;" />
-        </div>
-    </div>
-</div>
-<div class="mdl-grid" style="margin-top: 10vw;">
-    <div class="mdl-cell mdl-cell--6-col">
-        <div class="demo-card-square mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand">
-                <h2 class="mdl-card__title-text">Update</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Aenan convallis.
-            </div>
-            <div class="mdl-card__supporting-text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Aenan convallis.
-            </div>
-            <div class="mdl-card__supporting-text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Aenan convallis.
-            </div>
-            <div class="mdl-card__supporting-text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Aenan convallis.
-            </div>
-            <div class="mdl-card__supporting-text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Aenan convallis.
-            </div>
-            <div class="mdl-card__supporting-text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Aenan convallis.
-            </div>
-            <div class="mdl-card__supporting-text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Aenan convallis.
-            </div>
-            <div class="mdl-card__supporting-text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Aenan convallis.
-            </div>
-            <div class="mdl-card__supporting-text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Aenan convallis.
-            </div>
-            <div class="mdl-card__supporting-text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Aenan convallis.
-            </div>
-            <div class="mdl-card__supporting-text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Aenan convallis.
-            </div>
-            <div class="mdl-card__supporting-text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Aenan convallis.
-            </div>
-            <div class="mdl-card__supporting-text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Aenan convallis.
-            </div>
-            <div class="mdl-card__supporting-text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Aenan convallis.
-            </div>
-            <div class="mdl-card__supporting-text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Aenan convallis.
-            </div>
-            <div class="mdl-card__supporting-text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Aenan convallis.
-            </div>
-            <div class="mdl-card__supporting-text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Aenan convallis.
-            </div>
-            <div class="mdl-card__actions mdl-card--border">
-                <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-                    View Updates
-                </a>
+            <div>
+                <div style="width: calc(75px + 2.4vw); font-size: calc(7.5px + 0.24vw); display: inline-block;">
+                    <champ-badge :champ-data="sortedChampions[1]"></champ-badge>
+                </div>
+                <div style="width: calc(80px + 2.7vw); font-size: calc(8px + 0.27vw); display: inline-block;">
+                    <champ-badge :champ-data="sortedChampions[0]"></champ-badge>
+                </div>
+                <div style="width: calc(70px + 2.1vw); font-size: calc(7px + 0.21vw); display: inline-block;">
+                    <champ-badge :champ-data="sortedChampions[2]"></champ-badge>
+                </div>
             </div>
         </div>
     </div>
+    <div class="mdl-grid">
+        <div class="mdl-cell mdl-cell--12-col mdl-cell--hide-phone mdl-cell--hide-tablet" style="height: 10vw;"></div>
+        <div class="content mdl-shadow--2dp mdl-cell mdl-cell--6-col mdl-cell--1-offset-tablet">
+            <div>
+                <h3>
+                    Summoners
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" style="margin-left: 1em;" @@click="promptAddSummoner()">
+                        Add
+                    </button>
+                </h3>
+            </div>
+            <div class="summonerListContainer" v-for="summoner in topMasterySummoners" :key="summoner.id" v-cloak>
+                <div class="badge">
+                    <rank-badge :rank-data="summoner" show-summoner="true"></rank-badge>
+                </div>
+                <div class="info">
+                    <div class="name">
+                        <span class="mdl-chip mdl-chip--small">
+                            <span v-text="summoner.region" class="mdl-chip__text"></span>
+                        </span>
+                        <span class="summonerName" v-text="summoner.name"></span>
+                    </div>
+                    <div class="points">{{ summoner.totalPoints | separator }}</div>
+                </div>
+                <div class="controls">
+                    <button class="mdl-button mdl-js-button mdl-button--primary" :disabled="isSummonerUpdating(summoner)" @@click="promptRemoveSummoner(summoner, $event)">
+                        Remove
+                    </button>
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary" :disabled="isSummonerUpdating(summoner)" @@click="updateSummoner(summoner, $event)">
+                        Update
+                    </button>
+                    <div class="updateTime mdl-color-text--grey-600" v-if="summoner.lastUpdate" :title="summoner.lastUpdate">
+                        Updated {{ new Date(summoner.lastUpdate) | moment("from", now) }}
+                    </div>
+                </div>
+            </div>
+            <div class="summonerListContainer" v-if="topMasterySummoners.length == 0">
+                Click "add" to link a summoner.
+            </div>
+            <table class="mdl-data-table" style="width: 100%; border: none;">
+                <tbody>
+                    <tr v-for="summoner in topMasterySummoners" :key="summoner.id" v-cloak>
+                        <td class="mdl-data-table__cell--non-numeric" style="padding: 0;">
+                            <div style="width: calc(80px + 2.7vw);">
+                                <rank-badge :rank-data="summoner" show-summoner="true"></rank-badge>
+                            </div>
+                        </td>
+                        <td class="mdl-data-table__cell--non-numeric" style="width: 100%;">
+                            <div style="margin: 4px 0;">
+                                <span class="mdl-chip" style="height: 24px; line-height: 24px; vertical-align: middle;">
+                                    <span v-text="summoner.region" class="mdl-chip__text"></span>
+                                </span>
+                                <span v-text="summoner.name" style="line-height: 24px; font-size: 24px; vertical-align: middle; margin-right: 4px;"></span>
+                            </div>
+                            <div class="points" style="margin: 4px 0; font-size: 16px;">{{ summoner.totalPoints | separator }}</div>
+                        </td>
+                        <td class="mdl-data-table__cell--non-numeric" style="text-align: right;">
+                            <button class="mdl-button mdl-js-button mdl-button--primary" :disabled="isSummonerUpdating(summoner)" @@click="promptRemoveSummoner(summoner, $event)">
+                                Remove
+                            </button>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary" :disabled="isSummonerUpdating(summoner)" @@click="updateSummoner(summoner, $event)">
+                                Update
+                            </button>
+                            <div class="mdl-color-text--grey-600" style="font-size: 75%;" v-if="summoner.lastUpdate" :title="summoner.lastUpdate">
+                                Updated {{ new Date(summoner.lastUpdate) | moment("from", now) }}
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot v-if="topMasterySummoners.length == 0">
+                    <tr>
+                        <td class="mdl-data-table__cell--non-numeric" colspan="3">Click "Add Summoner" to link a summoner.</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="content mdl-shadow--2dp mdl-cell mdl-cell--6-col mdl-cell--1-offset-tablet">
+            <h3>Subreddits</h3>
+            <table>
+                @* class="mdl-data-table" style="max-width: 100%; border: none;"> *@
+            <thead>
+                <tr>
+                    <th style="width: 0;"></th>
+                    <th style="width: 20%;">Subreddit</th>
+                    <th style="width: 60%;">Flair</th>
+                    <th style="width: 20%;">Mastery</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="subreddit in topMasterySubreddits" :key="subreddit.id" v-cloak>
+                    <td>
+                        <button class="btn btn-primary" ng-disabled="subreddit.busy" type="submit" ng-click="editSubredditFlair(id, subreddit)">
+                            <span class="fa fa-pencil"></span>
+                        </button>
+                    </td>
+                    <td>
+                        <champ-icon :champ-data="profileState.champions[subreddit.championId]"></champ-icon>
+                        <a href="#" :href="'http://www.reddit.com/r/' + subreddit.name" target="_blank">/r/<span v-text="subreddit.name"></span></a>
+                        @*                            <span class="hint" ng-if="subreddit.adminOnly" ng-tooltip="right,This subreddit is only visible to Flair Bot admins."><span class="fa fa-shield"></span></span>*@
+                    </td>
+                    <td>
+                        <flair-display :subreddit-data="subreddit" :rank-data="topRankedSummoners[0]" :champ-data="profileState.champions[subreddit.championId]"></flair-display>
+                    </td>
+                    <td>
+                        <span class="mastery" :class="[ 'mastery-' + profileState.champions[subreddit.championId].level ]" :title="'Level ' + profileState.champions[subreddit.championId].level"></span>
+
+                        <span class="prestige" v-if="subreddit.prestigeEnabled" :class="['prestige-' + (profileState.champions[subreddit.championId].prestige / 1000)]"></span>
+                        <span class="hint" v-if="subreddit.prestigeEnabled">
+                            <span>{{ profileState.champions[subreddit.championId].points | separator }}</span> /
+                            <span>{{ profileState.champions[subreddit.championId].nextPrestige | prestige }}</span>
+                        </span>
+
+                        <span v-if="!subreddit.prestigeEnabled">{{ profileState.champions[subreddit.championId].points | separator }}</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
+</div>
+}

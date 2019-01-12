@@ -1,0 +1,60 @@
+﻿.summonerListContainer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+
+    &:last-child {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    }
+
+    .badge {
+        width: calc(80px + 2.7vw);
+    }
+
+    .info {
+        padding: 0 18px;
+
+        .name {
+            margin: 4px 0;
+
+            * {
+                vertical-align: middle;
+            }
+
+            .summonerName {
+                line-height: 24px;
+                font-size: 24px;
+                margin-right: 4px;
+            }
+        }
+
+        .points {
+            margin: 4px 0;
+            font-size: 16px;
+        }
+
+        .points::before {
+            content: '';
+            display: inline-block;
+            vertical-align: middle;
+            width: 1.3em;
+            padding-bottom: 1.3em;
+            margin-right: 0.2em;
+            background-image: url('/content/img/mastery-icon.png');
+            background-size: 100%;
+            background-repeat: no-repeat;
+        }
+    }
+
+    .controls {
+        padding-right: 18px;
+        flex: 1 0;
+        text-align: right;
+        min-width: 175px;
+
+        .updateTime {
+            font-size: 10px;
+        }
+    }
+}

@@ -1,0 +1,17 @@
+﻿<script type="text/x-template" id="rank-badge-template">
+    <div class="rank-badge" :tier="rankData && rankData.tierString || 'unranked'" :title="rankData && rankData.rank || 'Unranked'">
+        <div class="sr1" v-if="rankData && rankData.sr1"></div>
+        <div class="sr2" v-if="rankData && rankData.sr2"></div>
+        <div class="sr3" v-if="rankData && rankData.sr3"></div>
+        <div class="baseface"></div>
+        <div class="summoner" v-if="showSummoner" :style="{ backgroundImage: 'url(https://cdn.communitydragon.org/latest/profile-icon/' + rankData.profileIcon + ')' }"></div>
+        <div class="basering" v-if="showSummoner"></div>
+        <div class="crown" :division="rankData && rankData.division || 1"></div>
+    </div>
+</script>
+<script type="text/javascript">
+    Vue.component('rank-badge', {
+        template: '#rank-badge-template',
+        props: [ 'rankData', 'showSummoner' ]
+    });
+</script>

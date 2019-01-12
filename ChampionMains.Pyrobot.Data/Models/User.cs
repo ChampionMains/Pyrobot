@@ -27,8 +27,8 @@ namespace ChampionMains.Pyrobot.Data.Models
         [Required]
         public bool IsAdmin { get; set; }
 
-        public virtual ICollection<Summoner> Summoners { get; set; } 
+        public virtual ICollection<Summoner> Summoners { get; set; } = new HashSet<Summoner>();
 
-        public virtual ICollection<SubredditUserFlair> SubredditUserFlairs { get; set; }
+        public virtual ICollection<SubredditUserFlair> SubredditUserFlairs { get; set; } = new HashSet<SubredditUserFlair>();
     }
 }

@@ -1,0 +1,11 @@
+﻿<script type="text/x-template" id="champ-icon-template">
+    <img class="champion" :src="'https://cdn.communitydragon.org/latest/champion/' + champData.id + '/square'"
+         :alt="champData.name" :title="champData.name"
+         style="width: 36px;" />
+</script>
+<script type="text/javascript">
+    Vue.component('champ-icon', {
+        template: '#champ-icon-template',
+        props: [ 'champData' ]
+    });
+</script>

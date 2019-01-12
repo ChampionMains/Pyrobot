@@ -8,22 +8,31 @@ namespace ChampionMains.Pyrobot
         // https://github.com/Taritsyn/BundleTransformer/blob/5310f4c3e56ba823b657b59ba7f8d4c8992c9c4a/samples/BundleTransformer.Sample.AspNet4.Mvc4/App_Start/BundleConfig.cs
         public static void RegisterBundles(BundleCollection bundles)
         {
+
+            bundles.Add(new StyleBundle("~/Bundles/dialogPolyfill").Include(
+                "~/node_modules/dialog-polyfill/dialog-polyfill.css"));
+
             bundles.Add(new ScriptBundle("~/Bundles/polyfills").Include(
-                "~/node_modules/mdl-polyfills/Object.assign.js",
-                "~/node_modules/mdl-polyfills/Object.values.js",
-                "~/node_modules/mdl-polyfills/Object.entries.js",
+                "~/node_modules/mdn-polyfills/Object.assign.js",
+                "~/node_modules/mdn-polyfills/Object.values.js",
+                "~/node_modules/mdn-polyfills/Object.entries.js",
+                "~/node_modules/mdn-polyfills/Element.prototype.closest.js",
                 "~/node_modules/native-promise-only/npo.js",
-                "~/node_modules/whatwg-fetch/dist/fetch.umd.js"));
+                "~/node_modules/whatwg-fetch/dist/fetch.umd.js",
+                "~/node_modules/dialog-polyfill/dialog-polyfill.js"));
 
             bundles.Add(new ScriptBundle("~/Bundles/npmScripts").Include(
                 "~/node_modules/material-design-lite/material.js",
                 "~/node_modules/mdl-ext/lib/mdl-ext.js",
+                "~/node_modules/getmdl-select/src/js/getmdl-select.js",
                 "~/node_modules/fitty/dist/fitty.min.js"));
 
             bundles.Add(new ScriptBundle("~/Bundles/vue").Include(
                 "~/node_modules/vue/dist/vue.js",
-                "~/node_modules/numeral/numeral/js",
-                "~/node_modules/vue-numeral-filter/dist/vue-numeral-filter.min.js"));
+                "~/node_modules/numeral/numeral.js",
+                "~/node_modules/vue-numeral-filter/dist/vue-numeral-filter.min.js",
+                "~/node_modules/moment/moment.js",
+                "~/node_modules/vue-moment/dist/vue-moment.js"));
 
 //            bundles.UseCdn = true;
 //

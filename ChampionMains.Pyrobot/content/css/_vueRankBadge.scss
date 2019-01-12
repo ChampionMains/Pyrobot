@@ -1,0 +1,76 @@
+﻿.rank-badge {
+    position: relative;
+    width: 100%;
+    padding-bottom: 114.285714286%;
+
+    * {
+        background-size: 100%;
+        width: 100%;
+        padding-bottom: 114.285714286%;
+        background-position: center;
+        background-repeat: no-repeat;
+        position: absolute;
+    }
+
+    &[tier=unranked] {
+        .baseface {
+            background-image: url('https://raw.communitydragon.org/8.24/plugins/rcp-fe-lol-profiles/global/default/bdf94e482ca0979e03cb5c773d03c17c.png');
+            background-size: 80%;
+            background-position-y: 54%;
+        }
+
+        .crown {
+            // No image.
+        }
+    }
+
+    @each $rankName in iron bronze 'silver' 'gold' platinum diamond master grandmaster challenger {
+        &[tier="#{$rankName}"] {
+            .baseface {
+                background-image: url('https://raw.communitydragon.org/8.24/plugins/rcp-fe-lol-leagues/global/default/lottie/images/#{$rankName}_baseface_matte.png');
+            }
+
+            .basering {
+                background-image: url('https://raw.communitydragon.org/8.24/plugins/rcp-fe-lol-leagues/global/default/lottie/images/#{$rankName}_base.png');
+            }
+        }
+    }
+
+    @each $rankName in iron bronze 'silver' 'gold' platinum diamond {
+        &[tier="#{$rankName}"] {
+            @for $division from 1 through 4 {
+                .crown[division="#{$division}"] {
+                    background-image: url('https://raw.communitydragon.org/8.24/plugins/rcp-fe-lol-leagues/global/default/lottie/images/#{$rankName}_crown_d#{$division}.png');
+                }
+            }
+
+            @for $sr from 1 through 3 {
+                .sr#{$sr} {
+                    background-image: url('https://raw.communitydragon.org/8.24/plugins/rcp-fe-lol-leagues/global/default/lottie/images/#{$rankName}_s#{$sr}.png');
+                }
+            }
+        }
+    }
+
+    @each $rankName in master grandmaster challenger {
+        &[tier="#{$rankName}"] {
+            .crown {
+                background-image: url('https://raw.communitydragon.org/8.24/plugins/rcp-fe-lol-leagues/global/default/lottie/images/#{$rankName}_crown.png');
+            }
+
+            @for $sr from 1 through 3 {
+                .sr#{$sr} {
+                    background-image: url('https://raw.communitydragon.org/8.24/plugins/rcp-fe-lol-leagues/global/default/lottie/images/#{$rankName}_sr#{$sr}.png');
+                }
+            }
+        }
+    }
+
+    .summoner {
+        left: 26%;
+        top: 29.125%;
+        width: 48%;
+        padding-bottom: 48%;
+        border-radius: 100%;
+    }
+}

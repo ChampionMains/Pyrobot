@@ -235,7 +235,6 @@
     <Content Include="content\bootstrap\js\bootstrap.js" />
     <Content Include="content\bootstrap\js\bootstrap.min.js" />
     <Content Include="content\css\cyborg.css" />
-    <Content Include="content\css\flairdisplay.css" />
     <Content Include="content\icons\android-icon-144x144.png" />
     <Content Include="content\icons\android-icon-192x192.png" />
     <Content Include="content\icons\android-icon-36x36.png" />
@@ -333,6 +332,8 @@
     <Content Include="package.json" />
     <Content Include="content\css\mdlStyles.scss" />
     <Content Include="content\css\_vueChampBadge.scss" />
+    <Content Include="content\css\_vueRankBadge.scss" />
+    <Content Include="content\css\newProfile.scss" />
     <None Include="Properties\PublishProfiles\championmains-pyrobot - Web Deploy.pubxml" />
     <Content Include="Properties\webjobs-list.json" />
     <Content Include="Views\Web.config" />
@@ -341,6 +342,9 @@
     <Content Include="Views\Profile\newIndex.cshtml" />
     <Content Include="Views\_newMaster.cshtml" />
     <Content Include="Views\Profile\_vueChampBadge.cshtml" />
+    <Content Include="Views\Profile\_vueRankBadge.cshtml" />
+    <Content Include="Views\Profile\_vueFlairDisplay.cshtml" />
+    <Content Include="Views\Profile\_vueChampIcon.cshtml" />
     <!-- - -->
     <None Include="Web.config" />
     <Content Include="Web.template.config">

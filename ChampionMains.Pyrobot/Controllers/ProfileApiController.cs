@@ -129,7 +129,7 @@ namespace ChampionMains.Pyrobot.Controllers
                     TotalPoints = s.ChampionMasteries.Select(cm => cm.Points).DefaultIfEmpty().Sum(),
                     LastUpdate = s.LastUpdate
                 });
-
+            
             var masteries = user.Summoners.SelectMany(s => s.ChampionMasteries).ToList();
             // TODO: encapsulate unit of work
             var champions = _unitOfWork.Champions.ToDictionary(c => c.Id, c =>

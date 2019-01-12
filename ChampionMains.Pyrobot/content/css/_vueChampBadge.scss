@@ -79,16 +79,4 @@
         height: 1.5em;
         line-height: 1.5em;
     }
-
-    .points::before {
-        content: '';
-        display: inline-block;
-        vertical-align: middle;
-        width: 1.3em;
-        padding-bottom: 1.3em;
-        margin-right: 0.2em;
-        background-image: url('/content/img/mastery-icon.png');
-        background-size: 100%;
-        background-repeat: no-repeat;
-    }
 }

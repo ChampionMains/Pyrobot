@@ -31,9 +31,56 @@ $image_path: '~/node_modules/material-design-lite/src/images';
 //@import 'stylesheets/variables';
 //@import 'stylesheets/app/whatever';
 
+// MDL SELECT
+@import '~/node_modules/getmdl-select/src/scss/getmdl-select';
+
+hr {
+    border-top: 1px solid rgba(0, 0, 0, 0.16);
+}
+
+html, body,
+h1, h2, h3, h4, h5, h6,
+h1 small, h2 small, h3 small, h4 small, h5 small, h6 small,
+blockquote,
+.mdl-layout-title {
+    font-family: 'Cabin', 'Roboto', 'Helvetica', 'Arial', sans-serif !important;
+}
+
+.mdlext-dark-color-theme {
+    dialog, .mdl-dialog__content {
+        color: inherit;
+        background: #303030;
+    }
+    .getmdl-select .selected {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+}
+
+.mdl-chip.mdl-chip--small {
+    height: 24px;
+    line-height: 24px;
+}
+
+dialog::backdrop, dialog + .backdrop {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.mdl-layout__drawer {
+    background: #303030;
+    color: inherit;
+    border-right: 1px solid #212121;
+}
+
+///////////////////////////////////
+///////////////////////////////////
 
 
 
+[v-cloak] {
+    display: none;
+}
+
+////////
 
 .demo-layout {
     position: relative;
@@ -110,15 +157,22 @@ $image_path: '~/node_modules/material-design-lite/src/images';
 
 .username {
     word-break: break-all;
-    font-family: 'PT Sans', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    font-family: 'Cabin', 'Roboto', 'Helvetica', 'Arial', sans-serif;
     font-weight: 700;
 }
 
-.userpane {
+.userpane, .content {
     background-color: #303030;
     padding: 16px;
+}
+.userpane {
     margin-top: calc(30px + 5vw);
-    max-width: 600px;
+    padding-top: 8px;
+}
+@media (min-width: 840px) {
+    .userpane {
+        max-width: 500px;
+    }
 }
 .userpane-spacer {
     height: calc(50px + 25vw);
