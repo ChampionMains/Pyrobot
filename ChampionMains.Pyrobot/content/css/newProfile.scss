@@ -1,4 +1,12 @@
-﻿.summonerListContainer {
+﻿.fade {
+    transition: opacity 1s ease-in;
+    opacity: 1;
+}
+.fade.fade-hide {
+    opacity: 0;
+}
+
+.summonerListRow {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -56,5 +64,59 @@
         .updateTime {
             font-size: 10px;
         }
+    }
+
+    .note {
+        padding: 18px;
+    }
+}
+
+#modal-add-summoner {
+    > .clipper {
+        // This is a dumbass overflow hack to make the region dropdown show below
+        // the bottom of the dialog.
+        // https://css-tricks.com/popping-hidden-overflow/
+        padding-bottom: 288px;
+        margin-bottom: -288px;
+        overflow: hidden;
+    }
+
+    .sliding-pages {
+        z-index: 10;
+        position: relative;
+        > * {
+            top: 0;
+            transition: transform 0.5s ease-in-out;
+            background: none !important;
+        }
+        // First page (default).
+        > :nth-child(1) {
+            transform: translateX(0);
+        }
+
+        > :nth-child(2) {
+            position: absolute;
+            transform: translateX(100%);
+        }
+
+        &[page="2"] {
+            padding-bottom: 0;
+            margin-bottom: 0;
+
+            > :nth-child(1) {
+                position: absolute;
+                transform: translateX(-100%);
+            }
+
+            > :nth-child(2) {
+                position: static;
+                transform: translateX(0);
+            }
+        }
+    }
+
+    .summonerIcon {
+        width: 128px;
+        height: 128px;
     }
 }

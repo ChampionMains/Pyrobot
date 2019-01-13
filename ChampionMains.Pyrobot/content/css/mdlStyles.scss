@@ -51,9 +51,14 @@ blockquote,
         color: inherit;
         background: #303030;
     }
+
     .getmdl-select .selected {
         background-color: rgba(255, 255, 255, 0.2);
     }
+
+//    input:-internal-autofill-selected {
+//        background-color: rgba(250, 255, 189, 0.12) !important;
+//    }
 }
 
 .mdl-chip.mdl-chip--small {
@@ -73,11 +78,8 @@ dialog::backdrop, dialog + .backdrop {
 
 ///////////////////////////////////
 ///////////////////////////////////
-
-
-
 [v-cloak] {
-    display: none;
+    display: none !important;
 }
 
 ////////

@@ -75,6 +75,21 @@
     isSummonerUpdating: function(summoner) {
         var updateTime = this.state.updatingSummoners[summoner.id]; // May be undefined.
         return summoner.lastUpdate === updateTime;
+    },
+    registerSummonerInfo: function(summonerModel) {
+        return fetch('/profile/api/summoner/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(summonerModel)
+            })
+            .then(function(res) {
+                return res.json();
+            });
+    },
+    validateSummonerIcon: function(summoner) {
+
     }
 };
 
@@ -83,7 +98,14 @@ Vue.use(vueMoment);
 var dialogApp = new Vue({
     el: '#dialogApp',
     data: {
-        summonerToRemove: null
+        summonerToRemove: null,
+        addSummonerData: {
+            busy: false,
+            page: 1,
+            summonerModel: {},
+            profileIcon: null,
+            alert: null
+        }
     },
     methods: {
         showDialog: function(dialogId) { // TODO inconsistant api.
@@ -97,6 +119,35 @@ var dialogApp = new Vue({
         removeSummoner: function(event) {
             this.closeDialog(event.target);
             profileApiService.removeSummoner(this.summonerToRemove);
+        },
+        summonerCancel: function(el) {
+            this.closeDialog(el);
+            this.addSummonerData.busy = false;
+            this.addSummonerData.page = 1;
+            this.addSummonerData.alert = null;
+            this.addSummonerData.profileIcon = null;
+        },
+        summonerNextStep: function(summonerModel) {
+            this.addSummonerData.busy = true;
+            this.addSummonerData.alert = null;
+
+            if (!this.addSummonerData.token) {
+                // Step 1: post summoner info.
+                profileApiService.registerSummonerInfo(summonerModel)
+                    .then(function(data) {
+                        this.addSummonerData.summonerModel.token = data.result.token;
+                        this.addSummonerData.profileIcon = data.result.profileIcon;
+                        setTimeout(function() {
+                            this.addSummonerData.page = 2;
+                        }.bind(this), 500);
+                    }.bind(this));
+            }
+            else {
+                // Step 2: validate summoner icon.
+
+                //validationAttempts = 3;
+                //executeValidation();
+            }
         }
     },
     created: function() {

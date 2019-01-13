@@ -1,4 +1,5 @@
-﻿
+﻿@using ChampionMains.Pyrobot.Models
+
 @{
     Layout = "~/Views/_newMaster.cshtml";
     //Page.Title = "Profile";
@@ -34,39 +35,59 @@
                 </p>
             </div>
             <div class="mdl-dialog__actions">
-                <button type="button" class="mdl-button" @@click="closeDialog($event.target)">Cancel</button>
-                <button type="button" class="mdl-button" @@click="removeSummoner($event)">Remove</button>
+                <button type="button" class="mdl-button mdl-js-button" @@click="closeDialog($event.target)">Cancel</button>
+                <button type="button" class="mdl-button mdl-js-button" @@click="removeSummoner($event)">Remove</button>
             </div>
         </dialog>
 
         <dialog class="mdl-dialog" id="modal-add-summoner" style="width: 420px;">
-            <h4 class="mdl-dialog__title">Add Summoner</h4>
-            <div class="mdl-dialog__content">
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
-                    <input type="text" value="" class="mdl-textfield__input" id="sample4" readonly>
-                    <input type="hidden" value="" name="sample4">
-                    <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
-                    <label for="sample4" class="mdl-textfield__label">Country</label>
-                    <ul for="sample4" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
-                        <li class="mdl-menu__item" data-val="DEU">Germany</li>
-                        <li class="mdl-menu__item" data-val="BLR">Belarus</li>
-                        <li class="mdl-menu__item" data-val="RUS">Russia</li>
-                    </ul>
+            <div class="clipper">
+                <h4 class="mdl-dialog__title">Add Summoner</h4>
+                <div class="sliding-pages" :page="addSummonerData.page">
+                    <div class="mdl-dialog__content">
+                        <p>
+                            Enter your summoner&#39;s name and region.
+                        </p>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--full-width mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" type="text" id="summonerName" autocomplete="off" v-model="addSummonerData.summonerModel.summonerName">
+                            <label class="mdl-textfield__label" for="summonerName">Summoner Name</label>
+                        </div>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--full-width mdl-textfield--floating-label getmdl-select getmdl-select__fix-height">
+                            <input id="region" type="text" value="" class="mdl-textfield__input" readonly v-model.lazy="addSummonerData.summonerModel.region">
+                            <input type="hidden" value="" name="region">
+                            <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+                            <label for="region" class="mdl-textfield__label">Region</label>
+                            <ul for="region" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+                                @foreach (var r in SummonerModel.AllRegions)
+                                {
+                                    <li class="mdl-menu__item" data-val="@r">@r</li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mdl-dialog__content">
+                        <p>
+                            Confirm you own this summoner by changing your <em>summoner icon</em> to the following:
+                        </p>
+                        <img class="fade summonerIcon" :class="{ 'fade-hide': addSummonerData.profileIcon === null }"
+                                :src="'https://cdn.communitydragon.org/latest/profile-icon/' + (addSummonerData.profileIcon || 0)"/>
+                    </div>
                 </div>
-            </div>
-            <div class="mdl-dialog__actions">
-                <button type="button" class="mdl-button" @@click="closeDialog($event.target)">Cancel</button>
-                <button type="button" class="mdl-button" @@click="removeSummoner($event)">Remove</button>
+                <div class="mdl-dialog__actions">
+                    <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" @@click="summonerNextStep(addSummonerData.summonerModel)">Next</button>
+                    <button type="button" class="mdl-button mdl-js-button" @@click="summonerCancel($event.target)">Cancel</button>
+                </div>
             </div>
         </dialog>
     </div>
 
     <script src="@Url.Content("~/content/js/vueProfile.js")" type="text/javascript"></script>
     <script type="text/javascript">
-        fitty('.username', {
-            minSize: 24,
-            maxSize: 56
-        });
+        fitty('.username',
+            {
+                minSize: 24,
+                maxSize: 56
+            });
     </script>
 }
 
@@ -97,7 +118,7 @@
     </div>
     <div class="mdl-grid">
         <div class="mdl-cell mdl-cell--12-col mdl-cell--hide-phone mdl-cell--hide-tablet" style="height: 10vw;"></div>
-        <div class="content mdl-shadow--2dp mdl-cell mdl-cell--6-col mdl-cell--1-offset-tablet">
+        <div class="content mdl-shadow--2dp mdl-cell mdl-cell--6-col mdl-cell--1-offset-tablet mdl-cell--top">
             <div>
                 <h3>
                     Summoners
@@ -106,7 +127,7 @@
                     </button>
                 </h3>
             </div>
-            <div class="summonerListContainer" v-for="summoner in topMasterySummoners" :key="summoner.id" v-cloak>
+            <div class="summonerListRow" v-for="summoner in topMasterySummoners" :key="summoner.id" v-cloak>
                 <div class="badge">
                     <rank-badge :rank-data="summoner" show-summoner="true"></rank-badge>
                 </div>
@@ -131,88 +152,51 @@
                     </div>
                 </div>
             </div>
-            <div class="summonerListContainer" v-if="topMasterySummoners.length == 0">
-                Click "add" to link a summoner.
+            <div class="summonerListRow" v-if="topMasterySummoners.length == 0">
+                <div class="note">Click "Add" to link a summoner.</div>
             </div>
-            <table class="mdl-data-table" style="width: 100%; border: none;">
-                <tbody>
-                    <tr v-for="summoner in topMasterySummoners" :key="summoner.id" v-cloak>
-                        <td class="mdl-data-table__cell--non-numeric" style="padding: 0;">
-                            <div style="width: calc(80px + 2.7vw);">
-                                <rank-badge :rank-data="summoner" show-summoner="true"></rank-badge>
-                            </div>
-                        </td>
-                        <td class="mdl-data-table__cell--non-numeric" style="width: 100%;">
-                            <div style="margin: 4px 0;">
-                                <span class="mdl-chip" style="height: 24px; line-height: 24px; vertical-align: middle;">
-                                    <span v-text="summoner.region" class="mdl-chip__text"></span>
-                                </span>
-                                <span v-text="summoner.name" style="line-height: 24px; font-size: 24px; vertical-align: middle; margin-right: 4px;"></span>
-                            </div>
-                            <div class="points" style="margin: 4px 0; font-size: 16px;">{{ summoner.totalPoints | separator }}</div>
-                        </td>
-                        <td class="mdl-data-table__cell--non-numeric" style="text-align: right;">
-                            <button class="mdl-button mdl-js-button mdl-button--primary" :disabled="isSummonerUpdating(summoner)" @@click="promptRemoveSummoner(summoner, $event)">
-                                Remove
-                            </button>
-                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary" :disabled="isSummonerUpdating(summoner)" @@click="updateSummoner(summoner, $event)">
-                                Update
-                            </button>
-                            <div class="mdl-color-text--grey-600" style="font-size: 75%;" v-if="summoner.lastUpdate" :title="summoner.lastUpdate">
-                                Updated {{ new Date(summoner.lastUpdate) | moment("from", now) }}
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-                <tfoot v-if="topMasterySummoners.length == 0">
-                    <tr>
-                        <td class="mdl-data-table__cell--non-numeric" colspan="3">Click "Add Summoner" to link a summoner.</td>
-                    </tr>
-                </tfoot>
-            </table>
         </div>
         <div class="content mdl-shadow--2dp mdl-cell mdl-cell--6-col mdl-cell--1-offset-tablet">
             <h3>Subreddits</h3>
             <table>
                 @* class="mdl-data-table" style="max-width: 100%; border: none;"> *@
-            <thead>
-                <tr>
-                    <th style="width: 0;"></th>
-                    <th style="width: 20%;">Subreddit</th>
-                    <th style="width: 60%;">Flair</th>
-                    <th style="width: 20%;">Mastery</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="subreddit in topMasterySubreddits" :key="subreddit.id" v-cloak>
-                    <td>
-                        <button class="btn btn-primary" ng-disabled="subreddit.busy" type="submit" ng-click="editSubredditFlair(id, subreddit)">
-                            <span class="fa fa-pencil"></span>
-                        </button>
-                    </td>
-                    <td>
-                        <champ-icon :champ-data="profileState.champions[subreddit.championId]"></champ-icon>
-                        <a href="#" :href="'http://www.reddit.com/r/' + subreddit.name" target="_blank">/r/<span v-text="subreddit.name"></span></a>
-                        @*                            <span class="hint" ng-if="subreddit.adminOnly" ng-tooltip="right,This subreddit is only visible to Flair Bot admins."><span class="fa fa-shield"></span></span>*@
-                    </td>
-                    <td>
-                        <flair-display :subreddit-data="subreddit" :rank-data="topRankedSummoners[0]" :champ-data="profileState.champions[subreddit.championId]"></flair-display>
-                    </td>
-                    <td>
-                        <span class="mastery" :class="[ 'mastery-' + profileState.champions[subreddit.championId].level ]" :title="'Level ' + profileState.champions[subreddit.championId].level"></span>
+                <thead>
+                    <tr>
+                        <th style="width: 0;"></th>
+                        <th style="width: 20%;">Subreddit</th>
+                        <th style="width: 60%;">Flair</th>
+                        <th style="width: 20%;">Mastery</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="subreddit in topMasterySubreddits" :key="subreddit.id" v-cloak>
+                        <td>
+                            <button class="btn btn-primary" ng-disabled="subreddit.busy" type="submit" ng-click="editSubredditFlair(id, subreddit)">
+                                <span class="fa fa-pencil"></span>
+                            </button>
+                        </td>
+                        <td>
+                            <champ-icon :champ-data="profileState.champions[subreddit.championId]"></champ-icon>
+                            <a href="#" :href="'http://www.reddit.com/r/' + subreddit.name" target="_blank">/r/<span v-text="subreddit.name"></span></a>
+                            @*                            <span class="hint" ng-if="subreddit.adminOnly" ng-tooltip="right,This subreddit is only visible to Flair Bot admins."><span class="fa fa-shield"></span></span>*@
+                        </td>
+                        <td>
+                            <flair-display :subreddit-data="subreddit" :rank-data="topRankedSummoners[0]" :champ-data="profileState.champions[subreddit.championId]"></flair-display>
+                        </td>
+                        <td>
+                            <span class="mastery" :class="[ 'mastery-' + profileState.champions[subreddit.championId].level ]" :title="'Level ' + profileState.champions[subreddit.championId].level"></span>
 
-                        <span class="prestige" v-if="subreddit.prestigeEnabled" :class="['prestige-' + (profileState.champions[subreddit.championId].prestige / 1000)]"></span>
-                        <span class="hint" v-if="subreddit.prestigeEnabled">
-                            <span>{{ profileState.champions[subreddit.championId].points | separator }}</span> /
-                            <span>{{ profileState.champions[subreddit.championId].nextPrestige | prestige }}</span>
-                        </span>
+                            <span class="prestige" v-if="subreddit.prestigeEnabled" :class="['prestige-' + (profileState.champions[subreddit.championId].prestige / 1000)]"></span>
+                            <span class="hint" v-if="subreddit.prestigeEnabled">
+                                <span>{{ profileState.champions[subreddit.championId].points | separator }}</span> /
+                                <span>{{ profileState.champions[subreddit.championId].nextPrestige | prestige }}</span>
+                            </span>
 
-                        <span v-if="!subreddit.prestigeEnabled">{{ profileState.champions[subreddit.championId].points | separator }}</span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                            <span v-if="!subreddit.prestigeEnabled">{{ profileState.champions[subreddit.championId].points | separator }}</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-</div>
-}
