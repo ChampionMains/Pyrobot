@@ -88,8 +88,31 @@
                 return res.json();
             });
     },
-    validateSummonerIcon: function(summoner) {
-
+    validateSummonerIcon: function(summonerModel) {
+        var validationAttempts = 3;
+        return (function tryValidate() {
+            return fetch('/profile/api/summoner/validate',
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(summonerModel)
+                    })
+                .then(function(res) {
+                    if (res.ok)
+                        return true;
+                    if (res.status === 417) {
+                        if (--validationAttempts) {
+                            return Promise.delay(5000).then(tryValidate);
+                        }
+                        throw new Error('Validation failed. Please check your icon and try again.');
+                    }
+                    return res.json().then(function(data) {
+                        throw new Error(data.error, JSON.stringify(data));
+                    });
+                });
+        })();
     }
 };
 
@@ -102,9 +125,21 @@ var dialogApp = new Vue({
         addSummonerData: {
             busy: false,
             page: 1,
-            summonerModel: {},
+            summonerModel: {
+                summonerName: null,
+                region: null,
+                token: null
+            },
+            summonerInfoError: null,
+            summonerValidError: null,
             profileIcon: null,
             alert: null
+        }
+    },
+    computed: {
+        addSummonerDisableNext: function() {
+            var model = this.addSummonerData.summonerModel;
+            return this.addSummonerData.busy || !model.summonerName || !model.region;
         }
     },
     methods: {
@@ -124,30 +159,57 @@ var dialogApp = new Vue({
             this.closeDialog(el);
             this.addSummonerData.busy = false;
             this.addSummonerData.page = 1;
-            this.addSummonerData.alert = null;
+            this.addSummonerData.summonerModel.token = null;
+            this.addSummonerData.summonerInfoError = null;
+            this.addSummonerData.summonerValidError = null;
             this.addSummonerData.profileIcon = null;
+            this.addSummonerData.alert = null;
         },
-        summonerNextStep: function(summonerModel) {
+        summonerNextStep: function(summonerModel, el) {
             this.addSummonerData.busy = true;
             this.addSummonerData.alert = null;
 
-            if (!this.addSummonerData.token) {
+            if (!this.addSummonerData.summonerModel.token) {
                 // Step 1: post summoner info.
                 profileApiService.registerSummonerInfo(summonerModel)
                     .then(function(data) {
+                        if (data.error) {
+                            console.log('Error getting summoner.', data);
+                            this.addSummonerData.summonerInfoError = data.error;
+                            return;
+                        }
                         this.addSummonerData.summonerModel.token = data.result.token;
                         this.addSummonerData.profileIcon = data.result.profileIcon;
                         setTimeout(function() {
+                            this.addSummonerData.busy = false;
                             this.addSummonerData.page = 2;
                         }.bind(this), 500);
-                    }.bind(this));
+                    }.bind(this))
+                    .catch(function(ex) {
+                        this.addSummonerData.busy = false;
+                        console.error(ex);
+                    });
             }
             else {
                 // Step 2: validate summoner icon.
-
-                //validationAttempts = 3;
-                //executeValidation();
+                this.addSummonerData.summonerValidError = null;
+                this.addSummonerData.busy = true;
+                profileApiService.validateSummonerIcon(summonerModel)
+                    .then(function() {
+                        this.summonerCancel(el);
+                        profileApiService.poll();
+                    }.bind(this))
+                    .catch(function(ex) {
+                        console.log('Error validation', ex);
+                        this.addSummonerData.summonerValidError = ex.message;
+                        this.addSummonerData.busy = false;
+                    }.bind(this)); //TODO
             }
+        }
+    },
+    watch: {
+        'summonerInfoError': function(val) {
+                document.getElementById('summonerName').parentElement.className += ' is-invalid';
         }
     },
     created: function() {

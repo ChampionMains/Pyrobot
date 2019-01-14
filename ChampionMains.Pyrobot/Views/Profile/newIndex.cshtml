@@ -51,6 +51,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--full-width mdl-textfield--floating-label">
                             <input class="mdl-textfield__input" type="text" id="summonerName" autocomplete="off" v-model="addSummonerData.summonerModel.summonerName">
                             <label class="mdl-textfield__label" for="summonerName">Summoner Name</label>
+                            <span class="mdl-textfield__error">{{ addSummonerData.summonerInfoError }}</span>
                         </div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--full-width mdl-textfield--floating-label getmdl-select getmdl-select__fix-height">
                             <input id="region" type="text" value="" class="mdl-textfield__input" readonly v-model.lazy="addSummonerData.summonerModel.region">
@@ -70,11 +71,13 @@
                             Confirm you own this summoner by changing your <em>summoner icon</em> to the following:
                         </p>
                         <img class="fade summonerIcon" :class="{ 'fade-hide': addSummonerData.profileIcon === null }"
-                                :src="'https://cdn.communitydragon.org/latest/profile-icon/' + (addSummonerData.profileIcon || 0)"/>
+                             :src="'https://cdn.communitydragon.org/latest/profile-icon/' + (addSummonerData.profileIcon || 0)"/>
+                        <p class="mdl-color-text--red" style="margin: 16px 0 0 0;">{{ addSummonerData.summonerValidError }}</p>
                     </div>
                 </div>
                 <div class="mdl-dialog__actions">
-                    <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" @@click="summonerNextStep(addSummonerData.summonerModel)">Next</button>
+                    <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+                            @@click="summonerNextStep(addSummonerData.summonerModel, $event.target)" :disabled="addSummonerDisableNext">Next</button>
                     <button type="button" class="mdl-button mdl-js-button" @@click="summonerCancel($event.target)">Cancel</button>
                 </div>
             </div>
@@ -91,84 +94,84 @@
     </script>
 }
 
-<div id="app">
-    <div class="mdl-grid">
-        <div class="userpane-spacer mdl-cell mdl-cell--12-col mdl-cell--hide-desktop"></div>
-        <div class="userpane mdl-shadow--4dp mdl-cell mdl-cell--6-col mdl-cell--1-offset-tablet mdl-cell--5-col-desktop mdl-cell--1-offset-desktop mdl-typography--text-center">
-            <div class="mdl-grid mdl-grid--no-spacing" style="margin: 0 16px;">
-                <div class="mdl-cell mdl-cell--middle mdl-cell--4-col mdl-cell--2-col-tablet mdl-cell--1-col-phone">
-                    <rank-badge :rank-data="topRankedSummoners[0]"></rank-badge>
-                </div>
-                <div class="mdl-cell mdl-cell--middle mdl-cell--8-col mdl-cell--6-col-tablet mdl-cell--3-col-phone">
-                    <h3 class="username">/u/@User.Identity.Name</h3>
-                </div>
-            </div>
-            <div>
-                <div style="width: calc(75px + 2.4vw); font-size: calc(7.5px + 0.24vw); display: inline-block;">
-                    <champ-badge :champ-data="sortedChampions[1]"></champ-badge>
-                </div>
-                <div style="width: calc(80px + 2.7vw); font-size: calc(8px + 0.27vw); display: inline-block;">
-                    <champ-badge :champ-data="sortedChampions[0]"></champ-badge>
-                </div>
-                <div style="width: calc(70px + 2.1vw); font-size: calc(7px + 0.21vw); display: inline-block;">
-                    <champ-badge :champ-data="sortedChampions[2]"></champ-badge>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="mdl-grid">
-        <div class="mdl-cell mdl-cell--12-col mdl-cell--hide-phone mdl-cell--hide-tablet" style="height: 10vw;"></div>
-        <div class="content mdl-shadow--2dp mdl-cell mdl-cell--6-col mdl-cell--1-offset-tablet mdl-cell--top">
-            <div>
-                <h3>
-                    Summoners
-                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" style="margin-left: 1em;" @@click="promptAddSummoner()">
-                        Add
-                    </button>
-                </h3>
-            </div>
-            <div class="summonerListRow" v-for="summoner in topMasterySummoners" :key="summoner.id" v-cloak>
-                <div class="badge">
-                    <rank-badge :rank-data="summoner" show-summoner="true"></rank-badge>
-                </div>
-                <div class="info">
-                    <div class="name">
-                        <span class="mdl-chip mdl-chip--small">
-                            <span v-text="summoner.region" class="mdl-chip__text"></span>
-                        </span>
-                        <span class="summonerName" v-text="summoner.name"></span>
+    <div id="app">
+        <div class="mdl-grid">
+            <div class="userpane-spacer mdl-cell mdl-cell--12-col mdl-cell--hide-desktop"></div>
+            <div class="userpane mdl-shadow--4dp mdl-cell mdl-cell--6-col mdl-cell--1-offset-tablet mdl-cell--5-col-desktop mdl-cell--1-offset-desktop mdl-typography--text-center">
+                <div class="mdl-grid mdl-grid--no-spacing" style="margin: 0 16px;">
+                    <div class="mdl-cell mdl-cell--middle mdl-cell--4-col mdl-cell--2-col-tablet mdl-cell--1-col-phone">
+                        <rank-badge :rank-data="topRankedSummoners[0]"></rank-badge>
                     </div>
-                    <div class="points">{{ summoner.totalPoints | separator }}</div>
+                    <div class="mdl-cell mdl-cell--middle mdl-cell--8-col mdl-cell--6-col-tablet mdl-cell--3-col-phone">
+                        <h3 class="username">/u/@User.Identity.Name</h3>
+                    </div>
                 </div>
-                <div class="controls">
-                    <button class="mdl-button mdl-js-button mdl-button--primary" :disabled="isSummonerUpdating(summoner)" @@click="promptRemoveSummoner(summoner, $event)">
-                        Remove
-                    </button>
-                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary" :disabled="isSummonerUpdating(summoner)" @@click="updateSummoner(summoner, $event)">
-                        Update
-                    </button>
-                    <div class="updateTime mdl-color-text--grey-600" v-if="summoner.lastUpdate" :title="summoner.lastUpdate">
-                        Updated {{ new Date(summoner.lastUpdate) | moment("from", now) }}
+                <div>
+                    <div style="width: calc(75px + 2.4vw); font-size: calc(7.5px + 0.24vw); display: inline-block;">
+                        <champ-badge :champ-data="sortedChampions[1]"></champ-badge>
+                    </div>
+                    <div style="width: calc(80px + 2.7vw); font-size: calc(8px + 0.27vw); display: inline-block;">
+                        <champ-badge :champ-data="sortedChampions[0]"></champ-badge>
+                    </div>
+                    <div style="width: calc(70px + 2.1vw); font-size: calc(7px + 0.21vw); display: inline-block;">
+                        <champ-badge :champ-data="sortedChampions[2]"></champ-badge>
                     </div>
                 </div>
             </div>
-            <div class="summonerListRow" v-if="topMasterySummoners.length == 0">
-                <div class="note">Click "Add" to link a summoner.</div>
-            </div>
         </div>
-        <div class="content mdl-shadow--2dp mdl-cell mdl-cell--6-col mdl-cell--1-offset-tablet">
-            <h3>Subreddits</h3>
-            <table>
-                @* class="mdl-data-table" style="max-width: 100%; border: none;"> *@
-                <thead>
+        <div class="mdl-grid">
+            <div class="mdl-cell mdl-cell--12-col mdl-cell--hide-phone mdl-cell--hide-tablet" style="height: 10vw;"></div>
+            <div class="content mdl-shadow--2dp mdl-cell mdl-cell--6-col mdl-cell--1-offset-tablet mdl-cell--top">
+                <div>
+                    <h3>
+                        Summoners
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" style="margin-left: 1em;" @@click="promptAddSummoner()">
+                            Add
+                        </button>
+                    </h3>
+                </div>
+                <div class="summonerListRow" v-for="summoner in topMasterySummoners" :key="summoner.id" v-cloak>
+                    <div class="badge">
+                        <rank-badge :rank-data="summoner" show-summoner="true"></rank-badge>
+                    </div>
+                    <div class="info">
+                        <div class="name">
+                            <span class="mdl-chip mdl-chip--small">
+                                <span v-text="summoner.region" class="mdl-chip__text"></span>
+                            </span>
+                            <span class="summonerName" v-text="summoner.name"></span>
+                        </div>
+                        <div class="points">{{ summoner.totalPoints | separator }}</div>
+                    </div>
+                    <div class="controls">
+                        <button class="mdl-button mdl-js-button mdl-button--primary" :disabled="isSummonerUpdating(summoner)" @@click="promptRemoveSummoner(summoner, $event)">
+                            Remove
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary" :disabled="isSummonerUpdating(summoner)" @@click="updateSummoner(summoner, $event)">
+                            Update
+                        </button>
+                        <div class="updateTime mdl-color-text--grey-600" v-if="summoner.lastUpdate" :title="summoner.lastUpdate">
+                            Updated {{ new Date(summoner.lastUpdate) | moment("from", now) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="summonerListRow" v-if="topMasterySummoners.length == 0">
+                    <div class="note">Click "Add" to link a summoner.</div>
+                </div>
+            </div>
+            <div class="content mdl-shadow--2dp mdl-cell mdl-cell--6-col mdl-cell--1-offset-tablet">
+                <h3>Subreddits</h3>
+                <table>
+                    @* class="mdl-data-table" style="max-width: 100%; border: none;"> *@
+                    <thead>
                     <tr>
                         <th style="width: 0;"></th>
                         <th style="width: 20%;">Subreddit</th>
                         <th style="width: 60%;">Flair</th>
                         <th style="width: 20%;">Mastery</th>
                     </tr>
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
                     <tr v-for="subreddit in topMasterySubreddits" :key="subreddit.id" v-cloak>
                         <td>
                             <button class="btn btn-primary" ng-disabled="subreddit.busy" type="submit" ng-click="editSubredditFlair(id, subreddit)">
@@ -195,8 +198,8 @@
                             <span v-if="!subreddit.prestigeEnabled">{{ profileState.champions[subreddit.championId].points | separator }}</span>
                         </td>
                     </tr>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>

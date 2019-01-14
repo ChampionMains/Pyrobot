@@ -19,7 +19,8 @@ namespace ChampionMains.Pyrobot
                 "~/node_modules/mdn-polyfills/Element.prototype.closest.js",
                 "~/node_modules/native-promise-only/npo.js",
                 "~/node_modules/whatwg-fetch/dist/fetch.umd.js",
-                "~/node_modules/dialog-polyfill/dialog-polyfill.js"));
+                "~/node_modules/dialog-polyfill/dialog-polyfill.js",
+                "~/content/js/_mixins.js"));
 
             bundles.Add(new ScriptBundle("~/Bundles/npmScripts").Include(
                 "~/node_modules/material-design-lite/material.js",

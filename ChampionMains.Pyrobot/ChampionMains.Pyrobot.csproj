@@ -270,6 +270,7 @@
     <Content Include="content\js\ga.js" />
     <Content Include="content\js\vueProfile.js" />
     <Content Include="content\js\profile.js" />
+    <Content Include="content\js\_mixins.js" />
     <Content Include="content\Site.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
