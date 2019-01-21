@@ -21,7 +21,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
         private readonly SubredditService _subredditService;
 
-        private readonly TimeSpan _timeout;
+        private readonly TimeSpan _timeout; // TODO?
 
         public SubredditCssUpdateJob(SubredditService subredditService)
         {

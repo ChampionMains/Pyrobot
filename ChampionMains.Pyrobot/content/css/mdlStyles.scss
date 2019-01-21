@@ -3,7 +3,7 @@
 // 1.  Configuration and helpers
 
 // MDL image path
-$image_path: '~/node_modules/material-design-lite/src/images';
+$image_path: '~/content/mdl-img/' !default;
 
 // Material Design Lite
 @import '~/node_modules/material-design-lite/src/variables';
@@ -47,7 +47,11 @@ blockquote,
 }
 
 .mdlext-dark-color-theme {
-    dialog, .mdl-dialog__content {
+    dialog.mdl-dialog {
+        width: 420px;
+    }
+
+    dialog.mdl-dialog, .mdl-dialog__content {
         color: inherit;
         background: #303030;
     }
@@ -56,9 +60,18 @@ blockquote,
         background-color: rgba(255, 255, 255, 0.2);
     }
 
-//    input:-internal-autofill-selected {
-//        background-color: rgba(250, 255, 189, 0.12) !important;
-//    }
+    a {
+        text-decoration: none;
+        color: #448AFF;
+    }
+
+    a:hover {
+        text-decoration: underline;
+        color: #64B5F6;
+    }
+    //    input:-internal-autofill-selected {
+    //        background-color: rgba(250, 255, 189, 0.12) !important;
+    //    }
 }
 
 .mdl-chip.mdl-chip--small {

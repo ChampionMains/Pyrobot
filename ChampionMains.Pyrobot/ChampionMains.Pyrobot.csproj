@@ -433,6 +433,12 @@
     <Exec Command="npm -v" />
     <Exec Command="npm ci" />
   </Target>
+  <Target Name="CopyMdlImages" AfterTargets="NpmClientJs">
+    <ItemGroup>
+      <MdlImages Include=".\node_modules\material-design-lite\dist\images\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(MdlImages)" DestinationFolder=".\content\mdl-img" />
+  </Target>
   <Target Name="BowerUpdate" BeforeTargets="Build">
     <Exec Command="npm install --no-save bower" />
     <Exec Command="node .\node_modules\bower\bin\bower update --force" />

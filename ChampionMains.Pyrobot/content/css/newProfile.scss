@@ -6,12 +6,15 @@
     opacity: 0;
 }
 
+.listRow {
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+    padding: 16px;
+}
+
 .summonerListRow {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    border-top: 1px solid rgba(0, 0, 0, 0.12);
-    padding: 0 16px;
 
     &:last-child {
         border-bottom: 1px solid rgba(0, 0, 0, 0.12);
@@ -19,7 +22,7 @@
 
     .badge {
         width: calc(80px + 2.7vw);
-        margin: 0 -16px;
+        margin: -16px;
     }
 
     .info {
@@ -58,7 +61,6 @@
     }
 
     .controls {
-        padding-right: 18px;
         flex: 1 0;
         text-align: right;
         min-width: 175px;
@@ -70,6 +72,21 @@
 
     .note {
         padding: 18px;
+    }
+}
+
+.subredditListRow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+
+    .subredditLink {
+        width: 170px;
+    }
+
+    .controls {
+        flex: 1 0;
+        text-align: right;
     }
 }
 

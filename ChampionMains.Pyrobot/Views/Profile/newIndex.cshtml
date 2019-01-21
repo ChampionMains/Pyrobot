@@ -24,7 +24,7 @@
     }
 
     <div id="dialogApp">
-        <dialog class="mdl-dialog" id="modal-remove-summoner" style="width: 420px;">
+        <dialog class="mdl-dialog" id="modal-remove-summoner">
             <h4 class="mdl-dialog__title">Remove Summoner?</h4>
             <div class="mdl-dialog__content">
                 <p v-if="summonerToRemove">
@@ -40,7 +40,7 @@
             </div>
         </dialog>
 
-        <dialog class="mdl-dialog" id="modal-add-summoner" style="width: 420px;">
+        <dialog class="mdl-dialog" id="modal-add-summoner">
             <div class="clipper">
                 <h4 class="mdl-dialog__title">Add Summoner</h4>
                 <div class="sliding-pages" :page="addSummonerData.page">
@@ -82,15 +82,48 @@
                 </div>
             </div>
         </dialog>
+        
+        <dialog class="mdl-dialog" id="modal-edit-subredditflair">
+            <h4 class="mdl-dialog__title">Edit Flair</h4>
+            <div class="mdl-dialog__content mdl-typography--text-center">
+                <flair-display v-if="subredditFlairData.set" :subreddit-data="subredditFlairData.subredditData"
+                        :rank-data="subredditFlairData.rankData" :champ-data="subredditFlairData.champData"></flair-display>
+            </div>
+            <div class="mdl-dialog__content">
+                <label v-if="!subredditFlairData.set || subredditFlairData.subredditData.rankEnabled" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-rank-emblem">
+                    <input type="checkbox" id="checkbox-rank-emblem" class="mdl-checkbox__input" v-model="subredditFlairData.subredditData.flair.rankEnabled">
+                    <span class="mdl-checkbox__label">Rank Emblem</span>
+                </label>
+                <label v-if="!subredditFlairData.set || subredditFlairData.subredditData.championMasteryEnabled" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-mastery-emblem">
+                    <input type="checkbox" id="checkbox-mastery-emblem" class="mdl-checkbox__input" v-model="subredditFlairData.subredditData.flair.championMasteryEnabled">
+                    <span class="mdl-checkbox__label">Mastery Emblem</span>
+                </label>
+                <label v-if="!subredditFlairData.set || subredditFlairData.subredditData.championMasteryTextEnabled" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-mastery-points">
+                    <input type="checkbox" id="checkbox-mastery-points" class="mdl-checkbox__input" v-model="subredditFlairData.subredditData.flair.championMasteryTextEnabled">
+                    <span class="mdl-checkbox__label">Mastery Points</span>
+                </label>
+                <label v-if="!subredditFlairData.set || subredditFlairData.subredditData.prestigeEnabled" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-prestige">
+                    <input type="checkbox" id="checkbox-prestige" class="mdl-checkbox__input" v-model="subredditFlairData.subredditData.flair.prestigeEnabled">
+                    <span class="mdl-checkbox__label">Prestige</span>
+                </label>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="flair-text" v-model="subredditFlairData.subredditData.flair.flairText">
+                    <label class="mdl-textfield__label" for="flair-text">Flair Text</label>
+                </div>
+            </div>
+            <div class="mdl-dialog__actions">
+                <button type="button" class="mdl-button mdl-js-button" @@click="saveSubredditFlair($event)">Save</button>
+                <button type="button" class="mdl-button mdl-js-button" @@click="closeDialog($event.target)">Cancel</button>
+            </div>
+        </dialog>
     </div>
 
     <script src="@Url.Content("~/content/js/vueProfile.js")" type="text/javascript"></script>
     <script type="text/javascript">
-        fitty('.username',
-            {
-                minSize: 24,
-                maxSize: 56
-            });
+        fitty('.username', {
+            minSize: 24,
+            maxSize: 56
+        });
     </script>
 }
 
@@ -130,7 +163,7 @@
                         </button>
                     </h3>
                 </div>
-                <div class="summonerListRow" v-for="summoner in topMasterySummoners" :key="summoner.id" v-cloak>
+                <div class="listRow summonerListRow" v-for="summoner in topMasterySummoners" :key="summoner.id" v-cloak>
                     <div class="badge">
                         <rank-badge :rank-data="summoner" show-summoner="true"></rank-badge>
                     </div>
@@ -155,51 +188,29 @@
                         </div>
                     </div>
                 </div>
-                <div class="summonerListRow" v-if="topMasterySummoners.length == 0">
+                <div class="listRow summonerListRow" v-if="topMasterySummoners.length == 0">
                     <div class="note">Click "Add" to link a summoner.</div>
                 </div>
             </div>
             <div class="content mdl-shadow--2dp mdl-cell mdl-cell--6-col mdl-cell--1-offset-tablet">
                 <h3>Subreddits</h3>
-                <table>
-                    @* class="mdl-data-table" style="max-width: 100%; border: none;"> *@
-                    <thead>
-                    <tr>
-                        <th style="width: 0;"></th>
-                        <th style="width: 20%;">Subreddit</th>
-                        <th style="width: 60%;">Flair</th>
-                        <th style="width: 20%;">Mastery</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr v-for="subreddit in topMasterySubreddits" :key="subreddit.id" v-cloak>
-                        <td>
-                            <button class="btn btn-primary" ng-disabled="subreddit.busy" type="submit" ng-click="editSubredditFlair(id, subreddit)">
-                                <span class="fa fa-pencil"></span>
-                            </button>
-                        </td>
-                        <td>
+                <div class="listRow subredditListRow" v-for="subreddit in topMasterySubreddits" :key="subreddit.id" v-cloak>
+                    <div class="subredditLink">
+                        <a href="#" :href="'http://old.reddit.com/r/' + subreddit.name" target="_blank">
                             <champ-icon :champ-data="profileState.champions[subreddit.championId]"></champ-icon>
-                            <a href="#" :href="'http://www.reddit.com/r/' + subreddit.name" target="_blank">/r/<span v-text="subreddit.name"></span></a>
-                            @*                            <span class="hint" ng-if="subreddit.adminOnly" ng-tooltip="right,This subreddit is only visible to Flair Bot admins."><span class="fa fa-shield"></span></span>*@
-                        </td>
-                        <td>
-                            <flair-display :subreddit-data="subreddit" :rank-data="topRankedSummoners[0]" :champ-data="profileState.champions[subreddit.championId]"></flair-display>
-                        </td>
-                        <td>
-                            <span class="mastery" :class="[ 'mastery-' + profileState.champions[subreddit.championId].level ]" :title="'Level ' + profileState.champions[subreddit.championId].level"></span>
-
-                            <span class="prestige" v-if="subreddit.prestigeEnabled" :class="['prestige-' + (profileState.champions[subreddit.championId].prestige / 1000)]"></span>
-                            <span class="hint" v-if="subreddit.prestigeEnabled">
-                                <span>{{ profileState.champions[subreddit.championId].points | separator }}</span> /
-                                <span>{{ profileState.champions[subreddit.championId].nextPrestige | prestige }}</span>
-                            </span>
-
-                            <span v-if="!subreddit.prestigeEnabled">{{ profileState.champions[subreddit.championId].points | separator }}</span>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                            <span>/r/{{subreddit.name}}</span>
+                        </a>
+                    </div>
+                    <div class="flairDisplay">
+                        <flair-display :subreddit-data="subreddit" :rank-data="topRankedSummoners[0]" :champ-data="profileState.champions[subreddit.championId]"></flair-display>
+                    </div>
+                    <div class="controls">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary"
+                                @@click="editSubredditFlair(subreddit, topRankedSummoners[0], profileState.champions[subreddit.championId], $event)">
+                            Edit
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

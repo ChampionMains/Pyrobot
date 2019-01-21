@@ -113,6 +113,22 @@
                     });
                 });
         })();
+    },
+    updateSubredditFlair: function(flairModel) {
+        return fetch('/profile/api/subreddit/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(flairModel)
+            })
+            .then(function(res) {
+                this.poll();
+            }.bind(this))
+            .catch(function(ex) {
+                this.poll();
+                throw ex;
+            }.bind(this));
     }
 };
 
@@ -134,6 +150,14 @@ var dialogApp = new Vue({
             summonerValidError: null,
             profileIcon: null,
             alert: null
+        },
+        subredditFlairData: {
+            set: false,
+            subredditData: {
+                flair: {}
+            },
+            rankData: null,
+            champData: null
         }
     },
     computed: {
@@ -205,11 +229,45 @@ var dialogApp = new Vue({
                         this.addSummonerData.busy = false;
                     }.bind(this)); //TODO
             }
+        },
+        saveSubredditFlair: function(event) {
+            this.closeDialog(event.target);
+            profileApiService.updateSubredditFlair(this.subredditFlairData.subredditData.flair);
         }
     },
     watch: {
-        'summonerInfoError': function(val) {
-                document.getElementById('summonerName').parentElement.className += ' is-invalid';
+        'summonerInfoError': function() {
+            document.getElementById('summonerName').parentElement.className += ' is-invalid';
+        },
+        'subredditFlairData.subredditData.flair.rankEnabled': function() {
+            setTimeout(function() {
+                var el = document.getElementById('checkbox-rank-emblem');
+                if (el) el.parentElement.MaterialCheckbox.checkToggleState();
+            }, 0);
+        },
+        'subredditFlairData.subredditData.flair.championMasteryEnabled': function() {
+            setTimeout(function() {
+                var el = document.getElementById('checkbox-mastery-emblem');
+                if (el) el.parentElement.MaterialCheckbox.checkToggleState();
+            }, 0);
+        },
+        'subredditFlairData.subredditData.flair.championMasteryTextEnabled': function() {
+            setTimeout(function() {
+                var el = document.getElementById('checkbox-mastery-points');
+                if (el) el.parentElement.MaterialCheckbox.checkToggleState();
+            }, 0);
+        },
+        'subredditFlairData.subredditData.flair.prestigeEnabled': function() {
+            setTimeout(function() {
+                var el = document.getElementById('checkbox-prestige');
+                if (el) el.parentElement.MaterialCheckbox.checkToggleState();
+            }, 0);
+        },
+        'subredditFlairData.subredditData.flair.flairText': function() {
+            setTimeout(function() {
+                var el = document.getElementById('flair-text');
+                if (el) el.parentElement.MaterialTextfield.checkDirty();
+            }, 0);
         }
     },
     created: function() {
@@ -220,6 +278,13 @@ var dialogApp = new Vue({
         this.promptRemoveSummoner = function(summoner) {
             this.summonerToRemove = summoner;
             this.showDialog('modal-remove-summoner');
+        };
+        this.promptEditSubredditFlair = function(subredditData, rankData, champData) {
+            this.subredditFlairData.set = true;
+            this.subredditFlairData.subredditData = JSON.parse(JSON.stringify(subredditData));
+            this.subredditFlairData.rankData = rankData;
+            this.subredditFlairData.champData = champData;
+            this.showDialog('modal-edit-subredditflair');
         };
     },
     mounted: function() {
@@ -275,6 +340,9 @@ var app = new Vue({
         },
         isSummonerUpdating: function(summoner) {
             return profileApiService.isSummonerUpdating(summoner);
+        },
+        editSubredditFlair: function(subredditData, rankData, champData, event) {
+            dialogApp.promptEditSubredditFlair(subredditData, rankData, champData);
         }
     },
     filters: {
