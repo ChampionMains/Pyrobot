@@ -431,17 +431,17 @@
   <Target Name="NpmClientJs" BeforeTargets="BowerUpdate">
     <!-- TODO: set BeforeTargets="Build" after removing bower. -->
     <Exec Command="npm -v" />
-    <Exec Command="npm ci" />
+    <Exec Command="powershell -command &quot;&amp; {If ([System.Version]%24(npm -v) -ge [System.Version]'5.7.0') {npm ci} Else {npm install}}&quot;" />
+  </Target>
+  <Target Name="BowerUpdate" BeforeTargets="Build">
+    <Exec Command="npm install --no-save bower" />
+    <Exec Command="node .\node_modules\bower\bin\bower update --force" />
   </Target>
   <Target Name="CopyMdlImages" AfterTargets="NpmClientJs">
     <ItemGroup>
       <MdlImages Include=".\node_modules\material-design-lite\dist\images\*.*" />
     </ItemGroup>
     <Copy SourceFiles="@(MdlImages)" DestinationFolder=".\content\mdl-img" />
-  </Target>
-  <Target Name="BowerUpdate" BeforeTargets="Build">
-    <Exec Command="npm install --no-save bower" />
-    <Exec Command="node .\node_modules\bower\bin\bower update --force" />
   </Target>
   <!-- update webjob config -->
   <Target Name="CopyWebJobAppConfig" BeforeTargets="Build;UpdateWebConfigBeforeRun">
