@@ -310,6 +310,26 @@
     <Compile Include="WebAPI\RejectEmptyModelFilter.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="node_modules\dialog-polyfill\dialog-polyfill.css" />
+    <Content Include="node_modules\fitty\dist\fitty.min.js" />
+    <Content Include="node_modules\getmdl-select\src\js\getmdl-select.js" />
+    <Content Include="node_modules\material-design-lite\material.js" />
+    <Content Include="node_modules\material-design-lite\src\images\buffer.svg" />
+    <Content Include="node_modules\material-design-lite\src\images\tick-mask.svg" />
+    <Content Include="node_modules\material-design-lite\src\images\tick.svg" />
+    <Content Include="node_modules\mdl-ext\lib\mdl-ext.js" />
+    <Content Include="node_modules\mdl-ext\src\index.js" />
+    <Content Include="node_modules\mdn-polyfills\Element.prototype.closest.js" />
+    <Content Include="node_modules\mdn-polyfills\Object.assign.js" />
+    <Content Include="node_modules\mdn-polyfills\Object.entries.js" />
+    <Content Include="node_modules\mdn-polyfills\Object.values.js" />
+    <Content Include="node_modules\moment\moment.js" />
+    <Content Include="node_modules\native-promise-only\npo.js" />
+    <Content Include="node_modules\numeral\numeral.js" />
+    <Content Include="node_modules\vue-moment\dist\vue-moment.js" />
+    <Content Include="node_modules\vue-numeral-filter\dist\vue-numeral-filter.min.js" />
+    <Content Include="node_modules\vue\dist\vue.js" />
+    <Content Include="node_modules\whatwg-fetch\dist\fetch.umd.js" />
     <Content Include="packages.config">
       <SubType>Designer</SubType>
     </Content>
@@ -335,6 +355,48 @@
     <Content Include="content\css\_vueChampBadge.scss" />
     <Content Include="content\css\_vueRankBadge.scss" />
     <Content Include="content\css\newProfile.scss" />
+    <Content Include="node_modules\material-design-lite\src\_variables.scss" />
+    <Content Include="node_modules\material-design-lite\src\_mixins.scss" />
+    <Content Include="node_modules\mdl-ext\src\_variables.scss" />
+    <Content Include="node_modules\mdl-ext\src\_mixins.scss" />
+    <Content Include="node_modules\mdl-ext\src\_functions.scss" />
+    <Content Include="node_modules\mdl-ext\src\color-themes\_dark-color-theme.scss" />
+    <Content Include="node_modules\getmdl-select\src\scss\getmdl-select.scss" />
+    <Content Include="node_modules\material-design-lite\src\material-design-lite.scss" />
+    <Content Include="node_modules\material-design-lite\src\_color-definitions.scss" />
+    <Content Include="node_modules\material-design-lite\src\_functions.scss" />
+    <Content Include="node_modules\material-design-lite\src\palette\_palette.scss" />
+    <Content Include="node_modules\material-design-lite\src\ripple\_ripple.scss" />
+    <Content Include="node_modules\material-design-lite\src\animation\_animation.scss" />
+    <Content Include="node_modules\material-design-lite\src\badge\_badge.scss" />
+    <Content Include="node_modules\material-design-lite\src\button\_button.scss" />
+    <Content Include="node_modules\material-design-lite\src\card\_card.scss" />
+    <Content Include="node_modules\material-design-lite\src\checkbox\_checkbox.scss" />
+    <Content Include="node_modules\material-design-lite\src\chip\_chip.scss" />
+    <Content Include="node_modules\material-design-lite\src\data-table\_data-table.scss" />
+    <Content Include="node_modules\material-design-lite\src\dialog\_dialog.scss" />
+    <Content Include="node_modules\material-design-lite\src\footer\_mega_footer.scss" />
+    <Content Include="node_modules\material-design-lite\src\footer\_mini_footer.scss" />
+    <Content Include="node_modules\material-design-lite\src\grid\_grid.scss" />
+    <Content Include="node_modules\material-design-lite\src\icon-toggle\_icon-toggle.scss" />
+    <Content Include="node_modules\material-design-lite\src\list\_list.scss" />
+    <Content Include="node_modules\material-design-lite\src\layout\_layout.scss" />
+    <Content Include="node_modules\material-design-lite\src\progress\_progress.scss" />
+    <Content Include="node_modules\material-design-lite\src\radio\_radio.scss" />
+    <Content Include="node_modules\material-design-lite\src\slider\_slider.scss" />
+    <Content Include="node_modules\material-design-lite\src\snackbar\_snackbar.scss" />
+    <Content Include="node_modules\material-design-lite\src\spinner\_spinner.scss" />
+    <Content Include="node_modules\material-design-lite\src\switch\_switch.scss" />
+    <Content Include="node_modules\material-design-lite\src\tabs\_tabs.scss" />
+    <Content Include="node_modules\material-design-lite\src\textfield\_textfield.scss" />
+    <Content Include="node_modules\material-design-lite\src\shadow\_shadow.scss" />
+    <Content Include="node_modules\material-design-lite\src\menu\_menu.scss" />
+    <Content Include="node_modules\material-design-lite\src\resets\_h5bp.scss" />
+    <Content Include="node_modules\material-design-lite\src\resets\_mobile.scss" />
+    <Content Include="node_modules\material-design-lite\src\resets\_resets.scss" />
+    <Content Include="node_modules\material-design-lite\src\typography\_typography.scss" />
+    <Content Include="node_modules\material-design-lite\src\tooltip\_tooltip.scss" />
+    <Content Include="node_modules\mdl-ext\src\color-themes\_color-themes.scss" />
     <None Include="Properties\PublishProfiles\championmains-pyrobot - Web Deploy.pubxml" />
     <Content Include="Properties\webjobs-list.json" />
     <Content Include="Views\Web.config" />
@@ -436,12 +498,6 @@
   <Target Name="BowerUpdate" BeforeTargets="Build">
     <Exec Command="npm install --no-save bower" />
     <Exec Command="node .\node_modules\bower\bin\bower update --force" />
-  </Target>
-  <Target Name="CopyMdlImages" AfterTargets="NpmClientJs">
-    <ItemGroup>
-      <MdlImages Include=".\node_modules\material-design-lite\dist\images\*.*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(MdlImages)" DestinationFolder=".\content\mdl-img" />
   </Target>
   <!-- update webjob config -->
   <Target Name="CopyWebJobAppConfig" BeforeTargets="Build;UpdateWebConfigBeforeRun">
