@@ -26,52 +26,41 @@ namespace ChampionMains.Pyrobot.Services
             return _api.SummonerV4.GetBySummonerNameAsync(Region.Get(region), summonerName);
         }
 
-        public Task<MingweiSamuel.Camille.SummonerV3.Summoner> GetSummonerByNameV3(string region, string summonerName)
-        {
-            return _api.SummonerV3.GetBySummonerNameAsync(Region.Get(region), summonerName);
-        }
-
         public Task<Summoner> GetSummoner(string region, string summonerIdEnc)
         {
             return _api.SummonerV4.GetBySummonerIdAsync(Region.Get(region), summonerIdEnc);
         }
-
-        public Task<MingweiSamuel.Camille.SummonerV3.Summoner> GetSummonerV3(string region, long summonerId)
+        
+        public async Task<IDictionary<string, Summoner>> GetSummoners(string region, ICollection<string> summonerIdEncs)
         {
-            return _api.SummonerV3.GetBySummonerIdAsync(Region.Get(region), summonerId);
+            var pairs = await Task.WhenAll(
+                summonerIdEncs.Select(async idEnc => new KeyValuePair<string, Summoner>(idEnc, await GetSummoner(region, idEnc))));
+            return pairs.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
 
-        // V3 // Not used -- upgrade breaks this abstraction.
-//        public async Task<IDictionary<string, Summoner>> GetSummoners(string region, ICollection<string> summonerIdEncs)
+//        // Note: modifies the summoner argument with new SummonerIdEnc if needed.
+//        public async Task<Summoner> GetSummonerUpgradeToV4(Data.Models.Summoner summoner)
 //        {
-//            var pairs = await Task.WhenAll(
-//                summonerIdEncs.Select(async idEnc => new KeyValuePair<string, Summoner>(idEnc, await GetSummoner(region, idEnc))));
-//            return pairs.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+//            try
+//            {
+//                if (null != summoner.SummonerIdEnc)
+//                {
+//                    return await GetSummoner(summoner.Region, summoner.SummonerIdEnc);
+//                }
+//
+//                // Extra case for converting V3.
+//                if (null == summoner.SummonerId)
+//                    throw new InvalidOperationException($"Summoner with DB ID {summoner.Id} missing summoner IDs.");
+//                var summonerDataV3 = await GetSummonerV3(summoner.Region, (long) summoner.SummonerId);
+//                var summonerData = await GetSummonerByName(summoner.Region, summonerDataV3.Name);
+//                summoner.SummonerIdEnc = summonerData.Id;
+//                return summonerData;
+//            }
+//            catch (Exception e)
+//            {
+//                throw new InvalidOperationException(summoner.ToString(), e);
+//            }
 //        }
-
-        // Note: modifies the summoner argument with new SummonerIdEnc if needed.
-        public async Task<Summoner> GetSummonerUpgradeToV4(Data.Models.Summoner summoner)
-        {
-            try
-            {
-                if (null != summoner.SummonerIdEnc)
-                {
-                    return await GetSummoner(summoner.Region, summoner.SummonerIdEnc);
-                }
-
-                // Extra case for converting V3.
-                if (null == summoner.SummonerId)
-                    throw new InvalidOperationException($"Summoner with DB ID {summoner.Id} missing summoner IDs.");
-                var summonerDataV3 = await GetSummonerV3(summoner.Region, (long) summoner.SummonerId);
-                var summonerData = await GetSummonerByName(summoner.Region, summonerDataV3.Name);
-                summoner.SummonerIdEnc = summonerData.Id;
-                return summonerData;
-            }
-            catch (Exception e)
-            {
-                throw new InvalidOperationException(summoner.ToString(), e);
-            }
-        }
 
         public async Task<Tuple<Tier, Division>> GetRank(string region, string summonerIdEnc)
         {

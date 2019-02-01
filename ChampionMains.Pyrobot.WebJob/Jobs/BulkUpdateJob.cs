@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity.Validation;
 using System.IO;
 using System.Linq;
@@ -114,26 +115,17 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             var getSummonerTasks = summoners.GroupBy(s => s.Region).Select(async summonersByRegion =>
             {
                 var region = summonersByRegion.Key;
-                // V3 //
-//                var summonerIdEncs = summonersByRegion.Select(s => s.SummonerIdEnc).ToList();
-//
-//                if (new HashSet<string>(summonerIdEncs).Count != summonerIdEncs.Count)
-//                {
-//                    throw new InvalidOperationException("summonerIdEncs has duplicate values");
-//                }
-//
-//                Console.Out.WriteLine($"Updating {summonerIdEncs.Count} summoners from region {region}");
+                var summonerIdEncs = summonersByRegion.Select(s => s.SummonerIdEnc).ToList();
 
-                var summonersByRegionList = summonersByRegion.ToList();
-                Console.Out.WriteLine($"Updating {summonersByRegionList.Count} summoners from region {region}");
+                if (new HashSet<string>(summonerIdEncs).Count != summonerIdEncs.Count)
+                {
+                    throw new InvalidOperationException("summonerIdEncs has duplicate values");
+                }
 
-                // arduous aync work
-//                var summonerData = await _riotService.GetSummoners(region, summonerIdEncs);
-                // V3 //
-                var summonerDataList = await Task.WhenAll(summonersByRegionList.Select(_riotService.GetSummonerUpgradeToV4));
-                var summonerData = summonerDataList.ToDictionary(s => s.Id, s => s);
-                var summonerIdEncs = summonerData.Keys.ToList();
+                Console.Out.WriteLine($"Updating {summonerIdEncs.Count} summoners from region {region}");
 
+                // arduous async work
+                var summonerData = await _riotService.GetSummoners(region, summonerIdEncs);
 
                 if (token.IsCancellationRequested)
                 {
@@ -162,9 +154,6 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             }).ToList();
 
             await Task.WhenAll(getSummonerTasks);
-
-            // V3 // Save any updated SummonerIdEncs.
-            _summonerService.SaveChanges();
 
             var summonerUpdates = getSummonerTasks.Select(t => t.Result).Select(t =>
             {

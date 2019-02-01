@@ -100,15 +100,6 @@ namespace ChampionMains.Pyrobot.Controllers
                 // If Summoner is already in DB, we transfer it. Make sure to use summoner ID in case a name change has happened.
                 var dbSummoner = await Summoners.FindSummonerAsync(model.Region, riotSummoner.Id);
 
-                // V3 // need to double check if summoner with old id is in DB.
-                if (dbSummoner == null)
-                {
-                    // V3 // get v3 summoner to check database.
-                    var riotSummonerV3 = await Riot.GetSummonerByNameV3(model.Region, model.SummonerName);
-                    dbSummoner = await Summoners.FindSummonerAsyncV3(model.Region, riotSummonerV3.Id);
-                }
-                // V3 // Done
-
                 if (dbSummoner != null)
                 {
                     dbSummoner.User = user;

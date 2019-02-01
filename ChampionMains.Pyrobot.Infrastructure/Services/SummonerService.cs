@@ -142,13 +142,6 @@ namespace ChampionMains.Pyrobot.Services
                 .FirstOrDefault(s => s.Id == id);
         }
 
-        public Task<Summoner> FindSummonerAsyncV3(string region, long summonerId)
-        {
-            return _unitOfWork.Summoners.FirstOrDefaultAsync(summoner =>
-                summoner.Region == region &&
-                summoner.SummonerId == summonerId);
-        }
-
         public Task<Summoner> FindSummonerAsync(string region, string summonerIdEnc)
         {
             return _unitOfWork.Summoners.FirstOrDefaultAsync(summoner =>

@@ -33,8 +33,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             if (summoner.LastUpdate > DateTimeOffset.Now - _riotUpdateMinStaleTime)
                 return;
 
-            // V3 //
-            var summonerData = await _riot.GetSummonerUpgradeToV4(summoner);
+            var summonerData = await _riot.GetSummoner(summoner.Region, summoner.SummonerIdEnc);
 
             var rank = await _riot.GetRank(summoner.Region, summoner.SummonerIdEnc);
             var championMasteries = await _riot.GetChampionMastery(summoner.Region, summoner.SummonerIdEnc);
