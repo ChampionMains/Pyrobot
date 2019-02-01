@@ -23,71 +23,74 @@
         Html.RenderPartial("_vueChampIcon");
     }
 
-    <div id="dialogApp">
-        <dialog class="mdl-dialog" id="modal-remove-summoner">
-            <h4 class="mdl-dialog__title">Remove Summoner?</h4>
-            <div class="mdl-dialog__content">
-                <p v-if="summonerToRemove">
-                    {{ summonerToRemove.name }} ({{ summonerToRemove.region }}) will be removed.
-                </p>
-                <p>
-                    You can re-add this summoner later.
-                </p>
+    <dialog class="mdl-dialog" id="modal-remove-summoner">
+        <h4 class="mdl-dialog__title">Remove Summoner?</h4>
+        <div class="mdl-dialog__content">
+            <p v-if="summonerToRemove">
+                @* TODO formatting? *@
+                {{ summonerToRemove.name }} ({{ summonerToRemove.region }}) will be removed.
+            </p>
+            <p>
+                You can re-add this summoner later.
+            </p>
+        </div>
+        <div class="mdl-dialog__actions">
+            <button type="button" class="mdl-button mdl-js-button" @@click="closeDialog()">Cancel</button>
+            <button type="button" class="mdl-button mdl-js-button" @@click="removeSummoner()">Remove</button>
+        </div>
+    </dialog>
+
+    <dialog class="mdl-dialog" id="modal-add-summoner">
+        <div class="clipper">
+            <h4 class="mdl-dialog__title">Add Summoner</h4>
+            <div class="sliding-pages" :page="page">
+                <div class="mdl-dialog__content">
+                    <p>
+                        Enter your summoner&#39;s name and region.
+                    </p>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--full-width mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="text" id="summonerName" autocomplete="off" v-model="summonerModel.summonerName">
+                        <label class="mdl-textfield__label" for="summonerName">Summoner Name</label>
+                        <span class="mdl-textfield__error">{{ summonerInfoError }}</span>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--full-width mdl-textfield--floating-label getmdl-select getmdl-select__fix-height">
+                        <input id="region" type="text" value="" class="mdl-textfield__input" readonly v-model.lazy="summonerModel.region">
+                        <input type="hidden" value="" name="region">
+                        <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+                        <label for="region" class="mdl-textfield__label">Region</label>
+                        <ul for="region" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+                            @foreach (var r in SummonerModel.AllRegions)
+                            {
+                                <li class="mdl-menu__item" data-val="@r">@r</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="mdl-dialog__content">
+                    <p>
+                        Confirm you own this summoner by changing your <em>summoner icon</em> to the following:
+                    </p>
+                    <img class="fade summonerIcon" :class="{ 'fade-hide': profileIcon === null }"
+                            :src="'https://cdn.communitydragon.org/latest/profile-icon/' + (profileIcon || 0)" />
+                    <p class="mdl-color-text--red" style="margin: 16px 0 0 0;">{{ summonerValidError }}</p>
+                </div>
             </div>
             <div class="mdl-dialog__actions">
-                <button type="button" class="mdl-button mdl-js-button" @@click="closeDialog($event.target)">Cancel</button>
-                <button type="button" class="mdl-button mdl-js-button" @@click="removeSummoner($event)">Remove</button>
+                <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+                        @@click="nextStep()" :disabled="disableNext">
+                    Next
+                </button>
+                <button type="button" class="mdl-button mdl-js-button" @@click="cancel()">Cancel</button>
             </div>
-        </dialog>
-
-        <dialog class="mdl-dialog" id="modal-add-summoner">
-            <div class="clipper">
-                <h4 class="mdl-dialog__title">Add Summoner</h4>
-                <div class="sliding-pages" :page="addSummonerData.page">
-                    <div class="mdl-dialog__content">
-                        <p>
-                            Enter your summoner&#39;s name and region.
-                        </p>
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--full-width mdl-textfield--floating-label">
-                            <input class="mdl-textfield__input" type="text" id="summonerName" autocomplete="off" v-model="addSummonerData.summonerModel.summonerName">
-                            <label class="mdl-textfield__label" for="summonerName">Summoner Name</label>
-                            <span class="mdl-textfield__error">{{ addSummonerData.summonerInfoError }}</span>
-                        </div>
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--full-width mdl-textfield--floating-label getmdl-select getmdl-select__fix-height">
-                            <input id="region" type="text" value="" class="mdl-textfield__input" readonly v-model.lazy="addSummonerData.summonerModel.region">
-                            <input type="hidden" value="" name="region">
-                            <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
-                            <label for="region" class="mdl-textfield__label">Region</label>
-                            <ul for="region" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
-                                @foreach (var r in SummonerModel.AllRegions)
-                                {
-                                    <li class="mdl-menu__item" data-val="@r">@r</li>
-                                }
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="mdl-dialog__content">
-                        <p>
-                            Confirm you own this summoner by changing your <em>summoner icon</em> to the following:
-                        </p>
-                        <img class="fade summonerIcon" :class="{ 'fade-hide': addSummonerData.profileIcon === null }"
-                             :src="'https://cdn.communitydragon.org/latest/profile-icon/' + (addSummonerData.profileIcon || 0)"/>
-                        <p class="mdl-color-text--red" style="margin: 16px 0 0 0;">{{ addSummonerData.summonerValidError }}</p>
-                    </div>
-                </div>
-                <div class="mdl-dialog__actions">
-                    <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
-                            @@click="summonerNextStep(addSummonerData.summonerModel, $event.target)" :disabled="addSummonerDisableNext">Next</button>
-                    <button type="button" class="mdl-button mdl-js-button" @@click="summonerCancel($event.target)">Cancel</button>
-                </div>
-            </div>
-        </dialog>
-        
+        </div>
+    </dialog>
+    
+    <div id="dialogApp">
         <dialog class="mdl-dialog" id="modal-edit-subredditflair">
             <h4 class="mdl-dialog__title">Edit Flair</h4>
             <div class="mdl-dialog__content mdl-typography--text-center">
                 <flair-display v-if="subredditFlairData.set" :subreddit-data="subredditFlairData.subredditData"
-                        :rank-data="subredditFlairData.rankData" :champ-data="subredditFlairData.champData"></flair-display>
+                               :rank-data="subredditFlairData.rankData" :champ-data="subredditFlairData.champData"></flair-display>
             </div>
             <div class="mdl-dialog__content">
                 <label v-if="!subredditFlairData.set || subredditFlairData.subredditData.rankEnabled" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-rank-emblem">
@@ -127,90 +130,90 @@
     </script>
 }
 
-    <div id="app">
-        <div class="mdl-grid">
-            <div class="userpane-spacer mdl-cell mdl-cell--12-col mdl-cell--hide-desktop"></div>
-            <div class="userpane mdl-shadow--4dp mdl-cell mdl-cell--6-col mdl-cell--1-offset-tablet mdl-cell--5-col-desktop mdl-cell--1-offset-desktop mdl-typography--text-center">
-                <div class="mdl-grid mdl-grid--no-spacing" style="margin: 0 16px;">
-                    <div class="mdl-cell mdl-cell--middle mdl-cell--4-col mdl-cell--2-col-tablet mdl-cell--1-col-phone">
-                        <rank-badge :rank-data="topRankedSummoners[0]"></rank-badge>
-                    </div>
-                    <div class="mdl-cell mdl-cell--middle mdl-cell--8-col mdl-cell--6-col-tablet mdl-cell--3-col-phone">
-                        <h3 class="username">/u/@User.Identity.Name</h3>
-                    </div>
+<div id="app">
+    <div class="mdl-grid">
+        <div class="userpane-spacer mdl-cell mdl-cell--12-col mdl-cell--hide-desktop"></div>
+        <div class="userpane mdl-shadow--4dp mdl-cell mdl-cell--6-col mdl-cell--1-offset-tablet mdl-cell--5-col-desktop mdl-cell--1-offset-desktop mdl-typography--text-center">
+            <div class="mdl-grid mdl-grid--no-spacing" style="margin: 0 16px;">
+                <div class="mdl-cell mdl-cell--middle mdl-cell--4-col mdl-cell--2-col-tablet mdl-cell--1-col-phone">
+                    <rank-badge :rank-data="topRankedSummoners[0]"></rank-badge>
                 </div>
-                <div>
-                    <div style="width: calc(75px + 2.4vw); font-size: calc(7.5px + 0.24vw); display: inline-block;">
-                        <champ-badge :champ-data="sortedChampions[1]"></champ-badge>
-                    </div>
-                    <div style="width: calc(80px + 2.7vw); font-size: calc(8px + 0.27vw); display: inline-block;">
-                        <champ-badge :champ-data="sortedChampions[0]"></champ-badge>
-                    </div>
-                    <div style="width: calc(70px + 2.1vw); font-size: calc(7px + 0.21vw); display: inline-block;">
-                        <champ-badge :champ-data="sortedChampions[2]"></champ-badge>
-                    </div>
+                <div class="mdl-cell mdl-cell--middle mdl-cell--8-col mdl-cell--6-col-tablet mdl-cell--3-col-phone">
+                    <h3 class="username">/u/@User.Identity.Name</h3>
                 </div>
             </div>
-        </div>
-        <div class="mdl-grid">
-            <div class="mdl-cell mdl-cell--12-col mdl-cell--hide-phone mdl-cell--hide-tablet" style="height: 10vw;"></div>
-            <div class="content mdl-shadow--2dp mdl-cell mdl-cell--6-col mdl-cell--1-offset-tablet mdl-cell--top">
-                <div>
-                    <h3>
-                        Summoners
-                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" style="margin-left: 1em;" @@click="promptAddSummoner()">
-                            Add
-                        </button>
-                    </h3>
+            <div>
+                <div style="width: calc(75px + 2.4vw); font-size: calc(7.5px + 0.24vw); display: inline-block;">
+                    <champ-badge :champ-data="sortedChampions[1]"></champ-badge>
                 </div>
-                <div class="listRow summonerListRow" v-for="summoner in topMasterySummoners" :key="summoner.id" v-cloak>
-                    <div class="badge">
-                        <rank-badge :rank-data="summoner" show-summoner="true"></rank-badge>
-                    </div>
-                    <div class="info">
-                        <div class="name">
-                            <span class="mdl-chip mdl-chip--small">
-                                <span v-text="summoner.region" class="mdl-chip__text"></span>
-                            </span>
-                            <span class="summonerName" v-text="summoner.name"></span>
-                        </div>
-                        <div class="points">{{ summoner.totalPoints | separator }}</div>
-                    </div>
-                    <div class="controls">
-                        <button class="mdl-button mdl-js-button mdl-button--primary" :disabled="isSummonerUpdating(summoner)" @@click="promptRemoveSummoner(summoner, $event)">
-                            Remove
-                        </button>
-                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary" :disabled="isSummonerUpdating(summoner)" @@click="updateSummoner(summoner, $event)">
-                            Update
-                        </button>
-                        <div class="updateTime mdl-color-text--grey-600" v-if="summoner.lastUpdate" :title="summoner.lastUpdate">
-                            Updated {{ new Date(summoner.lastUpdate) | moment("from", now) }}
-                        </div>
-                    </div>
+                <div style="width: calc(80px + 2.7vw); font-size: calc(8px + 0.27vw); display: inline-block;">
+                    <champ-badge :champ-data="sortedChampions[0]"></champ-badge>
                 </div>
-                <div class="listRow summonerListRow" v-if="topMasterySummoners.length == 0">
-                    <div class="note">Click "Add" to link a summoner.</div>
-                </div>
-            </div>
-            <div class="content mdl-shadow--2dp mdl-cell mdl-cell--6-col mdl-cell--1-offset-tablet">
-                <h3>Subreddits</h3>
-                <div class="listRow subredditListRow" v-for="subreddit in topMasterySubreddits" :key="subreddit.id" v-cloak>
-                    <div class="subredditLink">
-                        <a href="#" :href="'http://old.reddit.com/r/' + subreddit.name" target="_blank">
-                            <champ-icon :champ-data="profileState.champions[subreddit.championId]"></champ-icon>
-                            <span>/r/{{subreddit.name}}</span>
-                        </a>
-                    </div>
-                    <div class="flairDisplay">
-                        <flair-display :subreddit-data="subreddit" :rank-data="topRankedSummoners[0]" :champ-data="profileState.champions[subreddit.championId]"></flair-display>
-                    </div>
-                    <div class="controls">
-                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary"
-                                @@click="editSubredditFlair(subreddit, topRankedSummoners[0], profileState.champions[subreddit.championId], $event)">
-                            Edit
-                        </button>
-                    </div>
+                <div style="width: calc(70px + 2.1vw); font-size: calc(7px + 0.21vw); display: inline-block;">
+                    <champ-badge :champ-data="sortedChampions[2]"></champ-badge>
                 </div>
             </div>
         </div>
     </div>
+    <div class="mdl-grid">
+        <div class="mdl-cell mdl-cell--12-col mdl-cell--hide-phone mdl-cell--hide-tablet" style="height: 10vw;"></div>
+        <div class="content mdl-shadow--2dp mdl-cell mdl-cell--6-col mdl-cell--1-offset-tablet mdl-cell--top">
+            <div>
+                <h3>
+                    Summoners
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" style="margin-left: 1em;" @@click="promptAddSummoner()">
+                        Add
+                    </button>
+                </h3>
+            </div>
+            <div class="listRow summonerListRow" v-for="summoner in topMasterySummoners" :key="summoner.id" v-cloak>
+                <div class="badge">
+                    <rank-badge :rank-data="summoner" show-summoner="true"></rank-badge>
+                </div>
+                <div class="info">
+                    <div class="name">
+                        <span class="mdl-chip mdl-chip--small">
+                            <span v-text="summoner.region" class="mdl-chip__text"></span>
+                        </span>
+                        <span class="summonerName" v-text="summoner.name"></span>
+                    </div>
+                    <div class="points">{{ summoner.totalPoints | separator }}</div>
+                </div>
+                <div class="controls">
+                    <button class="mdl-button mdl-js-button mdl-button--primary" :disabled="isSummonerUpdating(summoner)" @@click="promptRemoveSummoner(summoner, $event)">
+                        Remove
+                    </button>
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary" :disabled="isSummonerUpdating(summoner)" @@click="updateSummoner(summoner, $event)">
+                        Update
+                    </button>
+                    <div class="updateTime mdl-color-text--grey-600" v-if="summoner.lastUpdate" :title="summoner.lastUpdate">
+                        Updated {{ new Date(summoner.lastUpdate) | moment("from", now) }}
+                    </div>
+                </div>
+            </div>
+            <div class="listRow summonerListRow" v-if="topMasterySummoners.length == 0">
+                <div class="note">Click "Add" to link a summoner.</div>
+            </div>
+        </div>
+        <div class="content mdl-shadow--2dp mdl-cell mdl-cell--6-col mdl-cell--1-offset-tablet">
+            <h3>Subreddits</h3>
+            <div class="listRow subredditListRow" v-for="subreddit in topMasterySubreddits" :key="subreddit.id" v-cloak>
+                <div class="subredditLink">
+                    <a href="#" :href="'http://old.reddit.com/r/' + subreddit.name" target="_blank">
+                        <champ-icon :champ-data="profileState.champions[subreddit.championId]"></champ-icon>
+                        <span>/r/{{subreddit.name}}</span>
+                    </a>
+                </div>
+                <div class="flairDisplay">
+                    <flair-display :subreddit-data="subreddit" :rank-data="topRankedSummoners[0]" :champ-data="profileState.champions[subreddit.championId]"></flair-display>
+                </div>
+                <div class="controls">
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary"
+                            @@click="editSubredditFlair(subreddit, topRankedSummoners[0], profileState.champions[subreddit.championId], $event)">
+                        Edit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

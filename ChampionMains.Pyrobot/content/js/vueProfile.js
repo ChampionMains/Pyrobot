@@ -1,4 +1,6 @@
-﻿var profileApiService = {
+﻿Vue.use(vueMoment);
+
+var profileApiService = {
     state: {
         summoners: {},
         champions: {},
@@ -132,12 +134,146 @@
     }
 };
 
-Vue.use(vueMoment);
+var modalService = {
+    showDialog: function(dialog) {
+        document.body.style.overflow = 'hidden';
+        dialog.showModal();
+    },
+    closeDialog: function(dialog) {
+        document.body.style.overflow = null;
+        dialog.close();
+    },
+    // Call during `mounted()`.
+    registerDialog: function(dialog) {
+        if (!dialog.showModal)
+            dialogPolyfill.registerDialog(dialog);
+    }
+};
+
+var dialogRemoveSummonerApp = new Vue({
+    el: '#modal-remove-summoner',
+    data: {
+        summonerToRemove: null
+    },
+    methods: {
+        showDialog: function() {
+            modalService.showDialog(this.$el);
+        },
+        closeDialog: function() {
+            modalService.closeDialog(this.$el);
+        },
+
+        promptRemoveSummoner: function(summoner) {
+            this.summonerToRemove = summoner;
+            this.showDialog();
+        },
+        removeSummoner: function() {
+            this.closeDialog();
+            profileApiService.removeSummoner(this.summonerToRemove);
+        }
+    },
+    mounted: function() {
+        modalService.registerDialog(this.$el);
+    }
+});
+
+var dialogAddSummonerApp = new Vue({
+    el: '#modal-add-summoner',
+    data: {
+        busy: false,
+        page: 1,
+        summonerModel: {
+            summonerName: null,
+            region: null,
+            token: null
+        },
+        summonerInfoError: null,
+        summonerValidError: null,
+        profileIcon: null,
+        alert: null
+    },
+    methods: {
+        showDialog: function() {
+            modalService.showDialog(this.$el);
+        },
+        closeDialog: function() {
+            modalService.closeDialog(this.$el);
+        },
+
+        promptAddSummoner: function() {
+            this.showDialog();
+        },
+        cancel: function() {
+            this.closeDialog();
+            this.busy = false;
+            this.page = 1;
+            this.summonerModel.token = null;
+            this.summonerInfoError = null;
+            this.summonerValidError = null;
+            this.profileIcon = null;
+            this.alert = null;
+        },
+        nextStep: function() {
+            this.busy = true;
+            this.alert = null;
+
+            if (!this.summonerModel.token) {
+                // Step 1: post summoner info.
+                profileApiService.registerSummonerInfo(this.summonerModel)
+                    .then(function(data) {
+                        if (data.error) {
+                            console.log('Error getting summoner.', data);
+                            this.summonerInfoError = data.error;
+                            return;
+                        }
+                        this.summonerModel.token = data.result.token;
+                        this.profileIcon = data.result.profileIcon;
+                        setTimeout(function() {
+                            this.busy = false;
+                            this.page = 2;
+                        }.bind(this), 500);
+                    }.bind(this))
+                    .catch(function(ex) {
+                        this.busy = false;
+                        console.error(ex);
+                    });
+            }
+            else {
+                // Step 2: validate summoner icon.
+                this.summonerValidError = null;
+                this.busy = true;
+                profileApiService.validateSummonerIcon(this.summonerModel)
+                    .then(function() {
+                        this.cancel();
+                        profileApiService.poll();
+                    }.bind(this))
+                    .catch(function(ex) {
+                        console.log('Error validation', ex);
+                        this.summonerValidError = ex.message;
+                        this.busy = false;
+                    }.bind(this)); //TODO
+            }
+        }
+    },
+    computed: {
+        disableNext: function() {
+            var model = this.summonerModel;
+            return this.busy || !model.summonerName || !model.region;
+        }
+    },
+    watch: {
+        'summonerInfoError': function() {
+            document.getElementById('summonerName').parentElement.className += ' is-invalid'; // TODO: use material check update fn.
+        }
+    },
+    mounted: function() {
+        modalService.registerDialog(this.$el);
+    }
+});
 
 var dialogApp = new Vue({
     el: '#dialogApp',
     data: {
-        summonerToRemove: null,
         addSummonerData: {
             busy: false,
             page: 1,
@@ -174,10 +310,6 @@ var dialogApp = new Vue({
         closeDialog: function(el) {
             document.body.style.overflow = null;
             el.closest('dialog').close();
-        },
-        removeSummoner: function(event) {
-            this.closeDialog(event.target);
-            profileApiService.removeSummoner(this.summonerToRemove);
         },
         summonerCancel: function(el) {
             this.closeDialog(el);
@@ -275,10 +407,6 @@ var dialogApp = new Vue({
         this.promptAddSummoner = function() {
             this.showDialog('modal-add-summoner');
         };
-        this.promptRemoveSummoner = function(summoner) {
-            this.summonerToRemove = summoner;
-            this.showDialog('modal-remove-summoner');
-        };
         this.promptEditSubredditFlair = function(subredditData, rankData, champData) {
             this.subredditFlairData.set = true;
             this.subredditFlairData.subredditData = JSON.parse(JSON.stringify(subredditData));
@@ -333,10 +461,10 @@ var app = new Vue({
             profileApiService.updateSummoner(summoner);
         },
         promptAddSummoner: function() {
-            dialogApp.promptAddSummoner();
+            dialogAddSummonerApp.promptAddSummoner();
         },
         promptRemoveSummoner: function(summoner, event) {
-            dialogApp.promptRemoveSummoner(summoner);
+            dialogRemoveSummonerApp.promptRemoveSummoner(summoner);
         },
         isSummonerUpdating: function(summoner) {
             return profileApiService.isSummonerUpdating(summoner);
