@@ -311,6 +311,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="node_modules\dialog-polyfill\dialog-polyfill.css" />
+    <Content Include="node_modules\dialog-polyfill\dialog-polyfill.js" />
     <Content Include="node_modules\fitty\dist\fitty.min.js" />
     <Content Include="node_modules\getmdl-select\src\js\getmdl-select.js" />
     <Content Include="node_modules\material-design-lite\material.js" />
