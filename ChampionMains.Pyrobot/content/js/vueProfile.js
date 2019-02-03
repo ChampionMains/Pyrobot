@@ -271,156 +271,70 @@ var dialogAddSummonerApp = new Vue({
     }
 });
 
-var dialogApp = new Vue({
-    el: '#dialogApp',
+var dialogEditSubredditFlairApp = new Vue({
+    el: '#modal-edit-subredditflair',
     data: {
-        addSummonerData: {
-            busy: false,
-            page: 1,
-            summonerModel: {
-                summonerName: null,
-                region: null,
-                token: null
-            },
-            summonerInfoError: null,
-            summonerValidError: null,
-            profileIcon: null,
-            alert: null
+        set: false,
+        subredditData: {
+            flair: {}
         },
-        subredditFlairData: {
-            set: false,
-            subredditData: {
-                flair: {}
-            },
-            rankData: null,
-            champData: null
-        }
-    },
-    computed: {
-        addSummonerDisableNext: function() {
-            var model = this.addSummonerData.summonerModel;
-            return this.addSummonerData.busy || !model.summonerName || !model.region;
-        }
+        rankData: null,
+        champData: null
     },
     methods: {
-        showDialog: function(dialogId) { // TODO inconsistant api.
-            document.body.style.overflow = 'hidden';
-            this._dialogs[dialogId].showModal();
+        showDialog: function() {
+            modalService.showDialog(this.$el);
         },
-        closeDialog: function(el) {
-            document.body.style.overflow = null;
-            el.closest('dialog').close();
+        closeDialog: function() {
+            modalService.closeDialog(this.$el);
         },
-        summonerCancel: function(el) {
-            this.closeDialog(el);
-            this.addSummonerData.busy = false;
-            this.addSummonerData.page = 1;
-            this.addSummonerData.summonerModel.token = null;
-            this.addSummonerData.summonerInfoError = null;
-            this.addSummonerData.summonerValidError = null;
-            this.addSummonerData.profileIcon = null;
-            this.addSummonerData.alert = null;
-        },
-        summonerNextStep: function(summonerModel, el) {
-            this.addSummonerData.busy = true;
-            this.addSummonerData.alert = null;
 
-            if (!this.addSummonerData.summonerModel.token) {
-                // Step 1: post summoner info.
-                profileApiService.registerSummonerInfo(summonerModel)
-                    .then(function(data) {
-                        if (data.error) {
-                            console.log('Error getting summoner.', data);
-                            this.addSummonerData.summonerInfoError = data.error;
-                            return;
-                        }
-                        this.addSummonerData.summonerModel.token = data.result.token;
-                        this.addSummonerData.profileIcon = data.result.profileIcon;
-                        setTimeout(function() {
-                            this.addSummonerData.busy = false;
-                            this.addSummonerData.page = 2;
-                        }.bind(this), 500);
-                    }.bind(this))
-                    .catch(function(ex) {
-                        this.addSummonerData.busy = false;
-                        console.error(ex);
-                    });
-            }
-            else {
-                // Step 2: validate summoner icon.
-                this.addSummonerData.summonerValidError = null;
-                this.addSummonerData.busy = true;
-                profileApiService.validateSummonerIcon(summonerModel)
-                    .then(function() {
-                        this.summonerCancel(el);
-                        profileApiService.poll();
-                    }.bind(this))
-                    .catch(function(ex) {
-                        console.log('Error validation', ex);
-                        this.addSummonerData.summonerValidError = ex.message;
-                        this.addSummonerData.busy = false;
-                    }.bind(this)); //TODO
-            }
+        promptEditSubredditFlair: function(subredditData, rankData, champData) {
+            this.set = true;
+            this.subredditData = JSON.parse(JSON.stringify(subredditData));
+            this.rankData = rankData;
+            this.champData = champData;
+            this.showDialog();
         },
-        saveSubredditFlair: function(event) {
-            this.closeDialog(event.target);
-            profileApiService.updateSubredditFlair(this.subredditFlairData.subredditData.flair);
+        saveSubredditFlair: function() {
+            this.closeDialog();
+            profileApiService.updateSubredditFlair(this.subredditData.flair);
         }
     },
     watch: {
-        'summonerInfoError': function() {
-            document.getElementById('summonerName').parentElement.className += ' is-invalid';
-        },
-        'subredditFlairData.subredditData.flair.rankEnabled': function() {
+        'subredditData.flair.rankEnabled': function() {
             setTimeout(function() {
                 var el = document.getElementById('checkbox-rank-emblem');
                 if (el) el.parentElement.MaterialCheckbox.checkToggleState();
             }, 0);
         },
-        'subredditFlairData.subredditData.flair.championMasteryEnabled': function() {
+        'subredditData.flair.championMasteryEnabled': function() {
             setTimeout(function() {
                 var el = document.getElementById('checkbox-mastery-emblem');
                 if (el) el.parentElement.MaterialCheckbox.checkToggleState();
             }, 0);
         },
-        'subredditFlairData.subredditData.flair.championMasteryTextEnabled': function() {
+        'subredditData.flair.championMasteryTextEnabled': function() {
             setTimeout(function() {
                 var el = document.getElementById('checkbox-mastery-points');
                 if (el) el.parentElement.MaterialCheckbox.checkToggleState();
             }, 0);
         },
-        'subredditFlairData.subredditData.flair.prestigeEnabled': function() {
+        'subredditData.flair.prestigeEnabled': function() {
             setTimeout(function() {
                 var el = document.getElementById('checkbox-prestige');
                 if (el) el.parentElement.MaterialCheckbox.checkToggleState();
             }, 0);
         },
-        'subredditFlairData.subredditData.flair.flairText': function() {
+        'subredditData.flair.flairText': function() {
             setTimeout(function() {
                 var el = document.getElementById('flair-text');
                 if (el) el.parentElement.MaterialTextfield.checkDirty();
             }, 0);
         }
     },
-    created: function() {
-        this._dialogs = {};
-        this.promptAddSummoner = function() {
-            this.showDialog('modal-add-summoner');
-        };
-        this.promptEditSubredditFlair = function(subredditData, rankData, champData) {
-            this.subredditFlairData.set = true;
-            this.subredditFlairData.subredditData = JSON.parse(JSON.stringify(subredditData));
-            this.subredditFlairData.rankData = rankData;
-            this.subredditFlairData.champData = champData;
-            this.showDialog('modal-edit-subredditflair');
-        };
-    },
     mounted: function() {
-        var dialogs = this._dialogs;
-        Array.from(this.$el.getElementsByTagName('dialog')).forEach(function(dialog) {
-            dialogs[dialog.id] = dialog;
-            if (!dialog.showModal) dialogPolyfill.registerDialog(dialog);
-        });
+        modalService.registerDialog(this.$el);
     }
 });
 
@@ -463,14 +377,14 @@ var app = new Vue({
         promptAddSummoner: function() {
             dialogAddSummonerApp.promptAddSummoner();
         },
-        promptRemoveSummoner: function(summoner, event) {
+        promptRemoveSummoner: function(summoner) {
             dialogRemoveSummonerApp.promptRemoveSummoner(summoner);
+        },
+        editSubredditFlair: function(subredditData, rankData, champData) {
+            dialogEditSubredditFlairApp.promptEditSubredditFlair(subredditData, rankData, champData);
         },
         isSummonerUpdating: function(summoner) {
             return profileApiService.isSummonerUpdating(summoner);
-        },
-        editSubredditFlair: function(subredditData, rankData, champData, event) {
-            dialogApp.promptEditSubredditFlair(subredditData, rankData, champData);
         }
     },
     filters: {
@@ -487,5 +401,13 @@ var app = new Vue({
         setInterval(function() {
             this.now = moment();
         }.bind(this), 1000); // Update every second.
+    }
+});
+
+var backgroundApp = new Vue({
+    el: '#background-canvas',
+    data: {
+        championId: 99,
+        skinId: 8
     }
 });
