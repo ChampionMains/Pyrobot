@@ -407,7 +407,16 @@ var app = new Vue({
 var backgroundApp = new Vue({
     el: '#background-canvas',
     data: {
-        championId: 99,
-        skinId: 8
+        //championId: 99,
+        //skinId: 0
+    },
+    computed: {
+        championId: function() {
+            var bestChamp = app.sortedChampions[0];
+            return bestChamp ? bestChamp.id : 1;
+        },
+        skinId: function() {
+            return 1;
+        }
     }
 });

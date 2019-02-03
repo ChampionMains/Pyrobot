@@ -46,9 +46,44 @@ blockquote,
     font-family: 'Cabin', 'Roboto', 'Helvetica', 'Arial', sans-serif !important;
 }
 
+.anchor {
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    color: inherit;
+    text-align: inherit;
+    font: inherit;
+}
+.anchor:hover {
+    text-decoration: underline;
+    color: #64B5F6;
+}
+
+.mdl-layout__drawer.mdl-layout__drawer--wide {
+    width: 300px;
+    transform: translateX(-300px);
+    &.is-visible {
+        transform: translateX(0);
+    }
+}
+
 .mdlext-dark-color-theme {
+
+    dialog::backdrop, dialog + .backdrop {
+        background: rgba(0, 0, 0, 0.5);
+    }
+
     dialog.mdl-dialog {
-        width: 420px;
+        margin: 16px;
+        width: calc(100% - 60px);
+    }
+
+    @media (min-width: 480px) {
+        dialog.mdl-dialog {
+            margin: auto;
+            width: 420px;
+        }
     }
 
     dialog.mdl-dialog, .mdl-dialog__content {
@@ -77,10 +112,6 @@ blockquote,
 .mdl-chip.mdl-chip--small {
     height: 24px;
     line-height: 24px;
-}
-
-dialog::backdrop, dialog + .backdrop {
-    background: rgba(0, 0, 0, 0.5);
 }
 
 .mdl-layout__drawer {

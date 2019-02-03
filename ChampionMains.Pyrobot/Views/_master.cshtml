@@ -71,7 +71,7 @@
                                 @if (User.Identity.IsAuthenticated)
                                 {
                                     <li>
-                                        <a href="@Url.Action("index", "profile")">Profile</a>
+                                        <a href="@Url.Action("index", "profile", new { newUI = true })">Profile (New UI)</a>
                                     </li>
                                     <li>
                                         @using (Html.BeginForm("logout", "Login"))

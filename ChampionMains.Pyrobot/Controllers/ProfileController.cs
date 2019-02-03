@@ -24,7 +24,7 @@ namespace ChampionMains.Pyrobot.Controllers
             Summoners = summoners;
         }
 
-        public async Task<ActionResult> Index(bool beta = false)
+        public async Task<ActionResult> Index(bool newUI = false)
         {
             ViewModel = await CreateViewModelAsync();
             if (ViewModel.User == null)
@@ -33,7 +33,7 @@ namespace ChampionMains.Pyrobot.Controllers
                 return RedirectToAction("index", "login");
             }
 
-            if (beta)
+            if (newUI)
                 return View("newIndex", ViewModel);
             return View(ViewModel);
         }

@@ -2,7 +2,6 @@
 <!DOCTYPE html>
 @{
     string title = "/r/ChampionMains Flairs";
-    string[] tabs = { "Profile", "Log Out", "About" };
 }
 @functions
 {
@@ -65,16 +64,28 @@
                 <div class="mdl-layout-spacer"></div>
                 <!-- Navigation -->
                 <nav class="mdl-navigation">
-                    @foreach (string tab in tabs)
-                    {<a class="mdl-navigation__link" href="">@tab</a>}
+                    <a class="mdl-navigation__link" href="@Url.Action("index", "profile")">Old UI</a>
+                    <a class="mdl-navigation__link" target="_blank"
+                       href="https://championmains.github.io/Pyrobot/">About</a>
+                    @using (Html.BeginForm("logout", "Login"))
+                    {
+                        @Html.AntiForgeryToken()
+                        <button class="anchor mdl-navigation__link" type="submit">Log Out</button>
+                    }
                 </nav>
             </div>
         </header>
-        <div class="mdl-layout__drawer">
+        <div class="mdl-layout__drawer mdl-layout__drawer--wide">
             <span class="mdl-layout-title">@title</span>
             <nav class="mdl-navigation">
-                @foreach (string tab in tabs)
-                {<a class="mdl-navigation__link" href="">@tab</a>}
+                <a class="mdl-navigation__link" href="@Url.Action("index", "profile")">Old UI</a>
+                <a class="mdl-navigation__link" target="_blank"
+                   href="https://championmains.github.io/Pyrobot/">About</a>
+                @using (Html.BeginForm("logout", "Login"))
+                {
+                    @Html.AntiForgeryToken()
+                    <button class="anchor mdl-navigation__link" type="submit">Log Out</button>
+                }
             </nav>
         </div>
         <div class="demo-overlay mdl-layout__content">
