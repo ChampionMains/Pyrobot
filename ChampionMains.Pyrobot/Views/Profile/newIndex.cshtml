@@ -72,7 +72,7 @@
                         Confirm you own this summoner by changing your <em>summoner icon</em> to the following:
                     </p>
                     <img class="fade summonerIcon" :class="{ 'fade-hide': profileIcon === null }"
-                         :src="'https://cdn.communitydragon.org/latest/profile-icon/' + (profileIcon || 0)" />
+                         :src="'https://cdn.communitydragon.org/latest/profile-icon/' + (profileIcon || 0)"/>
                     <p class="mdl-color-text--red" style="margin: 16px 0 0 0;">{{ summonerValidError }}</p>
                 </div>
             </div>
@@ -118,19 +118,61 @@
             <button type="button" class="mdl-button mdl-js-button" @@click="closeDialog()">Cancel</button>
         </div>
     </dialog>
-    
+
+    <dialog class="mdl-dialog" id="modal-profile-settings">
+        <h4 class="mdl-dialog__title">Profile Settings</h4>
+        <div class="mdl-dialog__content">
+@*            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-1">*@
+@*                <input type="checkbox" id="checkbox-1" class="mdl-checkbox__input" checked>*@
+@*                <span class="mdl-checkbox__label">Checkbox</span>*@
+@*            </label>*@
+            <div>
+                Background Splash
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
+                    <label class="mdl-button mdl-js-button mdl-button--icon" for="background-splash-search">
+                        <i class="material-icons">search</i>
+                    </label>
+                    <div class="mdl-textfield__expandable-holder">
+                        <input class="mdl-textfield__input" type="text" id="background-splash-search" v-model.trim="search">
+                        <label class="mdl-textfield__label" for="background-splash-search">Search</label>
+                    </div>
+                </div>
+                <div v-cloak>
+                    Selected: {{ skinName(selectedId) }}
+                </div>
+                <ul class="background-icon-container mdl-list">
+                    <li v-cloak v-for="champSkinId in filteredBackgrounds" :key="champSkinId"
+                        class="background-icon" :class="{ selected: champSkinId == selectedId }"
+                        :title="skinName(champSkinId)" @@click="select(champSkinId)"
+                        :style="{ 'background-image': 'url(https://cdn.communitydragon.org/latest/champion/' +
+                        ((champSkinId / 1000)|0) + '/tile/skin/' + (champSkinId % 1000) + ')' }">
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="mdl-dialog__actions">
+            <button type="button" class="mdl-button mdl-js-button" @@click="saveBackground()">Save</button>
+            <button type="button" class="mdl-button mdl-js-button" @@click="closeDialog()">Cancel</button>
+        </div>
+    </dialog>
 
     <script src="@Url.Content("~/content/js/vueProfile.js")" type="text/javascript"></script>
     <script type="text/javascript">
-        fitty('.username', {
-            minSize: 24,
-            maxSize: 56
-        });
+        fitty('.username',
+            {
+                minSize: 24,
+                maxSize: 56
+            });
     </script>
 }
 
 <div id="app">
     <div class="mdl-grid">
+        <div class="fab-container mdl-cell mdl-cell--6-col mdl-cell--1-offset-tablet mdl-cell--6-offset-desktop">
+            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored" @@click="editProfileSettings()">
+                <i class="material-icons">settings</i>
+            </button>
+        </div>
         <div class="userpane-spacer mdl-cell mdl-cell--12-col mdl-cell--hide-desktop"></div>
         <div class="userpane mdl-shadow--4dp mdl-cell mdl-cell--6-col mdl-cell--1-offset-tablet mdl-cell--5-col-desktop mdl-cell--1-offset-desktop mdl-typography--text-center">
             <div class="mdl-grid mdl-grid--no-spacing" style="margin: 0 16px;">

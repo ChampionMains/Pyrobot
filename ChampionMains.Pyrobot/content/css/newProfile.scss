@@ -6,6 +6,38 @@
     opacity: 0;
 }
 
+.fab-container {
+    position: relative;
+    button {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+}
+
+.background-icon-container {
+    height: 250px;
+    overflow-y: auto;
+    padding: 3px 2px 2px 3px;
+    line-height: 0;
+
+    .background-icon {
+        width: calc(33.3% - 1px);
+        padding-bottom: calc(33.3% - 1px);
+        margin: -1px 0 0 -1px;
+        border: 1px solid #666;
+        display: inline-block;
+        background-size: 100%;
+        cursor: pointer;
+
+        &.selected {
+            border: 3px solid #536DFE;
+            margin: -3px -2px -2px -3px;
+            position: relative;
+        }
+    }
+}
+
 .listRow {
     border-top: 1px solid rgba(0, 0, 0, 0.12);
     padding: 16px;
