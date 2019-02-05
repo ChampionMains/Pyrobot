@@ -40,21 +40,27 @@
     <meta name="msapplication-TileImage" content="~/content/icons/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
 
-    <!-- scripts -->
+    <!-- general scripts -->
     @Scripts.Render("~/content/js/ga.js")
     @Scripts.Render("~/Bundles/polyfills")
+    <!-- page scripts -->
+    <script type="text/javascript">
+        window.profileData = {
+            championSkinId: @Model.User.BackgroundSkinId,
+            allSkins: {}
+        };
+    </script>
+    @Scripts.Render("~/content/js/allSkins.js")
     @if (Page.HasVue != null)
-    { @Scripts.Render("~/Bundles/vue") }
+    {@Scripts.Render("~/Bundles/vue")}
 
     @RenderSection("head", false)
 </head>
 <body class="mdlext-dark-color-theme mdl-color--grey-900">
     <div class="main-layout mdl-layout mdl-js-layout">
         <div id="background-canvas">
-            <div class="left" :style="{ 'background-image': 'url(https://cdn.communitydragon.org/latest/champion/' +
-                 backgroundState.championId + '/splash-art/centered/skin/' + backgroundState.skinId + ')' }"></div>
-            <div class="right" :style="{ 'background-image': 'url(https://cdn.communitydragon.org/latest/champion/' +
-                 backgroundState.championId + '/splash-art/centered/skin/' + backgroundState.skinId + ')' }"></div>
+            <div class="left" :style="{ 'background-image': backgroundUrl }"></div>
+            <div class="right" :style="{ 'background-image': backgroundUrl }"></div>
         </div>
         <header class="mdl-layout__header mdl-layout__header--scroll mdl-layout__header--transparent">
             <div class="mdl-layout__header-row">
