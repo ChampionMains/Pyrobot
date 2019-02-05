@@ -1,4 +1,83 @@
-﻿.fade {
+﻿
+.main-layout {
+    position: relative;
+    background-image: url('/content/img/noise.png');
+    background-size: 48px;
+    background-repeat: repeat;
+
+    .mdl-layout__header {
+        background-image: linear-gradient( hsl(0, 0%, 0%) 0%, hsla(0, 0%, 0%, 0.738) 19%, hsla(0, 0%, 0%, 0.541) 34%, hsla(0, 0%, 0%, 0.382) 47%, hsla(0, 0%, 0%, 0.278) 56.5%, hsla(0, 0%, 0%, 0.194) 65%, hsla(0, 0%, 0%, 0.126) 73%, hsla(0, 0%, 0%, 0.075) 80.2%, hsla(0, 0%, 0%, 0.042) 86.1%, hsla(0, 0%, 0%, 0.021) 91%, hsla(0, 0%, 0%, 0.008) 95.2%, hsla(0, 0%, 0%, 0.002) 98.2%, hsla(0, 0%, 0%, 0) 100% );
+    }
+
+    .mdl-layout__header,
+    .mdl-layout__drawer-button {
+        /* This background is dark, so we set text to white. Use 87% black instead if
+     your background is light. */
+        color: white;
+    }
+}
+
+#background-canvas {
+    .left,
+    .right {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        z-index: -1;
+        transform: translateX(-50%);
+        width: 100%;
+        min-width: 480px;
+        //background-image: url('https://cdn.communitydragon.org/latest/champion/99/splash-art/centered/skin/8');
+        background-repeat: no-repeat;
+        background-size: 100%;
+        background-position: 100% 0%;
+    }
+
+    @media (min-width: 840px) {
+        .left {
+            transform: translateX(-50%) scaleX(-1);
+            left: -25%;
+        }
+
+        .right {
+            left: 75%;
+        }
+    }
+}
+
+.username {
+    word-break: break-all;
+    font-family: 'Cabin', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    font-weight: 700;
+}
+
+.userpane, .content {
+    background-color: #303030;
+    padding: 16px;
+}
+
+.userpane {
+    margin-top: calc(30px + 5vw);
+    padding-top: 8px;
+}
+
+@media (min-width: 840px) {
+    .userpane {
+        max-width: 500px;
+    }
+}
+
+.userpane-spacer {
+    height: calc(50px + 25vw);
+}
+
+.mdl-layout__container {
+    position: static !important;
+}
+
+.fade {
     transition: opacity 1s ease-in;
     opacity: 1;
 }

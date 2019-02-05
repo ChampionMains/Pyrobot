@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web.Http;
 using ChampionMains.Pyrobot.Attributes;
@@ -108,11 +106,28 @@ namespace ChampionMains.Pyrobot.Controllers
             return Ok();
         }
 
+        [HttpPost]
+        [ValidateModel]
+        [Route("profile/api/userprofile/update")]
+        public async Task<IHttpActionResult> UpdateBackgroundSkinId(ProfileDataViewModel model)
+        {
+            var user = await _userService.GetUserAsync();
+            user.BackgroundSkinId = model.BackgroundSkinId;
+            await _unitOfWork.SaveChangesAsync();
+            return Ok();
+        }
+
         [HttpGet]
         [Route("profile/api/data")]
         public async Task<object> GetData()
         {
+            // TODO: get rid of monolithic source, replace with individual sources for each type.
             var user = await _userService.GetUserAsync();
+
+            var profile = new ProfileDataViewModel
+            {
+                BackgroundSkinId = user.BackgroundSkinId
+            };
             
             var summoners = _unitOfWork.Summoners.Where(s => s.UserId == user.Id)
                 .Include(s => s.Rank).Include(s => s.ChampionMasteries)
@@ -192,6 +207,7 @@ namespace ChampionMains.Pyrobot.Controllers
 
             return new ApiDataViewModel
             {
+                Profile = profile,
                 Summoners = summoners,
                 Champions = champions,
                 Subreddits = subreddits

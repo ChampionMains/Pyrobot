@@ -5,9 +5,15 @@ namespace ChampionMains.Pyrobot.Models
 {
     public class ApiDataViewModel
     {
+        public ProfileDataViewModel Profile { get; set; }
         public IDictionary<int, SummonerDataViewModel> Summoners { get; set; }
         public IDictionary<short, ChampionMasteryDataViewModel> Champions { get; set; }
         public IDictionary<int, SubredditDataViewModel> Subreddits { get; set; }
+    }
+
+    public class ProfileDataViewModel
+    {
+        public int BackgroundSkinId { get; set; }
     }
 
     public class SummonerDataViewModel

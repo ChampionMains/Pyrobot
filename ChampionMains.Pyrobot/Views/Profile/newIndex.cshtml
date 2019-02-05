@@ -142,7 +142,7 @@
                 </div>
                 <ul class="background-icon-container mdl-list">
                     <li v-cloak v-for="champSkinId in filteredBackgrounds" :key="champSkinId"
-                        class="background-icon" :class="{ selected: champSkinId == selectedId }"
+                        class="background-icon" :class="{ selected: champSkinId === selectedId }"
                         :title="skinName(champSkinId)" @@click="select(champSkinId)"
                         :style="{ 'background-image': 'url(https://cdn.communitydragon.org/latest/champion/' +
                         ((champSkinId / 1000)|0) + '/tile/skin/' + (champSkinId % 1000) + ')' }">
@@ -232,7 +232,7 @@
                     </div>
                 </div>
             </div>
-            <div class="listRow summonerListRow" v-if="topMasterySummoners.length == 0">
+            <div class="listRow summonerListRow" v-if="topMasterySummoners.length === 0">
                 <div class="note">Click "Add" to link a summoner.</div>
             </div>
         </div>

@@ -2,15 +2,30 @@
 
 var profileApiService = {
     state: {
+        profile: {
+            backgroundSkinId: window.profileData.championSkinId
+        },
         summoners: {},
         champions: {},
         subreddits: {},
         updatingSummoners: {}, // map from summonerId to lastUpdateTime.
         hiddenSummoners: {}, // map from summonerId to TRUE.
         updating: false,
-        status: null
+        status: null,
+
+        allSkins: window.profileData.allSkins
     },
     _pollTimeout: null,
+    
+    getSkinName: function(champSkinId) {
+        return this.state.allSkins[champSkinId || this.state.profile.backgroundSkinId];
+    },
+    getSkinUrl: function(champSkinId) {
+        var csId = champSkinId || this.state.profile.backgroundSkinId;
+        return 'https://cdn.communitydragon.org/latest/champion/' +
+            ((csId / 1000)|0) + '/splash-art/centered/skin/' + (csId % 1000);
+    },
+
     poll: function(i) {
         // default: polls 5 times with interval of 5 seconds (total ~20 seconds; fencepost counting)
         i = i === undefined ? 5 : i;
@@ -131,8 +146,40 @@ var profileApiService = {
                 this.poll();
                 throw ex;
             }.bind(this));
+    },
+    setBackgroundSkinId: function(skinId) {
+        return fetch('/profile/api/userprofile/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    backgroundSkinId: skinId
+                })
+            })
+            .then(function(res) {
+                this.poll();
+            }.bind(this))
+            .catch(function(ex) {
+                this.poll();
+                throw ex;
+            }.bind(this));
     }
 };
+
+var backgroundApp = new Vue({
+    el: '#background-canvas',
+    data: {
+        profileState: profileApiService.state
+    },
+    computed: {
+        backgroundUrl: function() {
+            // Vue computed hack.
+            var _ = this.profileState.profile.backgroundSkinId;
+            return 'url("' + profileApiService.getSkinUrl() + '")';
+        }
+    }
+});
 
 var modalService = {
     showDialog: function(dialog) {
@@ -338,33 +385,17 @@ var dialogEditSubredditFlairApp = new Vue({
     }
 });
 
-var backgroundService = {
-    state: {
-        champSkinId: window.profileData.championSkinId,
-        allSkins: window.profileData.allSkins
-    },
-    getSkinName: function(champSkinId) {
-        return this.state.allSkins[champSkinId || this.state.champSkinId];
-    },
-    getSkinUrl: function(champSkinId) {
-        var csId = champSkinId || this.state.champSkinId;
-        return 'https://cdn.communitydragon.org/latest/champion/' +
-            ((csId / 1000)|0) + '/splash-art/centered/skin/' + (csId % 1000);
-    }
-};
-
 var dialogProfileSettingsApp = new Vue({
     el: '#modal-profile-settings',
     data: {
-        backgroundState: backgroundService.state,
         selectedId: null,
-        search: backgroundService.getSkinName()
+        search: profileApiService.getSkinName()
     },
     computed: {
         filteredBackgrounds: function() {
-            return Object.keys(this.backgroundState.allSkins)
+            return Object.keys(profileApiService.state.allSkins)
                 .filter(function(champSkinId) {
-                    var skinName = this.backgroundState.allSkins[champSkinId];
+                    var skinName = profileApiService.state.allSkins[champSkinId];
                     return skinName.toUpperCase().indexOf(this.search.toUpperCase()) >= 0
                         && this.search.length >= 3;
                 }.bind(this));
@@ -372,8 +403,8 @@ var dialogProfileSettingsApp = new Vue({
     },
     methods: {
         showDialog: function() {
-            this.selectedId = this.backgroundState.championSkinId;
-            this.search = backgroundService.getSkinName();
+            this.selectedId = profileApiService.state.profile.backgroundSkinId;
+            this.search = profileApiService.getSkinName();
             modalService.showDialog(this.$el);
         },
         closeDialog: function() {
@@ -381,17 +412,20 @@ var dialogProfileSettingsApp = new Vue({
         },
 
         skinName: function(champSkinId) {
-            return backgroundService.getSkinName(champSkinId);
+            return profileApiService.getSkinName(champSkinId);
         },
         select: function(champSkinId) {
             this.selectedId = champSkinId;
             // Preload image.
-            (new Image).src = backgroundService.getSkinUrl(this.selectedId);
+            (new Image).src = profileApiService.getSkinUrl(this.selectedId);
         },
         saveBackground: function() {
-            //TODO: web request.
-            this.backgroundState.champSkinId = this.selectedId;
-            this.closeDialog();
+            if (this.selectedId === profileApiService.state.profile.backgroundSkinId) {
+                this.closeDialog();
+                return;
+            }
+            profileApiService.setBackgroundSkinId(this.selectedId)
+                .then(this.closeDialog.bind(this));
         }
     },
     mounted: function() {
@@ -465,17 +499,5 @@ var app = new Vue({
         setInterval(function() {
             this.now = moment();
         }.bind(this), 1000); // Update every second.
-    }
-});
-
-var backgroundApp = new Vue({
-    el: '#background-canvas',
-    data: {
-        backgroundState: backgroundService.state
-    },
-    computed: {
-        backgroundUrl: function() {
-            return 'url("' + backgroundService.getSkinUrl() + '")';
-        }
     }
 });
