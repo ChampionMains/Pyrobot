@@ -394,6 +394,7 @@ var dialogProfileSettingsApp = new Vue({
     computed: {
         filteredBackgrounds: function() {
             return Object.keys(profileApiService.state.allSkins)
+                .map(Number)
                 .filter(function(champSkinId) {
                     var skinName = profileApiService.state.allSkins[champSkinId];
                     return skinName.toUpperCase().indexOf(this.search.toUpperCase()) >= 0
