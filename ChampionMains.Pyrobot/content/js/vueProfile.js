@@ -18,10 +18,10 @@ var profileApiService = {
     _pollTimeout: null,
     
     getSkinName: function(champSkinId) {
-        return this.state.allSkins[champSkinId || this.state.profile.backgroundSkinId];
+        return this.state.allSkins[champSkinId || this.state.profile.backgroundSkinId || 266000];
     },
     getSkinUrl: function(champSkinId) {
-        var csId = champSkinId || this.state.profile.backgroundSkinId;
+        var csId = champSkinId || this.state.profile.backgroundSkinId || 266000;
         return 'https://cdn.communitydragon.org/latest/champion/' +
             ((csId / 1000)|0) + '/splash-art/centered/skin/' + (csId % 1000);
     },
