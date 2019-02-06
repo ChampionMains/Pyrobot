@@ -411,7 +411,7 @@
     <Content Include="Views\Profile\_vueFlairDisplay.cshtml" />
     <Content Include="Views\Profile\_vueChampIcon.cshtml" />
     <!-- - -->
-    <None Include="Web.config" />
+    <Content Include="Web.config" />
     <Content Include="Web.template.config">
       <SubType>Designer</SubType>
     </Content>
