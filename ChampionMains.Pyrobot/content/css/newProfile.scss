@@ -53,6 +53,10 @@
     font-weight: 700;
 }
 
+.heading-spacer {
+    height: calc(20vw - 150px);
+}
+
 .userpane, .content {
     background-color: #303030;
     padding: 16px;
