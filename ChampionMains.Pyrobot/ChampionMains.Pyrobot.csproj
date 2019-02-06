@@ -331,9 +331,9 @@
     <Content Include="node_modules\vue-numeral-filter\dist\vue-numeral-filter.min.js" />
     <Content Include="node_modules\vue\dist\vue.js" />
     <Content Include="node_modules\whatwg-fetch\dist\fetch.umd.js" />
-    <Content Include="packages.config">
+    <None Include="packages.config">
       <SubType>Designer</SubType>
-    </Content>
+    </None>
     <Content Include="Views\Login\index.cshtml" />
     <Content Include="Views\Profile\index.cshtml" />
     <Content Include="Areas\AdminPanel\Views\AdminDefault\index.cshtml" />
@@ -351,7 +351,7 @@
     <Content Include="content\css\profile.scss" />
     <Content Include="content\css\site.scss" />
     <Content Include="manifest.json" />
-    <Content Include="package.json" />
+    <None Include="package.json" />
     <Content Include="content\css\mdlStyles.scss" />
     <Content Include="content\css\_vueChampBadge.scss" />
     <Content Include="content\css\_vueRankBadge.scss" />
@@ -399,6 +399,7 @@
     <Content Include="node_modules\material-design-lite\src\tooltip\_tooltip.scss" />
     <Content Include="node_modules\mdl-ext\src\color-themes\_color-themes.scss" />
     <Content Include="content\js\allSkins.js" />
+    <None Include="package-lock.json" />
     <None Include="Properties\PublishProfiles\championmains-pyrobot - Web Deploy.pubxml" />
     <Content Include="Properties\webjobs-list.json" />
     <Content Include="Views\Web.config" />
@@ -412,9 +413,9 @@
     <Content Include="Views\Profile\_vueChampIcon.cshtml" />
     <!-- - -->
     <Content Include="Web.config" />
-    <Content Include="Web.template.config">
+    <None Include="Web.template.config">
       <SubType>Designer</SubType>
-    </Content>
+    </None>
     <None Include="Web.Example.config" />
     <None Include="Web.Local.config">
       <DependentUpon>Web.template.config</DependentUpon>
