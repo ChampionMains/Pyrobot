@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ChampionMains.Pyrobot.Data.Enums;
 using MingweiSamuel.Camille;
 using MingweiSamuel.Camille.ChampionMasteryV4;
 using MingweiSamuel.Camille.Enums;
 using MingweiSamuel.Camille.LeagueV4;
 using MingweiSamuel.Camille.SummonerV4;
 using Tier = ChampionMains.Pyrobot.Data.Enums.Tier;
+using Division = ChampionMains.Pyrobot.Data.Enums.Division;
 
 namespace ChampionMains.Pyrobot.Services
 {
