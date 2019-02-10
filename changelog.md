@@ -2,6 +2,12 @@
 layout: default
 title: Changelog
 changes:
+  2019-02-09:
+    - Added SSL (HTTPS) to [flairs.championmains.com](https://flairs.championmains.com/).
+  2019-02-02:
+    - New beta UI now available with updates for season 9 ranks. Works on mobile as well.
+  2019-02-01:
+    - Fix issues with summoner registration and updating caused by the removal of the V3 Riot API.
   2018-12-18:
     - Hourly update job has been fixed. Summoners should now be updated every 3 days.
   2018-12-02:
