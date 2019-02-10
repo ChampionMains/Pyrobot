@@ -8,7 +8,7 @@ title: Donate
 
 This site, [flairs.championmains.com](http://flairs.championmains.com/), is currently run
 by [/u/LugnutsK](https://www.reddit.com/u/LugnutsK) (Mingwei Samuel). The site costs about
-250 USD a year to run. Any money given will go to paying those costs and maintaining
+850 USD a year to run. Any money given will go to paying those costs and maintaining
 and improving the site.
 
 
