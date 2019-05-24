@@ -37,8 +37,8 @@ namespace ChampionMains.Pyrobot.Startup
                     Retries = int.Parse(s["riot.maxAttempts"]) - 1
                 }.Build()), Lifestyle.Singleton);
 
-            // Reddit WebRequester
-            container.Register(() => new RedditWebRequester(
+            // RedditApiProvider for RedditService.
+            container.Register(() => new RedditApiProvider(
                     s["reddit.script.clientId"],
                     s["reddit.script.clientSecret"],
                     s["reddit.modUserName"],

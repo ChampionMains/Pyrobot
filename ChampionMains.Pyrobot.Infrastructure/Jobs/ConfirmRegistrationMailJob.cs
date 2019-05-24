@@ -32,9 +32,13 @@ namespace ChampionMains.Pyrobot.Jobs
                 if (user == null || summoner == null) return;
 
                 var message = GetMailMessage(user, summoner);
-                if (!await _mailService.SendMessageAsync(user.Name, Subject, message))
+                try
                 {
-                    throw new InvalidOperationException("Unable to send private message.");
+                    await _mailService.SendMessageAsync(user.Name, Subject, message);
+                }
+                catch (Exception e)
+                {
+                    throw new InvalidOperationException("Unable to send private message.", e);
                 }
             }));
         }
