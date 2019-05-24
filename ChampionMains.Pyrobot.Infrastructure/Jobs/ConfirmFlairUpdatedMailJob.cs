@@ -34,9 +34,13 @@ namespace ChampionMains.Pyrobot.Jobs
             if (user == null) return;
             if (summoner == null) return;
 
-            if (!await _mailService.SendMessageAsync(user.Name, Subject, GetMailmessage(user, summoner)))
+            try
             {
-                throw new InvalidOperationException("Unable to send confirmation mail message.");
+                await _mailService.SendMessageAsync(user.Name, Subject, GetMailmessage(user, summoner));
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException("Unable to send confirmation mail message.", e);
             }
         }
 

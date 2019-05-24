@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data;
 using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Data.Models;
-using ChampionMains.Pyrobot.Reddit;
 using ChampionMains.Pyrobot.Util;
+using Reddit.Things;
+using Subreddit = ChampionMains.Pyrobot.Data.Models.Subreddit;
+using User = ChampionMains.Pyrobot.Data.Models.User;
 
 namespace ChampionMains.Pyrobot.Services
 {
@@ -94,7 +96,7 @@ namespace ChampionMains.Pyrobot.Services
         public const string PrestigePrefix = "prestige-";
         public const string MasteryTextClass = "masteryText";
 
-        public UserFlairParameter GenerateFlair(string username, ICollection<Summoner> summoners, Subreddit subreddit, bool userRankEnabled,
+        public FlairListResult GenerateFlair(string username, ICollection<Summoner> summoners, Subreddit subreddit, bool userRankEnabled,
             bool userMasteryEnabled, bool userPrestigeEnabled, bool userMasteryTextEnabled, string text, string oldCss)
         {
             var championId = subreddit.ChampionId;
@@ -147,11 +149,11 @@ namespace ChampionMains.Pyrobot.Services
                 }
             }
 
-            return new UserFlairParameter
+            return new FlairListResult
             {
-                Name = username,
-                CssClass = string.Join(" ", classes),
-                Text = text
+                User = username,
+                FlairCssClass = string.Join(" ", classes),
+                FlairText = text
             };
         }
 

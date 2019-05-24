@@ -1,51 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using ChampionMains.Pyrobot.Reddit;
 using ChampionMains.Pyrobot.Services.Reddit;
+using Reddit.Inputs.Flair;
+using Reddit.Inputs.PrivateMessages;
+using Reddit.Things;
+using Subreddit = Reddit.Controllers.Subreddit;
 
 namespace ChampionMains.Pyrobot.Services
 {
     public class RedditService
     {
-        private const int MaxFlairGetSize = 1000;
         private const int MaxFlairUpdateSize = 100;
+        private const int MaxLimitSize = 100;
+        private readonly RedditApiProvider _redditApiProvider;
 
-        private const string BaseUri = "https://oauth.reddit.com";
-        private readonly RedditWebRequester _requester;
-
-        public RedditService(RedditWebRequester requester)
+        public RedditService(RedditApiProvider redditApiProvider)
         {
-            _requester = requester;
+            _redditApiProvider = redditApiProvider;
         }
 
         public async Task<ICollection<string>> GetSubredditsAsync(SubredditKind kind)
         {
-            var uri = $"{BaseUri}/subreddits/mine/{kind.ToString().ToLowerInvariant()}";
-            var results = new List<string>();
-            var nextToken = "";
+            var reddit = await _redditApiProvider.GetRedditApi();
 
-            do
+            var subreddits = new List<Subreddit>();
+            var moreSubreddits = reddit.Account.MyModeratorSubreddits(limit: MaxLimitSize);
+            while (moreSubreddits.Any())
             {
-                var listing = await _requester.GetAsync(uri, new[]
-                {
-                    new KeyValuePair<string, string>("after", nextToken)
-                });
+                subreddits.AddRange(moreSubreddits);
+                moreSubreddits = reddit.Account.MyModeratorSubreddits(limit: MaxLimitSize, count: subreddits.Count);
+            }
 
-                var content = listing["data"];
-                nextToken = (string) content["after"];
-                results.AddRange(from item in content["children"]
-                    where (string) item["kind"] == "t5"
-                    select (string) item["data"]["display_name"]);
-                
-            } while (nextToken != null);
-
-            return results;
+            return subreddits.Select(s => s.Name).ToList();
         }
 
-        public async Task<bool> SendMessageAsync(string toUserName, string subject, string body)
+        public async Task SendMessageAsync(string toUserName, string subject, string body)
         {
             const int maxSubjectLength = 100;
 
@@ -53,107 +44,69 @@ namespace ChampionMains.Pyrobot.Services
             if (string.IsNullOrEmpty(subject)) throw new ArgumentException("subject is required.");
             if (string.IsNullOrEmpty(body)) throw new ArgumentException("body is required.");
             if (subject.Length > maxSubjectLength) throw new ArgumentException("subject must not be longer than 100 characters.");
+            
+            var reddit = await _redditApiProvider.GetRedditApi();
+            await reddit.Account.Messages.ComposeAsync(new PrivateMessagesComposeInput(to: toUserName, subject: subject, text: body));
 
             // for some reason, the /api/compose endpoint uses a POST request but wants its
-            // parameters in the query string.
-            var parameters = new[]
-            {
-                new { key = "to", value = toUserName },
-                new { key = "subject", value = subject },
-                new { key = "text", value = body }
-            };
-
-            var pairs = from p in parameters
-                        select $"{Uri.EscapeDataString(p.key)}={Uri.EscapeDataString(p.value)}";
-
-            var uri = $"{BaseUri}/api/compose?{string.Join("&", pairs)}";
-            Trace.WriteLine("POST " + uri);
-            var result = await _requester.PostAsync(uri);
-
-            return true;
+            // parameters in the query string. TODO?
         }
 
-        public async Task<UserFlairParameter> GetFlairAsync(string subreddit, string name)
+        public async Task<FlairListResult> GetFlairAsync(string subreddit, string name)
         {
+
             var flair = (await GetFlairsAsync(subreddit, name)).FirstOrDefault();
             // If flair doesn't exist, UserFlairParameter will parse,
             // but flair_css_class and flair_text will be null.
             // Flair will never be null
             //
             // Note this only applies then the "name" parameter is set
-            return flair?.CssClass == null ? null : flair;
+            return flair?.FlairCssClass == null ? null : flair;
         }
 
-        public async Task<IList<UserFlairParameter>> GetFlairsAsync(string subreddit, string name = "")
+        public async Task<IList<FlairListResult>> GetFlairsAsync(string subreddit, string name = "")
         {
-            var flairs = new List<UserFlairParameter>();
-            var nextToken = "";
+            var reddit = await _redditApiProvider.GetRedditApi();
+            var subredditFlair = reddit.Subreddit(subreddit).Flairs;
 
-            var uri = $"{BaseUri}/r/{subreddit}/api/flairlist";
-
-            do
+            var flairs = new List<FlairListResult>();
+            var moreFlairs = subredditFlair.GetFlairList(new FlairNameListingInput(name, limit: MaxLimitSize));
+            while (moreFlairs.Any())
             {
-                var data = new[]
-                {
-                    new KeyValuePair<string, string>("limit", MaxFlairGetSize.ToString()),
-                    new KeyValuePair<string, string>("after", nextToken),
-                    new KeyValuePair<string, string>("name", name)
-                };
-                var result = await _requester.GetAsync(uri, data);
-                flairs.AddRange(result["users"].ToObject<ICollection<UserFlairParameter>>()
-                    .Select(f =>
-                    {
-                        f.Text = System.Net.WebUtility.HtmlDecode(f.Text);
-                        return f;
-                    }));
-                nextToken = result["next"]?.ToString();
-
-            } while (nextToken != null);
+                flairs.AddRange(moreFlairs);
+                moreFlairs = subredditFlair.GetFlairList(new FlairNameListingInput(name, limit: MaxLimitSize, count: flairs.Count));
+            }
 
             return flairs;
         }
 
-        public async Task<bool> SetFlairAsync(string subreddit, string name, string text = null, string classes = null)
+        public async Task SetFlairAsync(string subreddit, string name, string text = null, string classes = null)
         {
-            var uri = $"{BaseUri}/r/{subreddit}/api/flair";
-            var data = new List<KeyValuePair<string, string>>
-            {
-                new KeyValuePair<string, string>("api_type", "json"),
-                new KeyValuePair<string, string>("name", name)
-            };
-            if (text != null)
-                data.Add(new KeyValuePair<string, string>("text", text));
-            if (classes != null)
-                data.Add(new KeyValuePair<string, string>("css_class", classes));
+            var reddit = await _redditApiProvider.GetRedditApi();
+            var subredditFlair = reddit.Subreddit(subreddit).Flairs;
 
-            var result = await _requester.PostAsync(uri, data);
-
-            return !result["json"]["errors"].Any();
+            await subredditFlair.CreateUserFlairAsync(
+                new FlairCreateInput(text ?? "", name: name, cssClass: classes));
         }
 
-        public async Task<bool> SetFlairsAsync(string subreddit, ICollection<UserFlairParameter> flairs)
+        public async Task SetFlairsAsync(string subreddit, ICollection<FlairListResult> flairs)
         {
+            var reddit = await _redditApiProvider.GetRedditApi();
+            var subredditFlair = reddit.Subreddit(subreddit).Flairs;
+
+
             var errorResultTasks = flairs.Select((flair, i) => new {flair, g = i / MaxFlairUpdateSize}).GroupBy(x => x.g, x => x.flair)
-                .Select(async groupedFlairs =>
-                {
-                    var uri = $"{BaseUri}/r/{subreddit}/api/flaircsv";
-                    var data = new[]
-                    {
-                        new KeyValuePair<string, string>("flair_csv", ResolveBulkFlairParameter(groupedFlairs))
-                    };
-                    var result = await _requester.PostAsync(uri, data);
-                    return result.Any(token => token["errors"].Any());
-                }).ToList();
+                .Select(groupedFlairs => subredditFlair.FlairCSVAsync(ResolveBulkFlairParameter(groupedFlairs)))
+                .ToList();
             await Task.WhenAll(errorResultTasks);
-            return errorResultTasks.Any(x => x.Result);
         }
 
-        private static string ResolveBulkFlairParameter(IEnumerable<UserFlairParameter> flairs)
+        private static string ResolveBulkFlairParameter(IEnumerable<FlairListResult> flairs)
         {
-            return string.Join("\n", flairs.Select(f => EscapeCSV(new[] {f.Name, f.Text ?? "", f.CssClass ?? ""})));
+            return string.Join("\n", flairs.Select(f => EscapeCsv(new[] {f.User, f.FlairText ?? "", f.FlairCssClass ?? ""})));
         }
 
-        private static string EscapeCSV(IEnumerable<string> values)
+        private static string EscapeCsv(IEnumerable<string> values)
         {
             const string quote = "\"";
             const string quoteEscaped = "\"\"";

@@ -261,16 +261,16 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 var updatedFlairs = flairsBySubreddit.Select(flair =>
                 {
                     var existingFlair = existingFlairs.FirstOrDefault(
-                        ef => string.Equals(ef.Name, flair.User.Name, StringComparison.OrdinalIgnoreCase));
+                        ef => string.Equals(ef.User, flair.User.Name, StringComparison.OrdinalIgnoreCase));
 
                     // update database flair text from subreddit (different from individual flair update service)
                     if (existingFlair != null)
                     {
                         // sanitize if the flair has the mastery text class to extract just the text portion
-                        flair.FlairText = existingFlair.Text != null &&
-                            (existingFlair.CssClass?.Contains(FlairService.MasteryTextClass) ?? false)
-                            ? FlairUtil.SanitizeFlairTextLeadingMastery(existingFlair.Text)
-                            : existingFlair.Text;
+                        flair.FlairText = existingFlair.FlairText != null &&
+                            (existingFlair.FlairCssClass?.Contains(FlairService.MasteryTextClass) ?? false)
+                            ? FlairUtil.SanitizeFlairTextLeadingMastery(existingFlair.FlairText)
+                            : existingFlair.FlairText;
                     }
                     flair.LastUpdate = DateTimeOffset.Now;
 
@@ -279,7 +279,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                     var newFlair = _flairService.GenerateFlair(flair.User.Name, userSummoners, subreddit,
                         flair.RankEnabled, flair.ChampionMasteryEnabled,
                         flair.PrestigeEnabled, flair.ChampionMasteryTextEnabled, flair.FlairText,
-                        existingFlair?.CssClass);
+                        existingFlair?.FlairCssClass);
 
                     return newFlair;
                 }).ToList();
