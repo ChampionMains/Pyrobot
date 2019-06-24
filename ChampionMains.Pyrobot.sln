@@ -11,6 +11,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChampionMains.Pyrobot.Data", "ChampionMains.Pyrobot.Data\ChampionMains.Pyrobot.Data.csproj", "{0684E3EC-DE9D-409B-8CCD-C3566763A2A7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChampionMains.Pyrobot.Infrastructure", "ChampionMains.Pyrobot.Infrastructure\ChampionMains.Pyrobot.Infrastructure.csproj", "{9357D4E8-FC65-469E-9EBA-12B82BABD7E8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{146A80AD-777F-42F4-9C2F-426B7FE40588} = {146A80AD-777F-42F4-9C2F-426B7FE40588}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Site", "Site", "{FE7174B2-207C-4895-B0FD-76F4B616C6E3}"
 EndProject
@@ -21,6 +24,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChampionMains.Pyrobot.WebJob", "ChampionMains.Pyrobot.WebJob\ChampionMains.Pyrobot.WebJob.csproj", "{F1A01025-246D-4F58-95C5-FA4024ECA5C4}"
 	ProjectSection(ProjectDependencies) = postProject
 		{55C0978C-F23E-43E6-80B3-4FEC1993C5C9} = {55C0978C-F23E-43E6-80B3-4FEC1993C5C9}
+		{146A80AD-777F-42F4-9C2F-426B7FE40588} = {146A80AD-777F-42F4-9C2F-426B7FE40588}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChampionMains.Pyrobot.Startup", "ChampionMains.Pyrobot.Startup\ChampionMains.Pyrobot.Startup.csproj", "{55C0978C-F23E-43E6-80B3-4FEC1993C5C9}"
@@ -29,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChampionMains.Pyrobot.Start
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChampionMains.Pyrobot.Test", "ChampionMains.Pyrobot.Test\ChampionMains.Pyrobot.Test.csproj", "{C500F964-BC56-4993-B16D-DAC6D8878EBE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reddit.NET", "Reddit.NET\src\Reddit.NET\Reddit.NET.csproj", "{146A80AD-777F-42F4-9C2F-426B7FE40588}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,6 +66,10 @@ Global
 		{C500F964-BC56-4993-B16D-DAC6D8878EBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C500F964-BC56-4993-B16D-DAC6D8878EBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C500F964-BC56-4993-B16D-DAC6D8878EBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{146A80AD-777F-42F4-9C2F-426B7FE40588}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{146A80AD-777F-42F4-9C2F-426B7FE40588}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{146A80AD-777F-42F4-9C2F-426B7FE40588}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{146A80AD-777F-42F4-9C2F-426B7FE40588}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

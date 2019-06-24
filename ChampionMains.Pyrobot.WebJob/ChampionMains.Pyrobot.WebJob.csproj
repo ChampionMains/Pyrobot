@@ -93,9 +93,6 @@
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Reddit.NET, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Reddit.1.1.1\lib\netstandard2.0\Reddit.NET.dll</HintPath>
-    </Reference>
     <Reference Include="RestSharp, Version=106.6.9.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.106.6.9\lib\net452\RestSharp.dll</HintPath>
     </Reference>
@@ -231,6 +228,10 @@
     <ProjectReference Include="..\ChampionMains.Pyrobot.Startup\ChampionMains.Pyrobot.Startup.csproj">
       <Project>{55C0978C-F23E-43E6-80B3-4FEC1993C5C9}</Project>
       <Name>ChampionMains.Pyrobot.Startup</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Reddit.NET\src\Reddit.NET\Reddit.NET.csproj">
+      <Project>{146A80AD-777F-42F4-9C2F-426B7FE40588}</Project>
+      <Name>Reddit.NET</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

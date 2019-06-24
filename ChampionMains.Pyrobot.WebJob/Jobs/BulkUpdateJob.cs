@@ -117,10 +117,12 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 var region = summonersByRegion.Key;
                 var summonerIdEncs = summonersByRegion.Select(s => s.SummonerIdEnc).ToList();
 
-                if (new HashSet<string>(summonerIdEncs).Count != summonerIdEncs.Count)
-                {
-                    throw new InvalidOperationException("summonerIdEncs has duplicate values");
-                }
+                var duplicate = summonerIdEncs
+                    .Where(s => !string.IsNullOrEmpty(s))
+                    .GroupBy(s => s)
+                    .FirstOrDefault(g => g.Count() > 1)?.Key;
+                if (duplicate != null)
+                    throw new InvalidOperationException("summonerIdEncs has duplicate: " + duplicate);
 
                 Console.Out.WriteLine($"Updating {summonerIdEncs.Count} summoners from region {region}");
 
