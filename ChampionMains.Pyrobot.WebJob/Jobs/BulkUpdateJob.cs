@@ -61,18 +61,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 }
                 catch (DbEntityValidationException e)
                 {
-                    var writer = new StringWriter();
-                    writer.WriteLine("DbEntityValidationException ------------");
-                    foreach (var entity in e.EntityValidationErrors)
-                    {
-                        writer.WriteLine("  " + entity.Entry.Entity.ToString() + ":");
-                        foreach (var error in entity.ValidationErrors)
-                        {
-                            writer.WriteLine("    " + error.PropertyName + ": " + error.ErrorMessage);
-                        }
-                    }
-                    writer.WriteLine("----------------------------------------");
-                    throw new InvalidOperationException(writer.ToString(), e);
+                    throw new InvalidOperationException(DbValidationExceptionDebugString(e), e);
                 }
             }
             finally
@@ -173,7 +162,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                         .GroupBy(x => x.g, x => x.summoner)
                         .Select(summonerBatch =>
                         {
-                            foreach (var summoner in summonersByRegion)
+                            foreach (var summoner in summonerBatch)
                             {
                                 var data = summonerData[summoner.SummonerIdEnc];
                                 Tuple<Tier, Division> rank;
@@ -306,6 +295,22 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             Console.Out.WriteLine($"Updating flairs {(token.IsCancellationRequested ? "interrupted" : "complete")}, {flairUpdates} rows affected.");
 
             token.ThrowIfCancellationRequested();
+        }
+
+        private string DbValidationExceptionDebugString(DbEntityValidationException e)
+        {
+            var writer = new StringWriter();
+            writer.WriteLine("DbEntityValidationException ------------");
+            foreach (var entity in e.EntityValidationErrors)
+            {
+                writer.WriteLine("  " + entity.Entry.Entity + ":");
+                foreach (var error in entity.ValidationErrors)
+                {
+                    writer.WriteLine("    " + error.PropertyName + ": " + error.ErrorMessage);
+                }
+            }
+            writer.WriteLine("----------------------------------------");
+            return writer.ToString();
         }
     }
 }
