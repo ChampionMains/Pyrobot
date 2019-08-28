@@ -30,7 +30,7 @@ namespace ChampionMains.Pyrobot.Services
         {
             return _api.SummonerV4.GetBySummonerIdAsync(Region.Get(region), summonerIdEnc);
         }
-        
+
         public async Task<IDictionary<string, Summoner>> GetSummoners(string region, ICollection<string> summonerIdEncs)
         {
             var pairs = await Task.WhenAll(
@@ -38,33 +38,9 @@ namespace ChampionMains.Pyrobot.Services
             return pairs.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
 
-//        // Note: modifies the summoner argument with new SummonerIdEnc if needed.
-//        public async Task<Summoner> GetSummonerUpgradeToV4(Data.Models.Summoner summoner)
-//        {
-//            try
-//            {
-//                if (null != summoner.SummonerIdEnc)
-//                {
-//                    return await GetSummoner(summoner.Region, summoner.SummonerIdEnc);
-//                }
-//
-//                // Extra case for converting V3.
-//                if (null == summoner.SummonerId)
-//                    throw new InvalidOperationException($"Summoner with DB ID {summoner.Id} missing summoner IDs.");
-//                var summonerDataV3 = await GetSummonerV3(summoner.Region, (long) summoner.SummonerId);
-//                var summonerData = await GetSummonerByName(summoner.Region, summonerDataV3.Name);
-//                summoner.SummonerIdEnc = summonerData.Id;
-//                return summonerData;
-//            }
-//            catch (Exception e)
-//            {
-//                throw new InvalidOperationException(summoner.ToString(), e);
-//            }
-//        }
-
         public async Task<Tuple<Tier, Division>> GetRank(string region, string summonerIdEnc)
         {
-            var response = await _api.LeagueV4.GetAllLeaguePositionsForSummonerAsync(Region.Get(region), summonerIdEnc);
+            var response = await _api.LeagueV4.GetLeagueEntriesForSummonerAsync(Region.Get(region), summonerIdEnc);
             return GetRankFromResponse(response);
         }
 
@@ -96,7 +72,7 @@ namespace ChampionMains.Pyrobot.Services
             return pairs.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
 
-        private static Tuple<Tier, Division> GetRankFromResponse(IEnumerable<LeaguePosition> json)
+        private static Tuple<Tier, Division> GetRankFromResponse(IEnumerable<LeagueEntry> json)
         {
             var entry = json.FirstOrDefault(e => Queue.RANKED_SOLO_5x5 == e.QueueType);
             if (entry == null)
@@ -109,6 +85,5 @@ namespace ChampionMains.Pyrobot.Services
                     entry.Tier.Substring(1).ToLowerInvariant(), out tier);
             return Tuple.Create(tier, div);
         }
-
     }
 }
