@@ -26,8 +26,8 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
         private readonly RedditService _redditService;
         private readonly FlairService _flairService;
-
-        private readonly TimeSpan _timeout;
+        
+        private readonly WebJobConfiguration _config;
 
         private readonly UnitOfWork _unitOfWork;
 
@@ -38,7 +38,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             _summonerService = summonerService;
             _redditService = redditService;
             _flairService = flairService;
-            _timeout = config.TimeoutBulkUpdate;
+            _config = config;
             _unitOfWork = unitOfWork;
         }
 
@@ -49,7 +49,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
             try
             {
-                var cancellationTokenSource = new CancellationTokenSource(_timeout);
+                var cancellationTokenSource = new CancellationTokenSource(_config.TimeoutBulkUpdate);
 
                 try
                 {
@@ -57,7 +57,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 }
                 catch (OperationCanceledException e)
                 {
-                    throw new TimeoutException($"{nameof(BulkUpdateJob)} timed out ({_timeout})", e);
+                    throw new TimeoutException($"{nameof(BulkUpdateJob)} timed out ({_config.TimeoutBulkUpdate})", e);
                 }
                 catch (DbEntityValidationException e)
                 {
@@ -85,10 +85,12 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
         private async Task UpdateSummonerData(CancellationToken token)
         {
-            const int summonerSaveBatchSize = 100;
+            var summonerSaveBatchSize = _config.BulkUpdateSaveBatchSize;
+            var updateBatchSize = _config.BulkUpdateUpdateBatchSize;
+            var updateNumBatches = _config.BulkUpdateNumBatches;
 
             // update summoners
-            var summoners = await _summonerService.GetSummonersForUpdateAsync();
+            var summoners = await _summonerService.GetSummonersForUpdateAsync(updateBatchSize, updateNumBatches);
 
 //            var duplicates = summoners
 //                .GroupBy(i => new { i.SummonerId, i.Region })

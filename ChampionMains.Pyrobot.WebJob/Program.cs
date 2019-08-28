@@ -29,7 +29,10 @@ namespace ChampionMains.Pyrobot.WebJob
 
             container.Register(() => new WebJobConfiguration
             {
-                TimeoutBulkUpdate = TimeSpan.Parse(s["webjob.timeout.bulkUpdate"])
+                TimeoutBulkUpdate = TimeSpan.Parse(s["webjob.timeout.bulkUpdate"]),
+                BulkUpdateSaveBatchSize = int.Parse(s["webjob.bulkUpdate.saveBatchSize"]),
+                BulkUpdateUpdateBatchSize = int.Parse(s["webjob.bulkUpdate.updateBatchSize"]),
+                BulkUpdateNumBatches = int.Parse(s["webjob.bulkUpdate.updateNumBatches"])
             }, Lifestyle.Singleton);
 
             // Jobs

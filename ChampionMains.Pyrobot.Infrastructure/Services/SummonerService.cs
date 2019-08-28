@@ -22,11 +22,8 @@ namespace ChampionMains.Pyrobot.Services
             _riotUpdateMaxStaleTime = config.RiotUpdateMax;
         }
 
-        public async Task<IList<Summoner>> GetSummonersForUpdateAsync()
+        public async Task<IList<Summoner>> GetSummonersForUpdateAsync(int batchSize, int numBatches)
         {
-            const int maxBatches = 2;
-            const int batchSize = 100;
-
             var staleAfter = DateTimeOffset.Now - _riotUpdateMaxStaleTime;
             var result = new List<Summoner>();
 
@@ -50,7 +47,7 @@ namespace ChampionMains.Pyrobot.Services
                 result.AddRange(data);
                 i++;
 
-                if (i >= maxBatches)
+                if (i >= numBatches)
                     break;
             }
 
