@@ -67,15 +67,14 @@ namespace ChampionMains.Pyrobot.Services
         public async Task<IList<FlairListResult>> GetFlairsAsync(string subreddit, string name = "")
         {
             var reddit = await _redditApiProvider.GetRedditApi();
-            var subredditFlair = reddit.Subreddit(subreddit).Flairs;
 
+            var flairController = reddit.Subreddit(subreddit).Flairs;
+            var args = new FlairNameListingInput(name, limit: MaxLimitSize);
             var flairs = new List<FlairListResult>();
-            var moreFlairs = subredditFlair.GetFlairList(new FlairNameListingInput(name, limit: MaxLimitSize));
-            while (moreFlairs.Any())
+            do
             {
-                flairs.AddRange(moreFlairs);
-                moreFlairs = subredditFlair.GetFlairList(new FlairNameListingInput(name, limit: MaxLimitSize, count: flairs.Count));
-            }
+                flairs.AddRange(flairController.GetFlairList(args));
+            } while (!string.IsNullOrWhiteSpace(flairController.FlairListNext));
 
             return flairs;
         }
@@ -83,20 +82,20 @@ namespace ChampionMains.Pyrobot.Services
         public async Task SetFlairAsync(string subreddit, string name, string text = null, string classes = null)
         {
             var reddit = await _redditApiProvider.GetRedditApi();
-            var subredditFlair = reddit.Subreddit(subreddit).Flairs;
+            var flairController = reddit.Subreddit(subreddit).Flairs;
 
-            await subredditFlair.CreateUserFlairAsync(
+            await flairController.CreateUserFlairAsync(
                 new FlairCreateInput(text ?? "", name: name, cssClass: classes));
         }
 
         public async Task SetFlairsAsync(string subreddit, ICollection<FlairListResult> flairs)
         {
             var reddit = await _redditApiProvider.GetRedditApi();
-            var subredditFlair = reddit.Subreddit(subreddit).Flairs;
+            var flairController = reddit.Subreddit(subreddit).Flairs;
 
 
             var errorResultTasks = flairs.Select((flair, i) => new {flair, g = i / MaxFlairUpdateSize}).GroupBy(x => x.g, x => x.flair)
-                .Select(groupedFlairs => subredditFlair.FlairCSVAsync(ResolveBulkFlairParameter(groupedFlairs)))
+                .Select(groupedFlairs => flairController.FlairCSVAsync(ResolveBulkFlairParameter(groupedFlairs)))
                 .ToList();
             await Task.WhenAll(errorResultTasks);
         }
