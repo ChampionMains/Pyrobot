@@ -31,7 +31,7 @@ namespace ChampionMains.Pyrobot.Services
             while(true)
             {
                 var data = await _unitOfWork.Summoners
-                    .Where(s => s.LastUpdate == null || s.LastUpdate < staleAfter)
+                    .Where(s => s.SummonerIdEnc != null && (s.LastUpdate == null || s.LastUpdate < staleAfter))
                     .OrderBy(s => s.LastUpdate)
                     .ThenBy(s => s.Id)
                     .Skip(batchSize * i).Take(batchSize)

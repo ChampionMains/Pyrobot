@@ -7,6 +7,7 @@ using MingweiSamuel.Camille.ChampionMasteryV4;
 using MingweiSamuel.Camille.Enums;
 using MingweiSamuel.Camille.LeagueV4;
 using MingweiSamuel.Camille.SummonerV4;
+using MingweiSamuel.Camille.Util;
 using Tier = ChampionMains.Pyrobot.Data.Enums.Tier;
 using Division = ChampionMains.Pyrobot.Data.Enums.Division;
 

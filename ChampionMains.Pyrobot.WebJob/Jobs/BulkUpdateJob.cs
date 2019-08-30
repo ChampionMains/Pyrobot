@@ -224,7 +224,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                         existingFlairs
                     };
                 }
-                catch (HttpRequestException e)
+                catch (Exception e)
                 {
                     Console.Out.WriteLine(
                         $"FAILED to pull existing flairs from subreddit {subreddit.Name}.", e);
