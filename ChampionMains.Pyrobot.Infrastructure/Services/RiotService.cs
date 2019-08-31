@@ -28,7 +28,7 @@ namespace ChampionMains.Pyrobot.Services
             return _api.SummonerV4.GetBySummonerNameAsync(Region.Get(region), summonerName);
         }
 
-        public Task<Summoner> GetSummoner(string region, string summonerIdEnc, CancellationToken? token)
+        public Task<Summoner> GetSummoner(string region, string summonerIdEnc, CancellationToken? token = null)
         {
             return _api.SummonerV4.GetBySummonerIdAsync(Region.Get(region), summonerIdEnc, token);
         }

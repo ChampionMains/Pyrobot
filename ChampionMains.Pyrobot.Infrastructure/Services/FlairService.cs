@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data;
 using ChampionMains.Pyrobot.Data.Enums;
@@ -24,17 +25,18 @@ namespace ChampionMains.Pyrobot.Services
             _flairUpdateMaxStaleTime = config.FlairUpdate;
         }
 
-        public async Task<ICollection<SubredditUserFlair>> GetFlairsForUpdateAsync()
+        public async Task<ICollection<SubredditUserFlair>> GetFlairsForUpdateAsync(CancellationToken token)
         {
             var staleAfter = DateTimeOffset.Now - _flairUpdateMaxStaleTime;
             return await _context.SubredditUserFlairs
-                    .Where(f => f.LastUpdate == null || f.LastUpdate < staleAfter)
+                    .Include(f => f.Subreddit)
+                    .Where(f => !f.Subreddit.MissingMod && (f.LastUpdate == null || f.LastUpdate < staleAfter))
                     .OrderBy(f => f.LastUpdate)
                     .ThenBy(f => f.Id)
-                    .Take(1000) // limit to 1,000 arbitrary
+                    .Take(1000) // Limit to 1,000 arbitrary. TODO.
                     .OrderBy(f => f.SubredditId)
                     .Include(f => f.User)
-                    .ToListAsync();
+                    .ToListAsync(token);
         }
 
 

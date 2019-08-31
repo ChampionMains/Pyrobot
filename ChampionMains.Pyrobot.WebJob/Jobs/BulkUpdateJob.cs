@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.IO;
 using System.Linq;
@@ -78,9 +80,33 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             // and will continue to save the updated data into the database.
             
             // TODO: different timeout for summoner data and flairs
-            var summonerDataTask = UpdateSummonerData(token);
-            await summonerDataTask;
+
+            var updateSubredditMissingAdminTask = UpdateSubredditMissinAdmin(token);
+            var updateSummonerDataTask = UpdateSummonerData(token);
+
+            await updateSubredditMissingAdminTask;
+            await updateSummonerDataTask;
+
             await UpdateFlairs(token);
+        }
+
+        private async Task UpdateSubredditMissinAdmin(CancellationToken token)
+        {
+            var modSubreddits = await _redditService.GetModSubredditsAsync();
+
+            // Use separate unit of work.
+            // TODO fix how unitofwork is used everywhere.
+            using (var unitOfWork = new UnitOfWork())
+            {
+                var dbSubreddits = await unitOfWork.Subreddits.ToListAsync(token);
+                foreach (var dbSubreddit in dbSubreddits)
+                {
+                    dbSubreddit.MissingMod = !modSubreddits.Contains(dbSubreddit.Name);
+                    if (dbSubreddit.MissingMod)
+                        Console.Out.WriteLine($"Bot missing mod on subreddit: {dbSubreddit.Name}.");
+                }
+                await unitOfWork.SaveChangesAsync(token);
+            }
         }
 
         private async Task UpdateSummonerData(CancellationToken token)
@@ -185,7 +211,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
         private async Task UpdateFlairs(CancellationToken token)
         {
             // update flairs
-            var flairs = await _flairService.GetFlairsForUpdateAsync();
+            var flairs = await _flairService.GetFlairsForUpdateAsync(token);
             Console.Out.WriteLine($"Updating {flairs.Count} flairs.");
 
             // pull existing flairs

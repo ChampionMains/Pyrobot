@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Services.Reddit;
+using Reddit.Inputs;
 using Reddit.Inputs.Flair;
 using Reddit.Inputs.PrivateMessages;
 using Reddit.Things;
@@ -68,13 +69,20 @@ namespace ChampionMains.Pyrobot.Services
         {
             var reddit = await _redditApiProvider.GetRedditApi();
 
-            var flairController = reddit.Subreddit(subreddit).Flairs;
-            var args = new FlairNameListingInput(name, limit: MaxLimitSize);
+            var flairModel = reddit.Models.Flair;
+            var input = new FlairNameListingInput(name, limit: MaxLimitSize);
             var flairs = new List<FlairListResult>();
+
             do
             {
-                flairs.AddRange(flairController.GetFlairList(args));
-            } while (!string.IsNullOrWhiteSpace(flairController.FlairListNext));
+                // TODO Add FlairListAsync.
+                var output = await flairModel.SendRequestAsync<FlairListResultContainer>(
+                    flairModel.Sr(subreddit) + "api/flairlist", input);
+                input.after = output.Next;
+
+                flairs.AddRange(output.Users);
+
+            } while (!string.IsNullOrWhiteSpace(input.after));
 
             return flairs;
         }
@@ -93,11 +101,36 @@ namespace ChampionMains.Pyrobot.Services
             var reddit = await _redditApiProvider.GetRedditApi();
             var flairController = reddit.Subreddit(subreddit).Flairs;
 
-
             var errorResultTasks = flairs.Select((flair, i) => new {flair, g = i / MaxFlairUpdateSize}).GroupBy(x => x.g, x => x.flair)
                 .Select(groupedFlairs => flairController.FlairCSVAsync(ResolveBulkFlairParameter(groupedFlairs)))
                 .ToList();
             await Task.WhenAll(errorResultTasks);
+        }
+
+        public async Task<HashSet<string>> GetModSubredditsAsync()
+        {
+            var reddit = await _redditApiProvider.GetRedditApi();
+            var subredditsModel = reddit.Models.Subreddits;
+            var input = new CategorizedSrListingInput(limit: 100);
+            // Make result set case-insensitive.
+            var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            do
+            {
+                // TODO upstream add MineAsync:
+                // var output = subredditsModel.MineAsync("moderator", input);
+                var output = await subredditsModel.SendRequestAsync<SubredditContainer>("subreddits/mine/moderator", input);
+                input.after = output.Data.after;
+
+                foreach (var subreddit in output.Data.Children)
+                {
+                    // TODO upstream add ModPermissions field:
+                    // Check if subredditData.Data.ModPermissions contains "all" or ["config", "flair", ?"css"?].
+                    result.Add(subreddit.Data.DisplayName);
+                }
+            } while (!string.IsNullOrWhiteSpace(input.after));
+
+            return result;
         }
 
         private static string ResolveBulkFlairParameter(IEnumerable<FlairListResult> flairs)

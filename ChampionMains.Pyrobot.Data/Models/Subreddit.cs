@@ -41,15 +41,18 @@ namespace ChampionMains.Pyrobot.Data.Models
         public string FlairCss { get; set; }
 
         /// <summary>
-        /// If true, users can only enable both or neither (rank, championmastery)
+        /// If true, users can only enable both or neither (rank, championmastery).
         /// 
-        /// Note: not actually uesd
+        /// Note: not actually used.
         /// </summary>
         [Required]
         public bool BindEnabled { get; set; }
 
+        /// <summary>
+        /// True if the bot doesn't have mod access to this subreddit.
+        /// </summary>
         [Required]
-        public bool MissingAdmin { get; set; }
+        public bool MissingMod { get; set; }
 
         [Required]
         [ForeignKey("Champion")]
