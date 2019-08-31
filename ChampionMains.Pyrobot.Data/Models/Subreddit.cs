@@ -47,7 +47,10 @@ namespace ChampionMains.Pyrobot.Data.Models
         /// </summary>
         [Required]
         public bool BindEnabled { get; set; }
-        
+
+        [Required]
+        public bool MissingAdmin { get; set; }
+
         [Required]
         [ForeignKey("Champion")]
         public short ChampionId { get; set; }

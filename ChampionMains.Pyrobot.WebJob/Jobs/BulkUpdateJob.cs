@@ -72,8 +72,8 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
         private async Task ExecuteInternal(CancellationToken token)
         {
-            // cancellation only occurs during the http api calls.
-            // once cancelled, the task no longer issues more http api calls,
+            // Cancellation only occurs during the http api calls.
+            // Once cancelled, the task will no longer issues more http API calls,
             // but will wait for existing calls to finish,
             // and will continue to save the updated data into the database.
             

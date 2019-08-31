@@ -219,6 +219,10 @@
     <Compile Include="Migrations\201902042307188_user-add-backgroundskinid.Designer.cs">
       <DependentUpon>201902042307188_user-add-backgroundskinid.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201908311901539_subreddit-add-missingadmin.cs" />
+    <Compile Include="Migrations\201908311901539_subreddit-add-missingadmin.Designer.cs">
+      <DependentUpon>201908311901539_subreddit-add-missingadmin.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Champion.cs" />
     <Compile Include="Models\CreatedModelBase.cs" />
@@ -345,6 +349,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201902042307188_user-add-backgroundskinid.resx">
       <DependentUpon>201902042307188_user-add-backgroundskinid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201908311901539_subreddit-add-missingadmin.resx">
+      <DependentUpon>201908311901539_subreddit-add-missingadmin.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
