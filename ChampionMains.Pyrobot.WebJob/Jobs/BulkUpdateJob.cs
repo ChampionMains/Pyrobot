@@ -76,10 +76,10 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             // once cancelled, the task no longer issues more http api calls,
             // but will wait for existing calls to finish,
             // and will continue to save the updated data into the database.
-
-            // TODO: pass along cancellation token to Camille API calls.
+            
             // TODO: different timeout for summoner data and flairs
-            await UpdateSummonerData(token);
+            var summonerDataTask = UpdateSummonerData(token);
+            await summonerDataTask;
             await UpdateFlairs(token);
         }
 
@@ -92,17 +92,9 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             // update summoners
             var summoners = await _summonerService.GetSummonersForUpdateAsync(updateBatchSize, updateNumBatches);
 
-//            var duplicates = summoners
-//                .GroupBy(i => new { i.SummonerId, i.Region })
-//                .Where(g => g.Count() > 1).ToList();
-//            if (duplicates.Count > 0)
-//            {
-//                throw new InvalidOperationException("Duplicate summonerIds: " + string.Join(",\n", duplicates.Select(g => "[" + string.Join(", ", g) + "]")));
-//            }
-
             Console.Out.WriteLine($"Updating {summoners.Count} summoners.");
 
-            // update each region asynchronously
+            // Update each region asynchronously (concurrent).
             var getSummonerTasks = summoners.GroupBy(s => s.Region).Select(async summonersByRegion =>
             {
                 var region = summonersByRegion.Key;
@@ -117,23 +109,16 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
                 Console.Out.WriteLine($"Updating {summonerIdEncs.Count} summoners from region {region}");
 
-                // arduous async work
-                var summonerData = await _riotService.GetSummoners(region, summonerIdEncs);
+                // Arduous async work (concurrent).
+                var summonerDataTask = _riotService.GetSummoners(region, summonerIdEncs, token);
+                var summonerRanksTask = _riotService.GetRanks(region, summonerIdEncs, token);
+                var summonerMasteriesTask = _riotService.GetChampionMasteries(region, summonerIdEncs, token);
+                // Await results.
+                var summonerData = await summonerDataTask;
+                var summonerRanks = await summonerRanksTask;
+                var summonerMasteries = await summonerMasteriesTask;
 
-                if (token.IsCancellationRequested)
-                {
-                    Console.Out.WriteLine($"Updating region {region} cancelled.");
-                    return null;
-                }
-                var summonerRanks = await _riotService.GetRanks(region, summonerIdEncs);
-                if (token.IsCancellationRequested)
-                {
-                    Console.Out.WriteLine($"Updating region {region} cancelled.");
-                    return null;
-                }
-                var summonerMasteries = await _riotService.GetChampionMasteries(region, summonerIdEncs);
-
-                // done with async work
+                // Done with async work.
                 Console.Out.WriteLine($"Pulled {summonerData.Count} summoner infos, {summonerRanks.Count} ranks, "
                                       + $"and {summonerMasteries.Count} mastery sets for region {region}.");
 
@@ -150,9 +135,13 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
             var summonerUpdates = getSummonerTasks.Select(t => t.Result).Select(t =>
             {
-                // task cancelled (or propagate null errors)
-                if (t == null && token.IsCancellationRequested)
-                    return 0;
+                // Task cancelled (or throw for null error).
+                if (t == null)
+                {
+                    if (token.IsCancellationRequested)
+                        return 0;
+                    throw new ArgumentException("Summoner data is null.");
+                }
 
                 var summonersByRegion = t.summonersByRegion;
                 var region = summonersByRegion.Key;
@@ -301,7 +290,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
             token.ThrowIfCancellationRequested();
         }
 
-        private string DbValidationExceptionDebugString(DbEntityValidationException e)
+        private static string DbValidationExceptionDebugString(DbEntityValidationException e)
         {
             var writer = new StringWriter();
             writer.WriteLine("DbEntityValidationException ------------");
