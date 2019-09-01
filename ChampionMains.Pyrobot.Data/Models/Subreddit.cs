@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -53,6 +54,11 @@ namespace ChampionMains.Pyrobot.Data.Models
         /// </summary>
         [Required]
         public bool MissingMod { get; set; }
+
+        /// <summary>
+        /// Last time flair bulk update triggered on this subreddit.
+        /// </summary>
+        public DateTimeOffset? LastBulkUpdate { get; set; }
 
         [Required]
         [ForeignKey("Champion")]

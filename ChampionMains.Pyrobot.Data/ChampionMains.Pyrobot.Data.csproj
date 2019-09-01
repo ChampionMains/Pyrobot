@@ -227,6 +227,10 @@
     <Compile Include="Migrations\201908312109104_subreddit-rename-missingadmin-to-missingmod.Designer.cs">
       <DependentUpon>201908312109104_subreddit-rename-missingadmin-to-missingmod.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201909010458056_subreddit-add-lastbulkupdate.cs" />
+    <Compile Include="Migrations\201909010458056_subreddit-add-lastbulkupdate.Designer.cs">
+      <DependentUpon>201909010458056_subreddit-add-lastbulkupdate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Champion.cs" />
     <Compile Include="Models\CreatedModelBase.cs" />
@@ -359,6 +363,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201908312109104_subreddit-rename-missingadmin-to-missingmod.resx">
       <DependentUpon>201908312109104_subreddit-rename-missingadmin-to-missingmod.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909010458056_subreddit-add-lastbulkupdate.resx">
+      <DependentUpon>201909010458056_subreddit-add-lastbulkupdate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
