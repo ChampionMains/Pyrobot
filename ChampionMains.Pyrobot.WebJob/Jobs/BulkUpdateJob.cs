@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data;
@@ -210,19 +207,21 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
         private async Task UpdateFlairs(CancellationToken token)
         {
-            // update flairs
-            var flairs = await _flairService.GetFlairsForUpdateAsync(token);
-            Console.Out.WriteLine($"Updating {flairs.Count} flairs.");
+            // Update flairs.
+//            var flairs = await _flairService.GetFlairsForUpdateAsync(token);
 
-            // pull existing flairs
-            var getFlairTasks = flairs.GroupBy(f => f.SubredditId, f => f).Select(async flairsBySubreddit =>
+            // Update by subreddit to batch Reddit API calls.
+            var subredditsNeedingFlairUpdate = await
+                _flairService.GetSubredditsForFlairUpdateAsync(_config.UpdateFlairsNumSubreddits, token);
+
             {
-                // cancel if need
-                if (token.IsCancellationRequested)
-                    return null;
+                var totalFlairs = subredditsNeedingFlairUpdate.Select(s => s.SubredditUserFlairs.Count).Sum();
+                Console.Out.WriteLine($"Updating {totalFlairs} flairs.");
+            }
 
-                var subreddit = _flairService.GetSubreddit(flairsBySubreddit.Key);
-
+            // Pull existing flairs.
+            var existingFlairDataTasks = subredditsNeedingFlairUpdate.Select(async subreddit =>
+            {
                 Console.Out.WriteLine($"Updating flairs from subreddit {subreddit.Name}.");
 
                 try
@@ -235,7 +234,6 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                     return new
                     {
                         subreddit,
-                        flairsBySubreddit,
                         existingFlairs
                     };
                 }
@@ -247,50 +245,53 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 }
             }).ToList();
 
-            await Task.WhenAll(getFlairTasks);
+            var existingFlairDatas = await Task.WhenAll(existingFlairDataTasks);
 
-            // update flairs in database, generate new flairs to send to reddit
-            var setFlairTasks = getFlairTasks.Select(t => t.Result).Select(t =>
+            if (token.IsCancellationRequested)
             {
-                // task cancelled (or propagate null errors)
+                Console.Out.WriteLine("Updating flairs interrupted early, no flairs updated.");
+                return;
+            }
+
+            // Update flairs in database, generate new flairs to send to Reddit.
+            var setFlairTasks = existingFlairDatas.Select(t =>
+            {
+                // Task cancelled or failed to pull existing flairs.
                 if (t == null)
-                {
-                    // Or failed to pull existing flairs.
                     return null;
-                    //if (token.IsCancellationRequested)
-                    //    return null;
-                    //throw new NullReferenceException("Flair data null.");
-                }
 
                 var subreddit = t.subreddit;
-                var flairsBySubreddit = t.flairsBySubreddit;
                 var existingFlairs = t.existingFlairs;
 
-                var updatedFlairs = flairsBySubreddit.Select(flair =>
+                var updatedFlairs = subreddit.SubredditUserFlairs.Select(dbFlair =>
                 {
                     var existingFlair = existingFlairs.FirstOrDefault(
-                        ef => string.Equals(ef.User, flair.User.Name, StringComparison.OrdinalIgnoreCase));
+                        ef => string.Equals(ef.User, dbFlair.User.Name, StringComparison.OrdinalIgnoreCase));
 
-                    // update database flair text from subreddit (different from individual flair update service)
+                    // Update database flair text from subreddit (different from individual flair update service).
                     if (existingFlair != null)
                     {
-                        // sanitize if the flair has the mastery text class to extract just the text portion
-                        flair.FlairText = existingFlair.FlairText != null &&
+                        // Sanitize if the flair has the mastery text class to extract just the text portion.
+                        dbFlair.FlairText = existingFlair.FlairText != null &&
                             (existingFlair.FlairCssClass?.Contains(FlairService.MasteryTextClass) ?? false)
                             ? FlairUtil.SanitizeFlairTextLeadingMastery(existingFlair.FlairText)
                             : existingFlair.FlairText;
                     }
-                    flair.LastUpdate = DateTimeOffset.Now;
+                    // Update flair timestamp.
+                    dbFlair.LastUpdate = DateTimeOffset.Now;
 
-                    var userSummoners = _summonerService.GetSummonersIncludeDataByUserId(flair.UserId);
+                    var userSummoners = _summonerService.GetSummonersIncludeDataByUserId(dbFlair.UserId);
 
-                    var newFlair = _flairService.GenerateFlair(flair.User.Name, userSummoners, subreddit,
-                        flair.RankEnabled, flair.ChampionMasteryEnabled,
-                        flair.PrestigeEnabled, flair.ChampionMasteryTextEnabled, flair.FlairText,
+                    var newFlair = _flairService.GenerateFlair(dbFlair.User.Name, userSummoners, subreddit,
+                        dbFlair.RankEnabled, dbFlair.ChampionMasteryEnabled,
+                        dbFlair.PrestigeEnabled, dbFlair.ChampionMasteryTextEnabled, dbFlair.FlairText,
                         existingFlair?.FlairCssClass);
 
                     return newFlair;
                 }).ToList();
+
+                // Update subreddit timestamp.
+                subreddit.LastBulkUpdate = DateTimeOffset.Now;
 
                 return new
                 {
@@ -300,7 +301,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
             }).Select(async x =>
             {
-                // cancel if x is null OR task cancelled
+                // Cancel if x is null OR task cancelled.
                 if (x == null || token.IsCancellationRequested)
                     return;
 

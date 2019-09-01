@@ -25,19 +25,30 @@ namespace ChampionMains.Pyrobot.Services
             _flairUpdateMaxStaleTime = config.FlairUpdate;
         }
 
-        public async Task<ICollection<SubredditUserFlair>> GetFlairsForUpdateAsync(CancellationToken token)
+        public async Task<ICollection<Subreddit>> GetSubredditsForFlairUpdateAsync(int numSubreddits, CancellationToken token)
         {
-            var staleAfter = DateTimeOffset.Now - _flairUpdateMaxStaleTime;
-            return await _context.SubredditUserFlairs
-                    .Include(f => f.Subreddit)
-                    .Where(f => !f.Subreddit.MissingMod && (f.LastUpdate == null || f.LastUpdate < staleAfter))
-                    .OrderBy(f => f.LastUpdate)
-                    .ThenBy(f => f.Id)
-                    .Take(1000) // Limit to 1,000 arbitrary. TODO.
-                    .OrderBy(f => f.SubredditId)
-                    .Include(f => f.User)
+            return await _context.Subreddits
+                    .Where(s => !s.MissingMod)
+                    .OrderByDescending(s => s.LastBulkUpdate == null)
+                    .ThenBy(s => s.LastBulkUpdate)
+                    .Take(numSubreddits)
+                    .Include(s => s.SubredditUserFlairs.Select(f => f.User))
                     .ToListAsync(token);
         }
+
+//        public async Task<ICollection<SubredditUserFlair>> GetFlairsForUpdateAsync(CancellationToken token)
+//        {
+//            var staleAfter = DateTimeOffset.Now - _flairUpdateMaxStaleTime;
+//            return await _context.SubredditUserFlairs
+//                    .Include(f => f.Subreddit)
+//                    .Where(f => !f.Subreddit.MissingMod && (f.LastUpdate == null || f.LastUpdate < staleAfter))
+//                    .OrderBy(f => f.LastUpdate)
+//                    .ThenBy(f => f.Id)
+//                    .Take(1000) // Limit to 1,000 arbitrary. TODO.
+//                    .OrderBy(f => f.SubredditId)
+//                    .Include(f => f.User)
+//                    .ToListAsync(token);
+//        }
 
 
         public async Task<ICollection<SubredditUserFlair>> GetSubredditUserFlairs(User user)

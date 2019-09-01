@@ -32,7 +32,8 @@ namespace ChampionMains.Pyrobot.WebJob
                 TimeoutBulkUpdate = TimeSpan.Parse(s["webjob.timeout.bulkUpdate"]),
                 BulkUpdateSaveBatchSize = int.Parse(s["webjob.bulkUpdate.saveBatchSize"]),
                 BulkUpdateUpdateBatchSize = int.Parse(s["webjob.bulkUpdate.updateBatchSize"]),
-                BulkUpdateNumBatches = int.Parse(s["webjob.bulkUpdate.updateNumBatches"])
+                BulkUpdateNumBatches = int.Parse(s["webjob.bulkUpdate.updateNumBatches"]),
+                UpdateFlairsNumSubreddits = int.Parse(s["webjob.bulkUpdate.updateFlairsNumSubreddits"]),
             }, Lifestyle.Singleton);
 
             // Jobs

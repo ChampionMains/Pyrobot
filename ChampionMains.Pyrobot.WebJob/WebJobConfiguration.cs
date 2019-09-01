@@ -8,5 +8,6 @@ namespace ChampionMains.Pyrobot.WebJob
         public int BulkUpdateSaveBatchSize { get; set; } = 100;
         public int BulkUpdateUpdateBatchSize { get; set; } = 100;
         public int BulkUpdateNumBatches { get; set; } = 2;
+        public int UpdateFlairsNumSubreddits { get; set; } = 3;
     }
 }
