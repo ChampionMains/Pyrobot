@@ -102,7 +102,18 @@ namespace ChampionMains.Pyrobot.Services
             var flairController = reddit.Subreddit(subreddit).Flairs;
 
             var errorResultTasks = flairs.Select((flair, i) => new {flair, g = i / MaxFlairUpdateSize}).GroupBy(x => x.g, x => x.flair)
-                .Select(groupedFlairs => flairController.FlairCSVAsync(ResolveBulkFlairParameter(groupedFlairs)))
+                .Select(async groupedFlairs =>
+                {
+                    var csv = ResolveBulkFlairParameter(groupedFlairs);
+                    try
+                    {
+                        return await flairController.FlairCSVAsync(csv);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception("Failed to set flairs:\\n" + csv.Replace("\n", "\\n"), e);
+                    }
+                })
                 .ToList();
             await Task.WhenAll(errorResultTasks);
         }
