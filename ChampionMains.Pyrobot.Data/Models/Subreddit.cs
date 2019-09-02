@@ -13,7 +13,7 @@ namespace ChampionMains.Pyrobot.Data.Models
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(21)]
+        [StringLength(21)]
         public string Name { get; set; }
 
         [Required]

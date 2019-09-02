@@ -25,14 +25,14 @@ namespace ChampionMains.Pyrobot.Data.Models
         [Required]
         public bool ChampionMasteryTextEnabled { get; set; }
 
-        [MaxLength(64)]
+        [StringLength(64)]
         public string FlairText { get; set; }
 
         [Index("IX_Subreddit_User", 1, IsUnique = true)]
         [ForeignKey("Subreddit")]
         [Required]
         public int SubredditId { get; set; }
-        
+
         [Index("IX_Subreddit_User", 2, IsUnique = true)]
         [Index("IX_User")]
         [ForeignKey("User")]
