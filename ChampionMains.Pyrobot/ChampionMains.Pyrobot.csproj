@@ -317,6 +317,7 @@
     <Compile Include="Controllers\PublicProfileController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\RegistrationApiController.cs" />
+    <Compile Include="Controllers\Admin\SubredditController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -448,6 +449,7 @@
     <Folder Include="Areas\AdminPanel\Views\Static\" />
     <Folder Include="content\js\admin\" />
     <Folder Include="Views\ProfileSummoner\" />
+    <Folder Include="Views\Subreddit\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ChampionMains.Pyrobot.Data\ChampionMains.Pyrobot.Data.csproj">
