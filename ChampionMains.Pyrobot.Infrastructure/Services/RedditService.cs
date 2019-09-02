@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Services.Reddit;
+using Reddit.Exceptions;
 using Reddit.Inputs;
 using Reddit.Inputs.Flair;
 using Reddit.Inputs.PrivateMessages;
@@ -96,7 +97,10 @@ namespace ChampionMains.Pyrobot.Services
                 new FlairCreateInput(text ?? "", name: name, cssClass: classes));
         }
 
-        public async Task SetFlairsAsync(string subreddit, ICollection<FlairListResult> flairs)
+        /// <summary>
+        /// Sets flairs in bulk. Returns the number of flairs that succeeded. Throws an exception if no flairs succeeded (rather than returning zero).
+        /// </summary>
+        public async Task<int> SetFlairsAsync(string subreddit, ICollection<FlairListResult> flairs)
         {
             var reddit = await _redditApiProvider.GetRedditApi();
             var flairController = reddit.Subreddit(subreddit).Flairs;
@@ -107,15 +111,36 @@ namespace ChampionMains.Pyrobot.Services
                     var csv = ResolveBulkFlairParameter(groupedFlairs);
                     try
                     {
-                        return await flairController.FlairCSVAsync(csv);
+                        var result = await flairController.FlairCSVAsync(csv);
+                        return result.Count(r => r.Ok);
                     }
                     catch (Exception e)
                     {
-                        throw new Exception("Failed to set flairs:\\n" + csv.Replace("\n", "\\n"), e);
+                        var numBatches = (int) Math.Ceiling(flairs.Count * 1.0 / MaxFlairUpdateSize);
+                        // ReSharper disable once LocalizableElement
+                        Console.WriteLine($"Flair update for subreddit {subreddit} batch {groupedFlairs.Key + 1}/{numBatches} FAILED with exception:\n{e}");
+                        throw;
                     }
                 })
                 .ToList();
-            await Task.WhenAll(errorResultTasks);
+
+            var oks = 0;
+            var exceptions = new List<Exception>();
+            foreach (var errorResultTask in errorResultTasks)
+            {
+                try
+                {
+                    oks += await errorResultTask;
+                }
+                catch (Exception e)
+                {
+                    exceptions.Add(e);
+                }
+            }
+
+            if (oks <= 0)
+                throw new AggregateException(exceptions);
+            return oks;
         }
 
         public async Task<HashSet<string>> GetModSubredditsAsync()

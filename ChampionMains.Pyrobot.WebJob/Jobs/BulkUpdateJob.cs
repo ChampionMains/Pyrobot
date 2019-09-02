@@ -305,7 +305,8 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 if (x == null || token.IsCancellationRequested)
                     return;
 
-                await _redditService.SetFlairsAsync(x.subreddit.Name, x.updatedFlairs);
+                var oks = await _redditService.SetFlairsAsync(x.subreddit.Name, x.updatedFlairs);
+                Console.WriteLine($@"Updated {oks} out of {x.updatedFlairs.Count} flairs for subreddit {x.subreddit.Name}.");
             });
 
             await Task.WhenAll(setFlairTasks);
