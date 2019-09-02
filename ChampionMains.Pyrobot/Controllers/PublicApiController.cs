@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
 using ChampionMains.Pyrobot.Data;
@@ -59,20 +60,35 @@ namespace ChampionMains.Pyrobot.Controllers
 
         [Route("api/leaderboard")]
         [CacheOutput(ServerTimeSpan = 0 /*60 * 5*/, ClientTimeSpan = 50 * 5)]
-        public async Task<LeaderboardViewModel> GetLeaderboard(int championId, int count = 10, int minPoints = 0)
+        public async Task<LeaderboardViewModel> GetLeaderboard(CancellationToken cancellationToken,
+            int championId, int count = 10, int minPoints = 0)
         {
-            var entriesQuery = _unitOfWork.SummonerChampionMasteries.Where(cm => cm.ChampionId == championId)
-                .OrderByDescending(cm => cm.Points)
-                .Include(cm => cm.Summoner.User)
-                .GroupBy(cm => cm.Summoner.UserId)
-                .Select(group  => new LeaderboardEntryViewModel
-                {
-                    Name = group.Any() ? group.FirstOrDefault().Summoner.User.Name : null,
-                    TotalPoints = group.Select(cm => cm.Points).Sum()
-                })
-                .Where(cm => cm.TotalPoints >= minPoints)
-                .OrderByDescending(entry => entry.TotalPoints);
-            var entries = await (count < 0 ? entriesQuery.ToListAsync() : entriesQuery.Take(count).ToListAsync());
+            // Approximation by ignoring summoners with little mastery of the champion.
+            // Greatly reduces the number of SummonerChampionMasteries query needs to look at since
+            // most people have low mastery on many champions.
+            const int perSummonerThreshold = 1000;
+
+            if (count <= 0 || 500 < count || minPoints < 0)
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            
+            // Be careful of SQL injection!
+            // All these fields are non-nullable ints so we are safe.
+            var entries = await _unitOfWork.Database.SqlQuery<LeaderboardEntryViewModel>($@"
+                SELECT [User].[Name] AS Name, TotalPoints
+                FROM [User]
+                INNER JOIN (
+                    SELECT TOP {count}
+                    [User].Id AS UserId, SUM(SummonerChampionMastery.Points) AS TotalPoints
+                    FROM SummonerChampionMastery
+                    INNER JOIN Summoner ON SummonerChampionMastery.SummonerId = Summoner.Id
+                    INNER JOIN [User] ON Summoner.UserId = [User].Id
+                    WHERE SummonerChampionMastery.ChampionId = {championId}
+                    AND SummonerChampionMastery.Points >= {perSummonerThreshold}
+                    GROUP BY [User].Id
+		                HAVING SUM(SummonerChampionMastery.Points) >= {minPoints}
+                    ORDER BY TotalPoints DESC
+                ) AS PointsTable ON [User].Id = PointsTable.UserId
+                ORDER BY TotalPoints DESC").ToListAsync(cancellationToken);
 
             return new LeaderboardViewModel
             {
