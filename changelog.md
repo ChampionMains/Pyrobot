@@ -2,6 +2,12 @@
 layout: default
 title: Changelog
 changes:
+  2019-09-01:
+    - Fixed issues causing bulk update job to fail over the last few months.
+    - Changed bulk update job to update flairs per-subreddit to allow better utilization of batch requests.
+    - Flairs should now be updated every 3-4 days.
+  2019-08-27:
+    - Updated project to use Reddit.NET rather than a custom Reddit client. This will make maintenance and feature addition easier.
   2019-02-09:
     - Added SSL (HTTPS) to [flairs.championmains.com](https://flairs.championmains.com/).
   2019-02-02:
@@ -9,7 +15,7 @@ changes:
   2019-02-01:
     - Fix issues with summoner registration and updating caused by the removal of the V3 Riot API.
   2018-12-18:
-    - Hourly update job has been fixed. Summoners should now be updated every 3 days.
+    - Hourly update job has been fixed. Flairs should now be updated every 3 days.
   2018-12-02:
     - Hourly update job will soon (by the new year) be reworked completely for long-term robustness.
   2018-04-12:
