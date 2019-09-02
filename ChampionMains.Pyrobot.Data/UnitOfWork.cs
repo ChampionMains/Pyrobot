@@ -10,6 +10,7 @@ namespace ChampionMains.Pyrobot.Data
         public IDbSet<SummonerRank> Leagues { get; set; }
         public IDbSet<Subreddit> Subreddits { get; set; }
         public IDbSet<SubredditUserFlair> SubredditUserFlairs { get; set; }
+        public IDbSet<SubredditEmoji> SubredditEmojis { get; set; }
         public IDbSet<Summoner> Summoners { get; set; }
         public IDbSet<User> Users { get; set; }
         public IDbSet<Champion> Champions { get; set; }

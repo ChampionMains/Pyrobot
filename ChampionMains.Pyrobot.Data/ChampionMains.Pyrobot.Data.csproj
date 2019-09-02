@@ -231,11 +231,16 @@
     <Compile Include="Migrations\201909010458056_subreddit-add-lastbulkupdate.Designer.cs">
       <DependentUpon>201909010458056_subreddit-add-lastbulkupdate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201909020749505_subredditemoji-create.cs" />
+    <Compile Include="Migrations\201909020749505_subredditemoji-create.Designer.cs">
+      <DependentUpon>201909020749505_subredditemoji-create.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Champion.cs" />
     <Compile Include="Models\CreatedModelBase.cs" />
     <Compile Include="Models\SubredditUserFlair.cs" />
     <Compile Include="Models\SummonerChampionMastery.cs" />
+    <Compile Include="Models\SubredditEmoji.cs" />
     <Compile Include="Models\SummonerRank.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\Subreddit.cs" />
@@ -366,6 +371,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201909010458056_subreddit-add-lastbulkupdate.resx">
       <DependentUpon>201909010458056_subreddit-add-lastbulkupdate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909020749505_subredditemoji-create.resx">
+      <DependentUpon>201909020749505_subredditemoji-create.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
