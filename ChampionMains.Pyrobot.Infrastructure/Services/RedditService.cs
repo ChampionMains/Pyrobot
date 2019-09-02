@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Services.Reddit;
-using Reddit.Exceptions;
 using Reddit.Inputs;
 using Reddit.Inputs.Flair;
 using Reddit.Inputs.PrivateMessages;
 using Reddit.Things;
-using Subreddit = Reddit.Controllers.Subreddit;
 
 namespace ChampionMains.Pyrobot.Services
 {
@@ -21,21 +19,6 @@ namespace ChampionMains.Pyrobot.Services
         public RedditService(RedditApiProvider redditApiProvider)
         {
             _redditApiProvider = redditApiProvider;
-        }
-
-        public async Task<ICollection<string>> GetSubredditsAsync(SubredditKind kind)
-        {
-            var reddit = await _redditApiProvider.GetRedditApi();
-
-            var subreddits = new List<Subreddit>();
-            var moreSubreddits = reddit.Account.MyModeratorSubreddits(limit: MaxLimitSize);
-            while (moreSubreddits.Any())
-            {
-                subreddits.AddRange(moreSubreddits);
-                moreSubreddits = reddit.Account.MyModeratorSubreddits(limit: MaxLimitSize, count: subreddits.Count);
-            }
-
-            return subreddits.Select(s => s.Name).ToList();
         }
 
         public async Task SendMessageAsync(string toUserName, string subject, string body)

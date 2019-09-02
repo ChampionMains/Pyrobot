@@ -161,7 +161,6 @@
     <Compile Include="Services\ApplicationConfiguration.cs" />
     <Compile Include="Services\FlairService.cs" />
     <Compile Include="Services\RedditService.cs" />
-    <Compile Include="Services\Reddit\SubRedditKind.cs" />
     <Compile Include="Services\RiotService.cs" />
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\SummonerService.cs" />
