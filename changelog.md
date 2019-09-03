@@ -2,6 +2,8 @@
 layout: default
 title: Changelog
 changes:
+  2019-09-02:
+    - Added temporary fix for [Reddit bug causing flair text to be HTML entity encoded](https://www.reddit.com/r/bugs/comments/cyz8x1/). If your flair looked like `&amp;amp;amp;amp;amp;lt;3` instead of `<3`, this will fix that.
   2019-09-01:
     - Fixed issues causing bulk update job to fail over the last few months.
     - Changed bulk update job to update flairs per-subreddit to allow better utilization of batch requests.
