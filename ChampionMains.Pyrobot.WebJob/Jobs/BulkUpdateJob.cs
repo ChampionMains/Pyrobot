@@ -276,6 +276,11 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                             (existingFlair.FlairCssClass?.Contains(FlairService.MasteryTextClass) ?? false)
                             ? FlairUtil.SanitizeFlairTextLeadingMastery(existingFlair.FlairText)
                             : existingFlair.FlairText;
+
+                        if (dbFlair.FlairText?.Length > 64)
+                            throw new InvalidOperationException(
+                                $"Flair text too long: \"{dbFlair.FlairText}\", " +
+                                $"Id: {dbFlair.Id}, Subreddit: {subreddit.Name}, User: {dbFlair.User.Name}.");
                     }
                     // Update flair timestamp.
                     dbFlair.LastUpdate = DateTimeOffset.Now;
