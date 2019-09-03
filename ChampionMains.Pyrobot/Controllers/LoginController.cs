@@ -9,7 +9,7 @@ using Microsoft.Owin.Security;
 
 namespace ChampionMains.Pyrobot.Controllers
 {
-    [RoutePrefix("login")]
+    [RoutePrefix("")]
     public class LoginController : Controller
     {
         private readonly UserService _users;
@@ -19,6 +19,7 @@ namespace ChampionMains.Pyrobot.Controllers
             _users = users;
         }
 
+        [Route("")]
         public ActionResult Index(string subreddit)
         {
             if (subreddit != null)
@@ -31,12 +32,14 @@ namespace ChampionMains.Pyrobot.Controllers
             return View();
         }
 
+        [Route("login")]
         public ActionResult Login()
         {
             var returnUrl = Url.Action("login-callback", "login");
             return new OAuthRedirectResult(returnUrl);
         }
 
+        [Route("login-callback")]
         [ActionName("login-callback")]
         public async Task<ActionResult> LoginCallback()
         {
@@ -55,6 +58,7 @@ namespace ChampionMains.Pyrobot.Controllers
         }
 
         [HttpPost]
+        [Route("logout")]
         [ValidateAntiForgeryToken]
         public ActionResult Logout()
         {

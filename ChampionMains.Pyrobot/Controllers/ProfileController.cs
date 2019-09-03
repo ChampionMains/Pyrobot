@@ -24,6 +24,7 @@ namespace ChampionMains.Pyrobot.Controllers
             Summoners = summoners;
         }
 
+        [Route("")]
         public async Task<ActionResult> Index(bool newUI = false)
         {
             ViewModel = await CreateViewModelAsync();

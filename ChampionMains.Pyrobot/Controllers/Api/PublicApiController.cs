@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -11,38 +10,21 @@ using ChampionMains.Pyrobot.Models;
 using ChampionMains.Pyrobot.Services;
 using WebApi.OutputCache.V2;
 
-namespace ChampionMains.Pyrobot.Controllers
+namespace ChampionMains.Pyrobot.Controllers.Api
 {
+    [RoutePrefix("api")]
     public class PublicApiController : ApiController
     {
-        private readonly WebJobService _webJob;
         private readonly UserService _users;
         private readonly UnitOfWork _unitOfWork;
 
-        public PublicApiController(WebJobService webJob, UserService users, UnitOfWork unitOfWork)
+        public PublicApiController(UserService users, UnitOfWork unitOfWork)
         {
-            _webJob = webJob;
             _users = users;
             _unitOfWork = unitOfWork;
         }
 
-        [HttpPost]
-        [Route("trigger-bulk-update")]
-        public async Task<bool> TriggerBulkUpdate()
-        {
-            await _webJob.QueueBulkUpdate(DateTime.UtcNow.ToString("s"));
-            return true;
-        }
-
-        [HttpPost]
-        [Route("trigger-subreddit-css-update")]
-        public async Task<bool> TriggerSubredditCssUpdate()
-        {
-            await _webJob.QueueSubredditCssUpdate(DateTime.UtcNow.ToString("s"));
-            return true;
-        }
-
-        [Route("api/user-summoners")]
+        [Route("user-summoners")]
         [CacheOutput(ServerTimeSpan = 0 /*60 * 5*/, ClientTimeSpan = 50 * 5)]
         public async Task<List<SummonerInfoViewModel>> GetUserSummoners(string username)
         {
@@ -58,7 +40,7 @@ namespace ChampionMains.Pyrobot.Controllers
                 }).ToList();
         }
 
-        [Route("api/leaderboard")]
+        [Route("leaderboard")]
         [CacheOutput(ServerTimeSpan = 0 /*60 * 5*/, ClientTimeSpan = 50 * 5)]
         public async Task<LeaderboardViewModel> GetLeaderboard(CancellationToken cancellationToken,
             int championId, int count = 10, int minPoints = 0)

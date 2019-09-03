@@ -120,6 +120,9 @@
     <Reference Include="Owin.Security.Providers.Reddit, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.Security.Providers.Reddit.2.7.0\lib\net45\Owin.Security.Providers.Reddit.dll</HintPath>
     </Reference>
+    <Reference Include="RouteDebugger, Version=2.1.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\routedebugger.2.1.5\lib\net40\RouteDebugger.dll</HintPath>
+    </Reference>
     <Reference Include="SimpleInjector, Version=3.2.0.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
       <HintPath>..\packages\SimpleInjector.3.2.0\lib\net45\SimpleInjector.dll</HintPath>
     </Reference>
@@ -304,20 +307,16 @@
     <Compile Include="App_Start\OwinStartup.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Areas\AdminPanel\AdminAuthorizeAttribute.cs" />
-    <Compile Include="Areas\AdminPanel\AdminPanelAreaRegistration.cs" />
-    <Compile Include="Areas\AdminPanel\Controllers\AdminDefaultController.cs" />
-    <Compile Include="Areas\AdminPanel\Controllers\SubredditsController.cs" />
-    <Compile Include="Areas\AdminPanel\Controllers\SubscriptionsController.cs" />
     <Compile Include="Attributes\WebApiAuthorizeAttribute.cs" />
     <Compile Include="CacheUtil.cs" />
     <Compile Include="Controllers\LoginController.cs" />
-    <Compile Include="Controllers\PublicApiController.cs" />
-    <Compile Include="Controllers\ProfileApiController.cs" />
+    <Compile Include="Controllers\Api\PublicApiController.cs" />
+    <Compile Include="Controllers\Api\ProfileApiController.cs" />
     <Compile Include="Controllers\PublicProfileController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\RegistrationApiController.cs" />
-    <Compile Include="Controllers\Admin\SubredditController.cs" />
+    <Compile Include="Controllers\ModPanelController.cs" />
+    <Compile Include="Controllers\Api\WebJobTriggerController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -356,16 +355,11 @@
     <Content Include="node_modules\whatwg-fetch\dist\fetch.umd.js" />
     <Content Include="Views\Login\index.cshtml" />
     <Content Include="Views\Profile\index.cshtml" />
-    <Content Include="Areas\AdminPanel\Views\AdminDefault\index.cshtml" />
-    <Content Include="Areas\AdminPanel\Views\AdminDefault\_subreddits.cshtml" />
-    <Content Include="Areas\AdminPanel\Views\AdminDefault\_subscriptions.cshtml" />
-    <Content Include="Areas\AdminPanel\Views\AdminDefault\_eventlog.cshtml" />
     <Content Include="content\bootstrap\config.json" />
     <Content Include="Views\_master.cshtml" />
     <Content Include="content\css\normalize.css" />
     <Content Include="content\css\bootswatch.css" />
     <Content Include="Views\Profile\_summoners.cshtml" />
-    <Content Include="Areas\AdminPanel\Views\Web.config" />
     <Content Include="bower.json" />
     <None Include="content\css\about.scss" />
     <Content Include="content\css\profile.scss" />
@@ -434,6 +428,7 @@
     <Content Include="Views\Profile\_vueChampIcon.cshtml" />
     <!-- - -->
     <Content Include="Web.config" />
+    <Content Include="Views\ModPanel\Index.cshtml" />
     <None Include="Web.template.config">
       <SubType>Designer</SubType>
     </None>
@@ -444,12 +439,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\AdminPanel\Models\" />
-    <Folder Include="Areas\AdminPanel\Views\Shared\" />
-    <Folder Include="Areas\AdminPanel\Views\Static\" />
     <Folder Include="content\js\admin\" />
+    <Folder Include="Views\NewLogin\" />
     <Folder Include="Views\ProfileSummoner\" />
-    <Folder Include="Views\Subreddit\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ChampionMains.Pyrobot.Data\ChampionMains.Pyrobot.Data.csproj">
