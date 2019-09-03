@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using ChampionMains.Pyrobot.Data;
 using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Services;
@@ -265,22 +266,38 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
                 var updatedFlairs = subreddit.SubredditUserFlairs.Select(dbFlair =>
                 {
-                    var existingFlair = existingFlairs.FirstOrDefault(
+                    var existingFlairFromReddit = existingFlairs.FirstOrDefault(
                         ef => string.Equals(ef.User, dbFlair.User.Name, StringComparison.OrdinalIgnoreCase));
 
                     // Update database flair text from subreddit (different from individual flair update service).
-                    if (existingFlair != null)
+                    if (existingFlairFromReddit != null)
                     {
-                        // Sanitize if the flair has the mastery text class to extract just the text portion.
-                        dbFlair.FlairText = existingFlair.FlairText != null &&
-                            (existingFlair.FlairCssClass?.Contains(FlairService.MasteryTextClass) ?? false)
-                            ? FlairUtil.SanitizeFlairTextLeadingMastery(existingFlair.FlairText)
-                            : existingFlair.FlairText;
+                        // If user cleared their flair text, clear the text in the db row.
+                        if (null == existingFlairFromReddit.FlairText)
+                        {
+                            dbFlair.FlairText = null;
+                        }
+                        // Otherwise, update the db flair text from the reddit flair data.
+                        else
+                        {
+                            // Sanitize if the flair has the mastery text class to extract just the text portion.
+                            dbFlair.FlairText = (existingFlairFromReddit.FlairCssClass?.Contains(FlairService.MasteryTextClass) ?? false)
+                                ? FlairUtil.SanitizeFlairTextLeadingMastery(existingFlairFromReddit.FlairText)
+                                : existingFlairFromReddit.FlairText;
+                            // Decode HTML entities. TODO: https://www.reddit.com/r/bugs/comments/cyz8x1/
+                            // Loop due to entities building up: "&amp;amp;amp;amp;lt;3". TODO: remove loop.
+                            while (true) {
+                                var newText = HttpUtility.HtmlDecode(dbFlair.FlairText);
+                                if (dbFlair.FlairText == newText)
+                                    break;
+                                dbFlair.FlairText = newText;
+                            }
 
-                        if (dbFlair.FlairText?.Length > 64)
-                            throw new InvalidOperationException(
-                                $"Flair text too long: \"{dbFlair.FlairText}\", " +
-                                $"Id: {dbFlair.Id}, Subreddit: {subreddit.Name}, User: {dbFlair.User.Name}.");
+                            if (dbFlair.FlairText?.Length > 64)
+                                throw new InvalidOperationException(
+                                    $"Flair text too long: \"{dbFlair.FlairText}\", " +
+                                    $"Id: {dbFlair.Id}, Subreddit: {subreddit.Name}, User: {dbFlair.User.Name}.");
+                        }
                     }
                     // Update flair timestamp.
                     dbFlair.LastUpdate = DateTimeOffset.Now;
@@ -290,7 +307,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                     var newFlair = _flairService.GenerateFlair(dbFlair.User.Name, userSummoners, subreddit,
                         dbFlair.RankEnabled, dbFlair.ChampionMasteryEnabled,
                         dbFlair.PrestigeEnabled, dbFlair.ChampionMasteryTextEnabled, dbFlair.FlairText,
-                        existingFlair?.FlairCssClass);
+                        existingFlairFromReddit?.FlairCssClass);
 
                     return newFlair;
                 }).ToList();
