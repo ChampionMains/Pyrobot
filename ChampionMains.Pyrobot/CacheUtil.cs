@@ -9,36 +9,19 @@ namespace ChampionMains.Pyrobot
     {
         private static readonly TimeSpan DefaultExpirery = TimeSpan.FromMinutes(2);
 
-        public static TResult GetItem<TResult>(string key, Func<TResult> createItem,
-            bool force = false, TimeSpan? expirery = null)
-            where TResult : class
-        {
-            TResult item = HttpRuntime.Cache[key] as TResult;
-
-            if (force || item == null)
-            {
-                item = createItem() ?? item;
-                if (item == null)
-                    return null;
-                HttpRuntime.Cache.Add(key, item, null,
-                    Cache.NoAbsoluteExpiration, expirery ?? DefaultExpirery, CacheItemPriority.Default, null);
-            }
-            return item;
-        }
-
         public static async Task<TResult> GetItemAsync<TResult>(string key, Func<Task<TResult>> createItem,
             bool force = false, TimeSpan? expirery = null)
             where TResult : class
         {
-            TResult item = HttpRuntime.Cache[key] as TResult;
+            var item = HttpRuntime.Cache[key] as TResult;
 
             if (force || item == null)
             {
                 item = await createItem() ?? item;
                 if (item == null)
                     return null;
-                HttpRuntime.Cache.Add(key, item, null,
-                    Cache.NoAbsoluteExpiration, expirery ?? DefaultExpirery, CacheItemPriority.Default, null);
+                HttpRuntime.Cache.Add(key, item, null, DateTime.Now + (expirery ?? DefaultExpirery),
+                    Cache.NoSlidingExpiration, CacheItemPriority.Default, null);
             }
             return item;
         }
