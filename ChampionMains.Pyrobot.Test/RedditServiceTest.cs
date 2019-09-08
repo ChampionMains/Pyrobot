@@ -14,7 +14,7 @@ namespace ChampionMains.Pyrobot.Test
         [TestMethod]
         public async Task TestGetMods()
         {
-            await _redditService.GetModSubredditsAsync("lugnutsk", new []{ "config", "flair" });
+            await _redditService.GetModSubredditsAsync(new []{ "config", "flair" });
         }
     }
 }

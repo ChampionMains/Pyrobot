@@ -90,7 +90,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
         private async Task UpdateSubredditMissinAdmin(CancellationToken token)
         {
-            var modSubreddits = await _redditService.GetModSubredditsAsync(_redditService.GetBotUsername(), new[] { "flair" });
+            var modSubreddits = await _redditService.GetModSubredditsAsync(new[] { "flair" });
 
             // Use separate unit of work.
             // TODO fix how unitofwork is used everywhere.

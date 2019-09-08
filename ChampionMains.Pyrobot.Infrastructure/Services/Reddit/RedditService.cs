@@ -22,11 +22,6 @@ namespace ChampionMains.Pyrobot.Services.Reddit
             _redditApiProvider = redditApiProvider;
         }
 
-        public string GetBotUsername()
-        {
-            return _redditApiProvider.GetBotUsername();
-        }
-
         public async Task SendMessageAsync(string toUserName, string subject, string body)
         {
             const int maxSubjectLength = 100;
@@ -132,7 +127,7 @@ namespace ChampionMains.Pyrobot.Services.Reddit
             return oks;
         }
 
-        public async Task<HashSet<string>> GetModSubredditsAsync(string user, string[] permissions)
+        public async Task<HashSet<string>> GetModSubredditsAsync(string[] permissions)
         {
             var reddit = await _redditApiProvider.GetRedditApi();
             var subredditsModel = reddit.Models.Subreddits;

@@ -37,11 +37,6 @@ namespace ChampionMains.Pyrobot.Services.Reddit
             _userAgent = Uri.EscapeDataString(userAgent);
         }
 
-        public string GetBotUsername()
-        {
-            return _username;
-        }
-
         public async Task<RedditAPI> GetRedditApi()
         {
             await UpdateIfNeeded();
