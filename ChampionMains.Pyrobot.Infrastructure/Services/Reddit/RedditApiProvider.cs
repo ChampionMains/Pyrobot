@@ -72,7 +72,8 @@ namespace ChampionMains.Pyrobot.Services.Reddit
             var client = new HttpClient(new HttpClientHandler
             {
                 Credentials = new NetworkCredential(_clientId, _clientSecret)
-            });
+            }); // TODO REUSE / DI ?
+
             var request = new HttpRequestMessage(HttpMethod.Post, AccessTokenUrl);
             request.Headers.Add("User-Agent", _userAgent);
             request.Content = new FormUrlEncodedContent(new[]

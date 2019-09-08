@@ -14,7 +14,7 @@ namespace ChampionMains.Pyrobot.Services
     public class WebJobService
     {
         private readonly CloudQueueClient _queueClient;
-        private readonly HttpClient _httpClient;
+        private readonly HttpClient _httpClient; // TODO DI.
 
         private readonly string _wakeupUsername;
         private readonly string _wakeupPassword;
@@ -24,7 +24,7 @@ namespace ChampionMains.Pyrobot.Services
         public WebJobService(string connectionString, string wakeupUsername, string wakeupPassword, string wakeupUrl, string userAgent)
         {
             // Open storage account using credentials from .cscfg file.
-            // Get context object for working with queues, and 
+            // Get context object for working with queues, and
             // set a default retry policy appropriate for a web user interface.
             _queueClient = CloudStorageAccount.Parse(connectionString).CreateCloudQueueClient();
             _queueClient.DefaultRequestOptions.RetryPolicy = new LinearRetry(TimeSpan.FromSeconds(3), 3);
@@ -35,7 +35,7 @@ namespace ChampionMains.Pyrobot.Services
             _wakeupUrl = wakeupUrl;
             _userAgent = Uri.EscapeDataString(userAgent);
         }
-        
+
         public async Task QueueSummonerUpdate(int id)
         {
             await Queue(WebJobQueue.SummonerUpdate, id.ToString());

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data.Entity;
+using System.Threading;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data;
 using ChampionMains.Pyrobot.Data.Models;
@@ -20,9 +21,9 @@ namespace ChampionMains.Pyrobot.Services
             return await UnitOfWork.Subreddits.ToListAsync();
         }
 
-        public Task<int> SaveChangesAsync()
+        public Task<int> SaveChangesAsync(CancellationToken? token = null)
         {
-            return UnitOfWork.SaveChangesAsync();
+            return token.HasValue ? UnitOfWork.SaveChangesAsync(token.Value) : UnitOfWork.SaveChangesAsync();
         }
     }
 }
