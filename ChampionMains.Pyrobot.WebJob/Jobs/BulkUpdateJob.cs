@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data;
 using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Services;
+using ChampionMains.Pyrobot.Services.Reddit;
 using ChampionMains.Pyrobot.Util;
 using Microsoft.Azure.WebJobs;
 
@@ -89,7 +90,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
         private async Task UpdateSubredditMissinAdmin(CancellationToken token)
         {
-            var modSubreddits = await _redditService.GetModSubredditsAsync();
+            var modSubreddits = await _redditService.GetModSubredditsAsync(_redditService.GetBotUsername(), new[] { "flair" });
 
             // Use separate unit of work.
             // TODO fix how unitofwork is used everywhere.

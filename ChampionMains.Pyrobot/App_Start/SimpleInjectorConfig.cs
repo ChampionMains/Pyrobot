@@ -33,12 +33,11 @@ namespace ChampionMains.Pyrobot
                 s["webjob.wakeup.url"],
                 s["userAgent"]), Lifestyle.Singleton);
 
-            if (s["website.hmacKey"]?.Length < 32)
+            if ((s["website.hmacKey"]?.Length ?? 0) < 32)
                 throw new ArgumentException("website.hmacKey has insufficient length or is null.");
             container.Register(() => new ValidationService(s["website.hmacKey"]), Lifestyle.Singleton);
 
             SharedSimpleInjectorConfig.Configure(container, s);
-            
 
             // Replace the MVC dependency resolver
             DependencyResolver.SetResolver(new SimpleInjectorDependencyResolver(container));

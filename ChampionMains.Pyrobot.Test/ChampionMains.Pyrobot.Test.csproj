@@ -55,22 +55,40 @@
     <Reference Include="RestSharp, Version=106.6.9.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.106.6.9\lib\net452\RestSharp.dll</HintPath>
     </Reference>
+    <Reference Include="SimpleInjector, Version=3.2.0.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleInjector.3.2.0\lib\net45\SimpleInjector.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector.Extensions.ExecutionContextScoping, Version=3.2.0.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleInjector.Extensions.ExecutionContextScoping.3.2.0\lib\net45\SimpleInjector.Extensions.ExecutionContextScoping.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RedditServiceTest.cs" />
+    <Compile Include="TestSimpleInjector.cs" />
     <Compile Include="ValidationServiceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="App.template.config" />
+    <None Include="App.config" />
+    <None Include="App.Example.config" />
+    <None Include="App.Local.config">
+      <DependentUpon>App.template.config</DependentUpon>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ChampionMains.Pyrobot.Infrastructure\ChampionMains.Pyrobot.Infrastructure.csproj">
       <Project>{9357D4E8-FC65-469E-9EBA-12B82BABD7E8}</Project>
       <Name>ChampionMains.Pyrobot.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ChampionMains.Pyrobot.Startup\ChampionMains.Pyrobot.Startup.csproj">
+      <Project>{55C0978C-F23E-43E6-80B3-4FEC1993C5C9}</Project>
+      <Name>ChampionMains.Pyrobot.Startup</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
@@ -83,4 +101,9 @@
     <Error Condition="!Exists('..\packages\MSTest.TestAdapter.1.1.11\build\net45\MSTest.TestAdapter.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSTest.TestAdapter.1.1.11\build\net45\MSTest.TestAdapter.targets'))" />
   </Target>
   <Import Project="..\packages\MSTest.TestAdapter.1.1.11\build\net45\MSTest.TestAdapter.targets" Condition="Exists('..\packages\MSTest.TestAdapter.1.1.11\build\net45\MSTest.TestAdapter.targets')" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Web\Microsoft.Web.Publishing.targets" />
+  <Target Name="UpdateAppConfigBeforeRun" BeforeTargets="Build" Condition="Exists('App.Local.Config')">
+    <Message Text="Configuration: $(Configuration): App.Local.config" Importance="high" />
+    <TransformXml Source="App.template.config" Transform="App.Local.config" Destination="App.config" />
+  </Target>
 </Project>

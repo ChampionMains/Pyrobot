@@ -2,23 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ChampionMains.Pyrobot.Services.Reddit;
+using ChampionMains.Pyrobot.Util;
 using Reddit.Inputs;
 using Reddit.Inputs.Flair;
 using Reddit.Inputs.PrivateMessages;
 using Reddit.Things;
 
-namespace ChampionMains.Pyrobot.Services
+namespace ChampionMains.Pyrobot.Services.Reddit
 {
     public class RedditService
     {
         private const int MaxFlairUpdateSize = 100;
         private const int MaxLimitSize = 100;
+
         private readonly RedditApiProvider _redditApiProvider;
 
         public RedditService(RedditApiProvider redditApiProvider)
         {
             _redditApiProvider = redditApiProvider;
+        }
+
+        public string GetBotUsername()
+        {
+            return _redditApiProvider.GetBotUsername();
         }
 
         public async Task SendMessageAsync(string toUserName, string subject, string body)
@@ -126,7 +132,7 @@ namespace ChampionMains.Pyrobot.Services
             return oks;
         }
 
-        public async Task<HashSet<string>> GetModSubredditsAsync()
+        public async Task<HashSet<string>> GetModSubredditsAsync(string user, string[] permissions)
         {
             var reddit = await _redditApiProvider.GetRedditApi();
             var subredditsModel = reddit.Models.Subreddits;
@@ -143,9 +149,11 @@ namespace ChampionMains.Pyrobot.Services
 
                 foreach (var subreddit in output.Data.Children)
                 {
-                    // TODO upstream add ModPermissions field:
-                    // Check if subredditData.Data.ModPermissions contains "all" or ["config", "flair", ?"css"?].
-                    result.Add(subreddit.Data.DisplayName);
+                    // Only add if permissions are satisfied.
+                    if (null == subreddit.Data?.ModPermissions)
+                        continue;
+                    if (subreddit.Data.ModPermissions.Contains("all") || subreddit.Data.ModPermissions.ContainsAll(permissions))
+                        result.Add(subreddit.Data.DisplayName);
                 }
             } while (!string.IsNullOrWhiteSpace(input.after));
 

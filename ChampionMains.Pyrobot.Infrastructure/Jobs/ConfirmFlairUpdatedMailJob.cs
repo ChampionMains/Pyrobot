@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Data.Models;
 using ChampionMains.Pyrobot.Services;
+using ChampionMains.Pyrobot.Services.Reddit;
+using ChampionMains.Pyrobot.Util;
 
 namespace ChampionMains.Pyrobot.Jobs
 {

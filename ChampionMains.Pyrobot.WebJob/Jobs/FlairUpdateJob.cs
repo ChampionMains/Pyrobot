@@ -4,6 +4,7 @@ using ChampionMains.Pyrobot.Data;
 using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Data.WebJob;
 using ChampionMains.Pyrobot.Services;
+using ChampionMains.Pyrobot.Services.Reddit;
 using Microsoft.Azure.WebJobs;
 
 namespace ChampionMains.Pyrobot.WebJob.Jobs

@@ -3,7 +3,7 @@ using System.Linq;
 using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Data.Models;
 
-namespace ChampionMains.Pyrobot
+namespace ChampionMains.Pyrobot.Util
 {
     public static class RankUtil
     {

@@ -19,7 +19,7 @@ namespace ChampionMains.Pyrobot.Services.Reddit
 
         private readonly string _clientId;
         private readonly string _clientSecret;
-        private readonly string _userName;
+        private readonly string _username;
         private readonly string _password;
 
         private readonly Semaphore _accessTokenSemaphore = new Semaphore(1, 1);
@@ -32,9 +32,14 @@ namespace ChampionMains.Pyrobot.Services.Reddit
         {
             _clientId = clientId;
             _clientSecret = clientSecret;
-            _userName = username;
+            _username = username;
             _password = password;
             _userAgent = Uri.EscapeDataString(userAgent);
+        }
+
+        public string GetBotUsername()
+        {
+            return _username;
         }
 
         public async Task<RedditAPI> GetRedditApi()
@@ -78,7 +83,7 @@ namespace ChampionMains.Pyrobot.Services.Reddit
             request.Content = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("grant_type", "password"),
-                new KeyValuePair<string, string>("username", _userName),
+                new KeyValuePair<string, string>("username", _username),
                 new KeyValuePair<string, string>("password", _password)  
             });
             var response = await client.SendAsync(request);
