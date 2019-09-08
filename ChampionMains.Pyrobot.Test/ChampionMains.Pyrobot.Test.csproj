@@ -47,7 +47,7 @@
       <HintPath>..\packages\MSTest.TestFramework.1.1.11\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="MingweiSamuel.Reddit.NET, Version=1.2.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MingweiSamuel.Reddit.NET.2.2.0-develop\lib\netstandard2.0\MingweiSamuel.Reddit.NET.dll</HintPath>
+      <HintPath>..\packages\MingweiSamuel.Reddit.NET.2.2.1-develop\lib\netstandard2.0\MingweiSamuel.Reddit.NET.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>

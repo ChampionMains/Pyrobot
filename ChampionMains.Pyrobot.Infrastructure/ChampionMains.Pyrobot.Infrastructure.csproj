@@ -67,7 +67,7 @@
       <HintPath>..\packages\WindowsAzure.Storage.7.1.2\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
     </Reference>
     <Reference Include="MingweiSamuel.Reddit.NET, Version=1.2.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MingweiSamuel.Reddit.NET.2.2.0-develop\lib\netstandard2.0\MingweiSamuel.Reddit.NET.dll</HintPath>
+      <HintPath>..\packages\MingweiSamuel.Reddit.NET.2.2.1-develop\lib\netstandard2.0\MingweiSamuel.Reddit.NET.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -154,13 +154,15 @@
     <Compile Include="Jobs\ConfirmFlairUpdatedMailJob.cs" />
     <Compile Include="Jobs\ConfirmRegistrationMailJob.cs" />
     <Compile Include="Services\Reddit\RedditApiProvider.cs" />
+    <Compile Include="Services\Reddit\EmojiService.cs" />
     <Compile Include="Services\SubredditService.cs" />
+    <Compile Include="Util\ContainsAllExtension.cs" />
     <Compile Include="Util\FlairUtil.cs" />
     <Compile Include="Util\RankUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ApplicationConfiguration.cs" />
     <Compile Include="Services\FlairService.cs" />
-    <Compile Include="Services\RedditService.cs" />
+    <Compile Include="Services\Reddit\RedditService.cs" />
     <Compile Include="Services\RiotService.cs" />
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\SummonerService.cs" />
