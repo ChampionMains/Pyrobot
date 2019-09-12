@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
 using Reddit.Inputs.Emoji;
 using Reddit.Things;
-using RestSharp;
 
 namespace ChampionMains.Pyrobot.Services.Reddit
 {
@@ -20,7 +18,7 @@ namespace ChampionMains.Pyrobot.Services.Reddit
             _redditApiProvider = redditApiProvider;
         }
 
-        public async Task<List<Snoomoji>> GetEmoji(string subredditName)
+        public async Task<List<Snoomoji>> GetAllEmoji(string subredditName)
         {
             var reddit = await _redditApiProvider.GetRedditApi();
 
@@ -30,17 +28,18 @@ namespace ChampionMains.Pyrobot.Services.Reddit
             return emojiContainer.SubredditEmojis?.Values.ToList();
         }
 
-        public async Task UploadEmoji(string subredditName, string emojiName, HttpPostedFileBase emojiImageFile)
+        public async Task UploadEmoji(string subredditName, string emojiName, HttpPostedFileBase emojiImageFile,
+            bool modFlairOnly, bool postFlairAllowed, bool userFlairAllowed)
         {
             var reddit = await _redditApiProvider.GetRedditApi();
             var emoji = reddit.Models.Emoji;
 
             var imageUploadInput = new ImageUploadInput(emojiImageFile.FileName, emojiImageFile.ContentType);
             var lease = await emoji.AcquireLeaseAsync(subredditName, imageUploadInput);
-            await emoji.UploadLeaseImageAsync(lease, emojiImageFile.InputStream, imageUploadInput);
-
-            Console.WriteLine(@"TODO");
-            // TODO keep going.
+            var s3Resposne = await emoji.UploadLeaseImageAsync(lease, emojiImageFile.InputStream, imageUploadInput);
+            var emojiAddInput = new EmojiAddInput(emojiName, s3Resposne.Key, modFlairOnly, postFlairAllowed, userFlairAllowed);
+            var anyErrors = emoji.Add(subredditName, emojiAddInput); // TODO async.
+            // TODO check anyErrors?.
         }
     }
 }

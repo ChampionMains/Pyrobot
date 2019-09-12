@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ChampionMains.Pyrobot.Util;
+using Newtonsoft.Json.Linq;
 using Reddit.Inputs;
 using Reddit.Inputs.Flair;
 using Reddit.Inputs.PrivateMessages;
+using Reddit.Inputs.Subreddits;
 using Reddit.Things;
 
 namespace ChampionMains.Pyrobot.Services.Reddit
@@ -127,7 +129,7 @@ namespace ChampionMains.Pyrobot.Services.Reddit
             return oks;
         }
 
-        public async Task<HashSet<string>> GetModSubredditsAsync(string[] permissions)
+        public async Task<HashSet<string>> GetBotModeratedSubredditsAsync(string[] permissions)
         {
             var reddit = await _redditApiProvider.GetRedditApi();
             var subredditsModel = reddit.Models.Subreddits;
@@ -145,12 +147,47 @@ namespace ChampionMains.Pyrobot.Services.Reddit
                 foreach (var subreddit in output.Data.Children)
                 {
                     // Only add if permissions are satisfied.
-                    if (null == subreddit.Data?.ModPermissions)
-                        continue;
-                    if (subreddit.Data.ModPermissions.Contains("all") || subreddit.Data.ModPermissions.ContainsAll(permissions))
+                    var modPermissions = subreddit.Data?.ModPermissions;
+                    if (null != modPermissions && (modPermissions.Contains("all") || modPermissions.ContainsAll(permissions)))
                         result.Add(subreddit.Data.DisplayName);
                 }
             } while (!string.IsNullOrWhiteSpace(input.after));
+
+            return result;
+        }
+
+        public async Task<HashSet<string>> GetSubredditModsAsync(string subreddit, string[] permissions)
+        {
+            var reddit = await _redditApiProvider.GetRedditApi();
+            var subredditsModel = reddit.Models.Subreddits;
+
+            var input = new SubredditsAboutInput();
+            var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            // It seems the moderators listing doesn't actually paginate.
+            // TODO: var x = await subredditsModel.AboutAsync("moderators", input, subreddit);
+            var output = await subredditsModel.SendRequestAsync<DynamicShortListingContainer>(
+                subredditsModel.Sr(subreddit) + "about/" + "moderators", input);
+
+            /* Example of user:
+{
+    "name": "LugnutsK",
+    "author_flair_text": "0 test flair :kled:",
+    "mod_permissions": [
+        "all"
+    ],
+    "date": 1469487539.0,
+    "rel_id": "rb_haxv7c",
+    "id": "t2_e69d6",
+    "author_flair_css_class": "rank-gold masteryText"
+}
+             */
+            foreach (JObject moderator in output.Data.Children)
+            {
+                var modPermissions = moderator["mod_permissions"].ToObject<IList<string>>();
+                if (null != modPermissions && (modPermissions.Contains("all") || modPermissions.ContainsAll(permissions)))
+                    result.Add(moderator["name"].ToObject<string>());
+            }
 
             return result;
         }
