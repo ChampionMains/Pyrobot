@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using ChampionMains.Pyrobot.Data;
+using ChampionMains.Pyrobot.Data.Models;
 using ChampionMains.Pyrobot.Services.Reddit;
 
 namespace ChampionMains.Pyrobot.Controllers
@@ -28,10 +31,19 @@ namespace ChampionMains.Pyrobot.Controllers
             if (string.IsNullOrWhiteSpace(subredditName) || !userIdentity.IsAuthenticated)
                 return HttpNotFound();
 
+            Subreddit subreddit;
+            using (var db = new UnitOfWork())
+                subreddit = await db.Subreddits.FirstOrDefaultAsync(s => subredditName == s.Name);
+
+            if (null == subreddit) // || subreddit.MissingMod)
+                return HttpNotFound();
+            
             var userName = userIdentity.Name;
-            var key = $"isMod:{subredditName}:{userName}";
+            var key = $"isMod:{subreddit.Name}:{userName}";
+
+            var reddit = _reddit;
             var subredditMods = await CacheUtil.GetItemAsync(key,
-                async () => await _reddit.GetSubredditModsAsync(subredditName, new[] {"config", "flair"}),
+                async () => await reddit.GetSubredditModsAsync(subredditName, new[] {"config", "flair"}),
                 expirery: TimeSpan.FromMinutes(10));
 
             if (!subredditMods.Contains(userName))
