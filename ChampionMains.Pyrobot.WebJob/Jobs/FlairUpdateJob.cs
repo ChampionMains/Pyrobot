@@ -39,7 +39,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
             var summoners = _summonerService.GetSummonersIncludeDataByUserId(user.Id);
 
-            var newFlair = _flairService.GenerateFlair(user.Name, summoners, subreddit, data.RankEnabled, data.ChampionMasteryEnabled,
+            var newFlair = FlairService.GenerateFlair(user.Name, summoners, subreddit, data.RankEnabled, data.ChampionMasteryEnabled,
                 data.PrestigeEnabled, data.ChampionMasteryTextEnabled, data.FlairText, existingFlair?.FlairCssClass);
 
             await _redditService.SetFlairAsync(subreddit.Name, user.Name, newFlair.FlairText, newFlair.FlairCssClass);

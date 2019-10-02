@@ -109,7 +109,7 @@ namespace ChampionMains.Pyrobot.Services
         public const string PrestigePrefix = "prestige-";
         public const string MasteryTextClass = "masteryText";
 
-        public FlairListResult GenerateFlair(string username, ICollection<Summoner> summoners, Subreddit subreddit, bool userRankEnabled,
+        public static FlairListResult GenerateFlair(string username, ICollection<Summoner> summoners, Subreddit subreddit, bool userRankEnabled,
             bool userMasteryEnabled, bool userPrestigeEnabled, bool userMasteryTextEnabled, string text, string oldCss)
         {
             var championId = subreddit.ChampionId;
@@ -168,6 +168,26 @@ namespace ChampionMains.Pyrobot.Services
                 FlairCssClass = string.Join(" ", classes),
                 FlairText = text
             };
+        }
+
+        public static bool IsFlairUnchanged(FlairListResult before, FlairListResult after)
+        {
+            // (Does not check usernames).
+            // Null case (no flair).
+            if (null == before)
+                return null == after || string.IsNullOrWhiteSpace(after.FlairCssClass) && string.IsNullOrEmpty(after.FlairText);
+            // Texts are equal if they are both null/empty, or if contents match including case.
+            if (!string.Equals(before.FlairText ?? "", after.FlairText ?? ""))
+                return false;
+            // CSS strings are equal if they are both null/empty.
+            if (string.IsNullOrWhiteSpace(before.FlairCssClass))
+                return string.IsNullOrWhiteSpace(after.FlairCssClass);
+            if (string.IsNullOrWhiteSpace(after.FlairCssClass))
+                return false;
+            // CSS strings are equal if individual classes are equal. CSS is case-sensitive-ish:
+            // https://stackoverflow.com/questions/12533926/are-class-names-in-css-selectors-case-sensitive
+            var beforeCssClasses = new HashSet<string>(before.FlairCssClass.Split());
+            return after.FlairCssClass.Split().All(beforeCssClasses.Contains);
         }
 
         public Task<int> SaveChangesAsync()

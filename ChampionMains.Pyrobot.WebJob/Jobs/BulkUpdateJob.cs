@@ -264,7 +264,7 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 var subreddit = t.subreddit;
                 var existingFlairs = t.existingFlairs;
 
-                var updatedFlairs = subreddit.SubredditUserFlairs.Select(dbFlair =>
+                var groupUnchanged = subreddit.SubredditUserFlairs.Select(dbFlair =>
                 {
                     var existingFlairFromReddit = existingFlairs.FirstOrDefault(
                         ef => string.Equals(ef.User, dbFlair.User.Name, StringComparison.OrdinalIgnoreCase));
@@ -281,12 +281,15 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                         else
                         {
                             // Sanitize if the flair has the mastery text class to extract just the text portion.
-                            dbFlair.FlairText = (existingFlairFromReddit.FlairCssClass?.Contains(FlairService.MasteryTextClass) ?? false)
+                            dbFlair.FlairText =
+                            (existingFlairFromReddit.FlairCssClass?.Contains(FlairService.MasteryTextClass) ??
+                             false)
                                 ? FlairUtil.SanitizeFlairTextLeadingMastery(existingFlairFromReddit.FlairText)
                                 : existingFlairFromReddit.FlairText;
                             // Decode HTML entities. TODO: https://www.reddit.com/r/bugs/comments/cyz8x1/
                             // Loop due to entities building up: "&amp;amp;amp;amp;lt;3". TODO: remove loop.
-                            while (true) {
+                            while (true)
+                            {
                                 var newText = HttpUtility.HtmlDecode(dbFlair.FlairText);
                                 if (dbFlair.FlairText == newText)
                                     break;
@@ -299,18 +302,26 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                                     $"Id: {dbFlair.Id}, Subreddit: {subreddit.Name}, User: {dbFlair.User.Name}.");
                         }
                     }
+
                     // Update flair timestamp.
                     dbFlair.LastUpdate = DateTimeOffset.Now;
 
                     var userSummoners = _summonerService.GetSummonersIncludeDataByUserId(dbFlair.UserId);
 
-                    var newFlair = _flairService.GenerateFlair(dbFlair.User.Name, userSummoners, subreddit,
+                    var newFlair = FlairService.GenerateFlair(dbFlair.User.Name, userSummoners, subreddit,
                         dbFlair.RankEnabled, dbFlair.ChampionMasteryEnabled,
                         dbFlair.PrestigeEnabled, dbFlair.ChampionMasteryTextEnabled, dbFlair.FlairText,
                         existingFlairFromReddit?.FlairCssClass);
 
+                    if (FlairService.IsFlairUnchanged(existingFlairFromReddit, newFlair))
+                        return null;
+
                     return newFlair;
-                }).ToList();
+
+                }).GroupBy(x => null == x).ToDictionary(g => g.Key, g => g.ToList());
+
+                var updatedFlairs = groupUnchanged[false];
+                Console.WriteLine($@"Computed flairs, {updatedFlairs.Count} updated, {groupUnchanged[true].Count} unchanged.");
 
                 // Update subreddit timestamp.
                 subreddit.LastBulkUpdate = DateTimeOffset.Now;
