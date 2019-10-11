@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.IO;
@@ -11,6 +12,7 @@ using ChampionMains.Pyrobot.Data.Enums;
 using ChampionMains.Pyrobot.Services;
 using ChampionMains.Pyrobot.Util;
 using Microsoft.Azure.WebJobs;
+using Reddit.Things;
 
 namespace ChampionMains.Pyrobot.WebJob.Jobs
 {
@@ -320,8 +322,16 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
 
                 }).GroupBy(x => null == x).ToDictionary(g => g.Key, g => g.ToList());
 
-                var updatedFlairs = groupUnchanged[false];
-                Console.WriteLine($@"Computed flairs, {updatedFlairs.Count} updated, {groupUnchanged[true].Count} unchanged.");
+                List<FlairListResult> updatedFlairs, unchangedFlairs;
+                groupUnchanged.TryGetValue(false, out updatedFlairs);
+                groupUnchanged.TryGetValue(true, out unchangedFlairs);
+
+                {
+                    int updated = updatedFlairs?.Count ?? 0;
+                    int unchanged = unchangedFlairs?.Count ?? 0;
+                    int total = updated + unchanged;
+                    Console.WriteLine($@"Computed flairs, {updated} updated out of {total} total ({updated * 100.0 / total}%).");
+                }
 
                 // Update subreddit timestamp.
                 subreddit.LastBulkUpdate = DateTimeOffset.Now;
