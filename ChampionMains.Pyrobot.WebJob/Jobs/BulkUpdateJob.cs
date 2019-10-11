@@ -266,7 +266,9 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 var subreddit = t.subreddit;
                 var existingFlairs = t.existingFlairs;
 
-                var groupUnchanged = subreddit.SubredditUserFlairs.Select(dbFlair =>
+                var unchangedFlairCount = 0;
+
+                var updatedFlairs = subreddit.SubredditUserFlairs.Select(dbFlair =>
                 {
                     var existingFlairFromReddit = existingFlairs.FirstOrDefault(
                         ef => string.Equals(ef.User, dbFlair.User.Name, StringComparison.OrdinalIgnoreCase));
@@ -316,20 +318,18 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                         existingFlairFromReddit?.FlairCssClass);
 
                     if (FlairService.IsFlairUnchanged(existingFlairFromReddit, newFlair))
+                    {
+                        unchangedFlairCount++;
                         return null;
+                    }
 
                     return newFlair;
 
-                }).GroupBy(x => null == x).ToDictionary(g => g.Key, g => g.ToList());
-
-                List<FlairListResult> updatedFlairs, unchangedFlairs;
-                groupUnchanged.TryGetValue(false, out updatedFlairs);
-                groupUnchanged.TryGetValue(true, out unchangedFlairs);
+                }).Where(x => null != x).ToList();
 
                 {
-                    int updated = updatedFlairs?.Count ?? 0;
-                    int unchanged = unchangedFlairs?.Count ?? 0;
-                    int total = updated + unchanged;
+                    var updated = updatedFlairs.Count;
+                    int total = updated + unchangedFlairCount;
                     Console.WriteLine($@"Computed flairs, {updated} updated out of {total} total ({updated * 100.0 / total}%).");
                 }
 
@@ -348,8 +348,14 @@ namespace ChampionMains.Pyrobot.WebJob.Jobs
                 if (x == null || token.IsCancellationRequested)
                     return;
 
-                var oks = await _redditService.SetFlairsAsync(x.subreddit.Name, x.updatedFlairs);
-                Console.WriteLine($@"Updated {oks} out of {x.updatedFlairs.Count} flairs for subreddit {x.subreddit.Name}.");
+                if (0 == x.updatedFlairs.Count)
+                    Console.WriteLine($@"No flairs needing updating for subreddit {x.subreddit.Name}.");
+                else
+                {
+                    var oks = await _redditService.SetFlairsAsync(x.subreddit.Name, x.updatedFlairs);
+                    Console.WriteLine(
+                        $@"Updated {oks} out of {x.updatedFlairs.Count} flairs for subreddit {x.subreddit.Name}.");
+                }
             });
 
             await Task.WhenAll(setFlairTasks);
