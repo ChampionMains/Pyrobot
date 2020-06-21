@@ -14,8 +14,7 @@ namespace ChampionMains.Pyrobot.Models
             Reg.EUNE.Key,
             Reg.EUW.Key,
             Reg.NA.Key,
-            // https://discussion.developer.riotgames.com/articles/2435/impending-removal-of-rune-page-names-from-kr-summo.html
-            // Reg.KR.Key,
+            Reg.KR.Key,
             Reg.LAN.Key,
             Reg.LAS.Key,
             Reg.OCE.Key,
