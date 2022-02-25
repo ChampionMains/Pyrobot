@@ -2,6 +2,15 @@
 layout: default
 title: Changelog
 changes:
+  2022-02-24:
+    - Updated target .NET Framework verison to 4.8, updated for Visual Studio 2022.
+    - Preparing to support Riot Sign-On (RSO).
+  2020-09-17:
+    - Updated for newly-added champions.
+  2020-06-21:
+    - Re-enabled the Korea region.
+  2019-10-10
+    - Improved stability of bulk update job.
   2019-09-02:
     - Added temporary fix for [Reddit bug causing flair text to be HTML entity encoded](https://www.reddit.com/r/bugs/comments/cyz8x1/). If your flair looked like `&amp;amp;amp;amp;amp;lt;3` instead of `<3`, this will fix that.
   2019-09-01:
