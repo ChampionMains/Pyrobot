@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2020
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChampionMains.Pyrobot", "ChampionMains.Pyrobot\ChampionMains.Pyrobot.csproj", "{602234B1-6BEB-4520-A26E-35EB0C5B635D}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -29,6 +29,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChampionMains.Pyrobot.Start
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChampionMains.Pyrobot.Test", "ChampionMains.Pyrobot.Test\ChampionMains.Pyrobot.Test.csproj", "{C500F964-BC56-4993-B16D-DAC6D8878EBE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0121CBB0-B60E-4B39-BC5B-2062E5A91F2D}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
