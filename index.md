@@ -221,14 +221,8 @@ information: name and region. Enter your information, then click "confirm".
 
 ![](./img/add-1.png){:class="img-thumbnail"}
 
-The site will then generate a random code to validate your summoner. You will need to go to your
-League of Legends client and rename a rune page to the code.
-
-![](./img/add-2.png){:class="img-thumbnail"}
-
-In your League client, click the rune page title bar and enter your validation code, then click the
-floppy disk button in the bottom right corner to save. You will be able to change the name back
-after you validate.
+The site will then pick a random summoner icon to use to validate your summoner. You will need to go
+to your League of Legends client and change your summoner icon to this icon.
 
 ![](./img/add-3.png){:class="img-thumbnail"}
 
