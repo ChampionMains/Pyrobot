@@ -5,6 +5,7 @@ changes:
   2022-02-24:
     - Updated target .NET Framework verison to 4.8, updated for Visual Studio 2022.
     - Preparing to support Riot Sign-On (RSO).
+    - Added Terms of Use.
   2020-09-17:
     - Updated for newly-added champions.
   2020-06-21:

@@ -21,6 +21,7 @@ title: Documentation
   - ##### [Privacy Policy](#pp)
   - ##### [Right of Access](#roa)
   - ##### [Right to Erasure (Right to be Forgotten)](#rtbf)
+- #### [Terms of Use](#terms)
 - #### [Usage Manual](#manual)
   - ##### [Signing-in](#login)
   - ##### [Adding Summoners](#add-summoner)
@@ -179,8 +180,28 @@ However, your account on this site and data from other summoners on your
 account will not be deleted.
 
 If you would like your data on this site to be deleted, message
-[/u/LugnutsK](https://reddit.com/u/LugnutsK) stating so. You data will be
-removed within 30 days.
+[/u/LugnutsK](https://reddit.com/u/LugnutsK) or [create a github issue](https://github.com/ChampionMains/Pyrobot/issues/new)
+stating so. You data will be removed within 30 days.
+
+* * *
+
+
+# Terms of Use
+{:id="terms" name="terms"}
+
+These terms of use ("Terms") govern your access to and use of this website ("The Website"),
+effective 2022-02-24.
+
+We may terminate your account with The Website for any reason without notice. We make no guarantees
+about the aviailability or uptime of The Website. Our liability shall be limited to the fullest
+extent allowed by law. We are not liable for damages arising from the use of The Wesbite or any
+related services.
+
+These Terms are subject to change.
+
+If you have any questions or concerns about the Terms,
+you can message [/u/LugnutsK](https://reddit.com/u/LugnutsK)
+or [create a github issue](https://github.com/ChampionMains/Pyrobot/issues/new).
 
 * * *
 
