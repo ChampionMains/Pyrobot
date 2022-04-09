@@ -19,7 +19,7 @@
     "material-design-lite": "^1.3.0",
     "mdl-ext": "^0.17.1",
     "mdn-polyfills": "^5.15.0",
-    "moment": "^2.23.0",
+    "moment": "^2.29.2",
     "native-promise-only": "^0.8.1",
     "numeral": "^2.0.6",
     "vue": "^2.5.21",
